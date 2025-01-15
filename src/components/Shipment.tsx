@@ -41,6 +41,8 @@ export default function Shipment({ id }) {
   const [finalInvoice, setFinalInvoice] = useState(null);
   const [finalInvoiceName, setFinalInvoiceName] = useState("");
 
+  
+
   // Modal States for adding additional documents
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newDocumentName, setNewDocumentName] = useState("");
@@ -173,14 +175,14 @@ export default function Shipment({ id }) {
 
   const handleEditSubmit = async () => {
     setLoadingPage(true);
-
+  
     // Ensure all fields are filled
     if (!shipmentName) {
       toast.error("Please fill the shipment name");
       setLoadingPage(false);
       return;
     }
-
+  
     if (
       !numberOfContainers ||
       isNaN(numberOfContainers) ||
@@ -190,16 +192,15 @@ export default function Shipment({ id }) {
       setLoadingPage(false);
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("bill_of_lading_number", shipmentName);
     formData.append("number_of_containers", numberOfContainers);
-    formData.append("bill_of_lading_number", ladingNumber);
     formData.append("place_of_delivery", deliveryPlace);
     formData.append("port_of_loading", portOfLoading);
     formData.append("port_of_discharge", portOfDischarge);
     formData.append("contains_dangerous_goods", String(containsDangerousGoods));
-
+  
     // Append documents if they have been uploaded
     if (msdsDocument) {
       formData.append("msds_document", msdsDocument);
@@ -216,7 +217,7 @@ export default function Shipment({ id }) {
     if (finalInvoice) {
       formData.append("final_invoice", finalInvoice);
     }
-
+  
     const response = await api.patch(
       `/api/v1/shipments/shipments/${id}/`,
       formData
@@ -294,7 +295,7 @@ export default function Shipment({ id }) {
             </div>
 
             {/* Shipment Details */}
-            <div className="grid lg:grid-cols-2 gap-8">
+            <div className="grid lg:grid-cols-1 gap-8">
               {/* Existing shipment input fields go here */}
               <div>
                 <label className="block text-black pb-2">BL-Number:</label>
@@ -346,48 +347,62 @@ export default function Shipment({ id }) {
               </div>
             </div>
 
-            {/* Documents Section */}
-            <div className="flex justify-center mt-10 mb-12">
-              <div className="flex items-center gap-4">
-                <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
-                <h1 className="text-xl text-center text-black font-bold">
-                  Documents
-                </h1>
-                <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
-              </div>
-            </div>
+{/* Documents Section */}
+<div className="flex justify-center mt-10 mb-12">
+  <div className="flex items-center gap-4">
+    <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
+    <h1 className="text-xl text-center text-black font-bold">Documents</h1>
+    <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
+  </div>
+</div>
 
-            <div className="grid lg:grid-cols-2 gap-8">
-              {/* Existing document upload inputs go here */}
-              <div>
-                <label className="block text-black pb-2">
-                  Bill of Lading Document:
-                </label>
-                <input
-                  type="file"
-                  onChange={(e) => {
-                    setBillOfLadingDocument(e.target.files[0]);
-                    setBillOfLadingName(e.target.files[0].name);
-                  }}
-                  accept=".pdf, .doc, .docx"
-                  className="w-full p-2 bg-gray-400 rounded"
-                />
-                {billOfLadingName && (
-                  <p className="text-primary flex gap-4 mt-2">
-                    {billOfLadingName}
-                    <a
-                      href={shipmentData.bill_of_lading_document}
-                      className="text-blue-400 underline"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <VscCloudDownload className="w-6 h-6 text-green-500" />
-                    </a>
-                  </p>
-                )}
-              </div>
-              {/* Additional document inputs can be added here... */}
-            </div>
+<div className="grid lg:grid-cols-2 gap-8">
+  {[
+    { label: "Bill of Lading Document", value: shipmentData.bill_of_lading_document, setFile: setBillOfLadingDocument },
+    { label: "MSDS Document", value: shipmentData.msds_document, setFile: setMsdsDocument },
+    { label: "Packing List", value: shipmentData.packing_list, setFile: setPackingList },
+    { label: "Initial Invoice", value: shipmentData.initial_invoice, setFile: setInitialInvoice },
+    { label: "Final Invoice", value: shipmentData.final_invoice, setFile: setFinalInvoice },
+  ].map((doc, index) => (
+    <div key={index} className="p-4 border rounded shadow-md bg-gray-50">
+      <label className="block text-black font-semibold mb-2">{doc.label}:</label>
+      
+      <div className="flex items-center">
+        <input
+          type="file"
+          onChange={(e) => {
+            doc.setFile(e.target.files[0]);
+            // You can handle the uploaded file here if needed, like setting the state.
+          }}
+          accept=".pdf, .doc, .docx"
+          className="hidden"
+          id={`file-upload-${index}`}  // unique id for each input
+        />
+        <label
+          htmlFor={`file-upload-${index}`}
+          className="cursor-pointer text-center text-blue-500 underline mr-2"
+        >
+          Upload New File
+        </label>
+
+        {/* Conditional rendering based on the existence of the document */}
+        {doc.value ? (
+          <a
+            href={doc.value}
+            className="text-blue-400 hover:text-blue-600 ml-2"
+            target="_blank"
+            rel="noreferrer"
+            title="Download"
+          >
+            <VscCloudDownload className="inline w-6 h-6 text-green-500" />
+          </a>
+        ) : (
+          <span className="text-gray-500 ml-2">No file uploaded</span>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
 
             {/* Container Management Section */}
             {/* Container Management Section */}
@@ -401,7 +416,7 @@ export default function Shipment({ id }) {
               </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
               {containers.length === 0 ? (
                 <div className="col-span-full text-center text-gray-400">
                   No containers available
@@ -457,7 +472,7 @@ export default function Shipment({ id }) {
                 ))
               )}
             </div>
-            <div className="flex justify-between mb-4 mt-8 ml-4">
+            <div className="flex justify-between mb-4 mt-8">
               <button
                 onClick={() => setIsAddContainerModalOpen(true)}
                 className="bg-zinc-900 text-white p-2 rounded"
