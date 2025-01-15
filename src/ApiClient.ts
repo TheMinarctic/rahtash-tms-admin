@@ -47,6 +47,9 @@ export default class ApiClient {
                 options.body = JSON.stringify(options.body);
             }
 
+            
+
+
             response = await fetch(this.baseUrl + options.url + query, {
                 method: options.method,
                 headers,
