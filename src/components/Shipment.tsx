@@ -8,6 +8,8 @@ import { VscCloudDownload } from "react-icons/vsc";
 import { FaRegEdit } from "react-icons/fa";
 import { TiTrash } from "react-icons/ti";
 import { GoContainer } from "react-icons/go";
+import DatePicker from "react-datepicker"; // Import the date picker component
+import "react-datepicker/dist/react-datepicker.css"; // Import the CSS for the
 
 export default function Shipment({ id }) {
   const api = useApi();
@@ -45,9 +47,7 @@ export default function Shipment({ id }) {
   const [finalInvoice, setFinalInvoice] = useState(null);
   const [finalInvoiceName, setFinalInvoiceName] = useState("");
 
-  const [isMsdsChecked, setIsMsdsChecked] = useState(containsDangerousGoods); // 
-
-  
+  const [isMsdsChecked, setIsMsdsChecked] = useState(containsDangerousGoods); //
 
   // Modal States for adding additional documents
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -87,13 +87,27 @@ export default function Shipment({ id }) {
   const [newContainerPart1, setNewContainerPart1] = useState("");
   const [newContainerPart2, setNewContainerPart2] = useState("");
 
+  const [selectedGeorgianDate, setSelectedGeorgianDate] = useState(new Date());
+  const [selectedPersianDate, setSelectedPersianDate] = useState(new Date());
+
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [isGeorgian, setIsGeorgian] = useState(true); // Default to Georgian
-  const [loadingDate, setLoadingDate] = useState({ day: '', month: '', year: '' });
+  const [loadingDate, setLoadingDate] = useState({
+    day: "",
+    month: "",
+    year: "",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoadingDate((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    // Handle conversion if you need to save the Persian date representation
+    // You might want to add a function to convert this date to Persian if needed
   };
 
   const fetchShipment = async (url) => {
@@ -111,9 +125,15 @@ export default function Shipment({ id }) {
         setPortOfDischarge(response.body.data.port_of_discharge);
         setContainsDangerousGoods(response.body.data.contains_dangerous_goods);
         setIsMsdsChecked(response.body.data.contains_dangerous_goods);
-        setLoadingDateGeorgian(response.body.data.date_of_loading_georgian);
-        setLoadingDatePersian(response.body.data.date_of_loading_persian);
-        setNotes(response.body.notes || "");  // Set existing notes or default to 
+
+        setNotes(response.body.notes || ""); // Set existing notes or default to
+        setSelectedGeorgianDate(
+          new Date(response.body.data.date_of_loading_georgian)
+        ); // Parse Gregorian date
+        // Here you might need to convert Persian date using a library if it's not directly usable
+        setSelectedPersianDate(
+          new Date(response.body.data.date_of_loading_persian)
+        );
       } else {
         setError("Error fetching shipment data");
       }
@@ -194,16 +214,20 @@ export default function Shipment({ id }) {
     setSelectedContainer(null); // Reset selected container
   };
 
+  const formatDateToISOString = (date) => {
+    return date.toISOString().split("T")[0]; // Converts to "YYYY-MM-DD"
+  };
+
   const handleEditSubmit = async () => {
     setLoadingPage(true);
-  
+
     // Ensure all fields are filled
     if (!shipmentName) {
       toast.error("Please fill the shipment name");
       setLoadingPage(false);
       return;
     }
-  
+
     if (
       !numberOfContainers ||
       isNaN(numberOfContainers) ||
@@ -213,7 +237,8 @@ export default function Shipment({ id }) {
       setLoadingPage(false);
       return;
     }
-  
+
+    debugger;
     const formData = new FormData();
     formData.append("bill_of_lading_number", shipmentName);
     formData.append("number_of_containers", numberOfContainers);
@@ -221,14 +246,20 @@ export default function Shipment({ id }) {
     formData.append("port_of_loading", portOfLoading);
     formData.append("port_of_discharge", portOfDischarge);
     formData.append("contains_dangerous_goods", String(containsDangerousGoods));
-    formData.append("notes", notes); 
+    formData.append("notes", notes);
 
-    if (dateType === "georgian") {
-      formData.append("date_of_loading_georgian", loadingDateGeorgian);
-    } else {
-      formData.append("date_of_loading_persian", loadingDatePersian);
-    }
-  
+    formData.append(
+      "date_of_loading_georgian",
+      formatDateToISOString(selectedGeorgianDate)
+    );
+
+    console.log(formatDateToISOString(selectedGeorgianDate));
+
+    formData.append(
+      "date_of_loading_persian",
+      formatDateToISOString(selectedPersianDate)
+    ); // You may need to convert this to the correct format for Persian dates
+
     // Append documents if they have been uploaded
     if (msdsDocument) {
       formData.append("msds_document", msdsDocument);
@@ -245,7 +276,7 @@ export default function Shipment({ id }) {
     if (finalInvoice) {
       formData.append("final_invoice", finalInvoice);
     }
-  
+
     const response = await api.patch(
       `/api/v1/shipments/shipments/${id}/`,
       formData
@@ -302,8 +333,6 @@ export default function Shipment({ id }) {
     );
   }
 
-
-
   if (error) {
     return <div className="text-black">{error}</div>;
   }
@@ -349,7 +378,9 @@ export default function Shipment({ id }) {
                 />
               </div>
               <div>
-                <label className="block text-black pb-2">Port of Loading:</label>
+                <label className="block text-black pb-2">
+                  Port of Loading:
+                </label>
                 <input
                   type="text"
                   value={portOfLoading}
@@ -358,7 +389,9 @@ export default function Shipment({ id }) {
                 />
               </div>
               <div>
-                <label className="block text-black pb-2">Port of Discharge:</label>
+                <label className="block text-black pb-2">
+                  Port of Discharge:
+                </label>
                 <input
                   type="text"
                   value={portOfDischarge}
@@ -367,7 +400,9 @@ export default function Shipment({ id }) {
                 />
               </div>
               <div>
-                <label className="block text-black pb-2">Place of Delivery:</label>
+                <label className="block text-black pb-2">
+                  Place of Delivery:
+                </label>
                 <input
                   type="text"
                   value={deliveryPlace}
@@ -397,89 +432,47 @@ export default function Shipment({ id }) {
                   }}
                   className="mr-2"
                 />
-                <label className="text-black">
-                  Contains Dangerous Goods
-                </label>
+                <label className="text-black">Contains Dangerous Goods</label>
               </div>
 
+              <div className="flex gap-4 items-center justify-start">
+                <div className="mb-4">
+                  <label className="block text-black mb-1">
+                    Select Delivery Date (Georgian):
+                  </label>
+                  <DatePicker
+                    selected={selectedGeorgianDate}
+                    onChange={(date) => {
+                      setSelectedGeorgianDate(date);
+                    }} // Ensure this is correctly set
+                    dateFormat="yyyy/MM/dd" // Adjust as per requirement
+                    className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
 
-
-
-{/*   
-             <div className="flex items-center mb-4">
-              <label className="flex items-center mr-5">
-                <input
-                  type="checkbox"
-                  checked={isGeorgian}
-                  onChange={() => setIsGeorgian(true)}
-                  className="mr-2"
-                />
-                <span className="text-black">Georgian</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={!isGeorgian}
-                  onChange={() => setIsGeorgian(false)}
-                  className="mr-2"
-                />
-                <span className="text-black">Persian</span>
-              </label>
-            </div>
-
-  
-            <div className="grid lg:grid-cols-3 gap-4 mb-4">
-              <div>
-                <label className="block text-black mb-1">Day:</label>
-                <input
-                  type="number"
-                  name="day"
-                  value={loadingDate.day}
-                  onChange={handleChange}
-                  min="1"
-                  max={isGeorgian ? "31" : "30"}  // Adjust depending on month and year
-                  className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="DD"
-                />
+                <div className="mb-4">
+                  <label className="block text-black mb-1">
+                    Select Delivery Date (Persian):
+                  </label>
+                  <DatePicker
+                    selected={selectedPersianDate}
+                    onChange={(date) => setSelectedPersianDate(date)}
+                    dateFormat="yyyy/MM/dd" // adjust format as per requirement
+                    className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-black mb-1">Month:</label>
-                <input
-                  type="number"
-                  name="month"
-                  value={loadingDate.month}
-                  onChange={handleChange}
-                  min="1"
-                  max="12"
-                  className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="MM"
-                />
-              </div>
-              <div>
-                <label className="block text-black mb-1">Year:</label>
-                <input
-                  type="number"
-                  name="year"
-                  value={loadingDate.year}
-                  onChange={handleChange}
-                  min="1900"
-                  max={new Date().getFullYear()} // Current year
-                  className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="YYYY"
-                />
-              </div>
-            </div> */}
-   
 
               {/* MSDS Document Section */}
-      
             </div>
 
             {/* Documents Section */}
             <div className="flex justify-center mt-10 mb-12">
               <div className="flex items-center gap-4">
                 <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
-                <h1 className="text-xl text-center text-black font-bold">Documents</h1>
+                <h1 className="text-xl text-center text-black font-bold">
+                  Documents
+                </h1>
                 <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
               </div>
             </div>
@@ -487,14 +480,35 @@ export default function Shipment({ id }) {
             {/* Existing documents uploading logic... */}
             <div className="grid lg:grid-cols-2 gap-8">
               {[
-                { label: "Bill of Lading Document", value: shipmentData.bill_of_lading_document, setFile: setBillOfLadingDocument },
-                { label: "Packing List", value: shipmentData.packing_list, setFile: setPackingList },
-                { label: "Initial Invoice", value: shipmentData.initial_invoice, setFile: setInitialInvoice },
-                { label: "Final Invoice", value: shipmentData.final_invoice, setFile: setFinalInvoice },
+                {
+                  label: "Bill of Lading Document",
+                  value: shipmentData.bill_of_lading_document,
+                  setFile: setBillOfLadingDocument,
+                },
+                {
+                  label: "Packing List",
+                  value: shipmentData.packing_list,
+                  setFile: setPackingList,
+                },
+                {
+                  label: "Initial Invoice",
+                  value: shipmentData.initial_invoice,
+                  setFile: setInitialInvoice,
+                },
+                {
+                  label: "Final Invoice",
+                  value: shipmentData.final_invoice,
+                  setFile: setFinalInvoice,
+                },
               ].map((doc, index) => (
-                <div key={index} className="p-4 border rounded shadow-md bg-gray-50">
-                  <label className="block text-black font-semibold mb-2">{doc.label}:</label>
-                  
+                <div
+                  key={index}
+                  className="p-4 border rounded shadow-md bg-gray-50"
+                >
+                  <label className="block text-black font-semibold mb-2">
+                    {doc.label}:
+                  </label>
+
                   <div className="flex items-center">
                     <input
                       type="file"
@@ -503,7 +517,7 @@ export default function Shipment({ id }) {
                       }}
                       accept=".pdf, .doc, .docx"
                       className="hidden"
-                      id={`file-upload-${index}`}  // unique id for each input
+                      id={`file-upload-${index}`} // unique id for each input
                     />
                     <label
                       htmlFor={`file-upload-${index}`}
@@ -524,52 +538,55 @@ export default function Shipment({ id }) {
                         <VscCloudDownload className="inline w-6 h-6 text-green-500" />
                       </a>
                     ) : (
-                      <span className="text-gray-500 ml-2">No file uploaded</span>
+                      <span className="text-gray-500 ml-2">
+                        No file uploaded
+                      </span>
                     )}
                   </div>
                 </div>
               ))}
 
-{containsDangerousGoods && (
+              {containsDangerousGoods && (
+                <div className="p-4 border rounded shadow-md bg-gray-50">
+                  <label className="block text-black font-semibold mb-2">
+                    MSDS Document:
+                  </label>
 
+                  <div className="flex items-center">
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        setMsdsDocument(e.target.files[0]);
+                      }}
+                      accept=".pdf, .doc, .docx"
+                      className="cursor-pointer border rounded w-full p-1 hidden"
+                      id={`file-upload-MSDS`} // unique id for each input
+                    />
+                    <label
+                      htmlFor={`file-upload-MSDS`}
+                      className="cursor-pointer text-center text-blue-500 underline mr-2"
+                    >
+                      Upload New File
+                    </label>
 
-
-<div className="p-4 border rounded shadow-md bg-gray-50">
-<label className="block text-black font-semibold mb-2">MSDS Document:</label>
-
-<div className="flex items-center">
-  <input
-    type="file"
-    onChange={(e) => {
-      setMsdsDocument(e.target.files[0]);
-    }}
-    accept=".pdf, .doc, .docx"
-   className="cursor-pointer border rounded w-full p-1 hidden"
-    id={`file-upload-MSDS`}  // unique id for each input
-  />
-  <label
-    htmlFor={`file-upload-MSDS`}
-    className="cursor-pointer text-center text-blue-500 underline mr-2"
-  >
-    Upload New File
-  </label>
-
-  {/* Conditional rendering based on the existence of the document */}
-  {msdsDocument ? (
-    <a
-      href={msdsDocument.value}
-      className="text-blue-400 hover:text-blue-600 ml-2"
-      target="_blank"
-      rel="noreferrer"
-      title="Download"
-    >
-      <VscCloudDownload className="inline w-6 h-6 text-green-500" />
-    </a>
-  ) : (
-    <span className="text-gray-500 ml-2">No file uploaded</span>
-  )}
-</div>
-</div>
+                    {/* Conditional rendering based on the existence of the document */}
+                    {msdsDocument ? (
+                      <a
+                        href={msdsDocument.value}
+                        className="text-blue-400 hover:text-blue-600 ml-2"
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Download"
+                      >
+                        <VscCloudDownload className="inline w-6 h-6 text-green-500" />
+                      </a>
+                    ) : (
+                      <span className="text-gray-500 ml-2">
+                        No file uploaded
+                      </span>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
 
@@ -829,10 +846,6 @@ export default function Shipment({ id }) {
               </div>
             )}
 
-
-
-
-
             {/* Save Changes Button */}
             <div className="mt-10 w-full flex justify-center px-[5%]">
               <Button
@@ -851,6 +864,3 @@ export default function Shipment({ id }) {
     </div>
   );
 }
-
-
-
