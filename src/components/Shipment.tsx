@@ -65,6 +65,8 @@ export default function Shipment({ id }) {
 const [persianMonth, setPersianMonth] = useState("");
 const [persianDay, setPersianDay] = useState("");
 
+const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
+
   // Function to handle the delete request
   const handleDeleteContainer = async () => {
     if (containerToDelete) {
@@ -124,7 +126,7 @@ const [persianDay, setPersianDay] = useState("");
         setContainsDangerousGoods(response.body.data.contains_dangerous_goods);
         setIsMsdsChecked(response.body.data.contains_dangerous_goods);
 
-        setNotes(response.body.notes || ""); // Set existing notes or default to
+        setNotes(response.body.data.notes || ""); // Set existing notes or default to
 
         // Initialize date fields from fetched data
         if (response.body.data.date_of_loading_georgian) {
@@ -231,15 +233,7 @@ const [persianDay, setPersianDay] = useState("");
       return;
     }
 
-    if (
-      !numberOfContainers ||
-      isNaN(numberOfContainers) ||
-      Number(numberOfContainers) <= 0
-    ) {
-      toast.error("Please enter a valid number for the number of containers");
-      setLoadingPage(false);
-      return;
-    }
+
 
     if (!year || !month || !day || !persianDay ||!persianMonth || !persianYear) {
       debugger
@@ -252,14 +246,17 @@ const [persianDay, setPersianDay] = useState("");
     const formattedDate = formatDate(year, month, day);
     const formattedPersianDate = formatJalaliDate(persianYear, persianMonth, persianDay);
 
+    debugger
     const formData = new FormData();
     formData.append("bill_of_lading_number", shipmentName);
-    formData.append("number_of_containers", numberOfContainers);
+    formData.append("container_quantity", numberOfContainers);
     formData.append("place_of_delivery", deliveryPlace);
     formData.append("port_of_loading", portOfLoading);
     formData.append("port_of_discharge", portOfDischarge);
     formData.append("contains_dangerous_goods", String(containsDangerousGoods));
     formData.append("notes", notes);
+
+    formData.append("container_type", containerType); // Add this line
 
     // Append the formatted date
     formData.append("date_of_loading_georgian", formattedDate);
@@ -388,7 +385,7 @@ const [persianDay, setPersianDay] = useState("");
                 <input
                   type="text"
                   value={numberOfContainers}
-                  readOnly
+                  onChange={(e) => setNumberOfContainers(e.target.value)}
                   className="w-full p-2 bg-zinc-400 rounded"
                 />
               </div>
@@ -435,6 +432,18 @@ const [persianDay, setPersianDay] = useState("");
                   placeholder="Add any notes here..."
                 />
               </div>
+
+              <div>
+    <label className="block text-black pb-2">Container Type:</label>
+    <select
+        value={containerType}
+        onChange={(e) => setContainerType(e.target.value)}
+        className="w-full p-2 bg-zinc-400 rounded"
+    >
+        <option value="SOC">SOC</option>
+        <option value="COC">COC</option>
+    </select>
+</div>
 
 
 
@@ -513,6 +522,8 @@ const [persianDay, setPersianDay] = useState("");
                   />
                 </div>
               </div>
+
+              
 
                             {/* Checkbox for Dangerous Goods */}
                             <div className="flex items-center">
