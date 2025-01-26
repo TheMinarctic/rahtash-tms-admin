@@ -8,17 +8,14 @@ import { VscCloudDownload } from "react-icons/vsc";
 import { FaRegEdit } from "react-icons/fa";
 import { TiTrash } from "react-icons/ti";
 import { GoContainer } from "react-icons/go";
-import DatePicker from "react-datepicker"; // Import the date picker component
-import "react-datepicker/dist/react-datepicker.css"; // Import the CSS for the
+import { IoArrowBack } from "react-icons/io5"; 
+import { useNavigate } from "react-router-dom";
 
 export default function Shipment({ id }) {
   const api = useApi();
 
   const [shipmentData, setShipmentData] = useState(null);
 
-  const [dateType, setDateType] = useState("georgian"); // For date type selection
-  const [loadingDateGeorgian, setLoadingDateGeorgian] = useState("");
-  const [loadingDatePersian, setLoadingDatePersian] = useState("");
   const [loadingPage, setLoadingPage] = useState(false);
   const [error, setError] = useState(null);
 
@@ -47,7 +44,7 @@ export default function Shipment({ id }) {
   const [finalInvoice, setFinalInvoice] = useState(null);
   const [finalInvoiceName, setFinalInvoiceName] = useState("");
 
-  const [isMsdsChecked, setIsMsdsChecked] = useState(containsDangerousGoods); //
+  const [isMsdsChecked, setIsMsdsChecked] = useState(containsDangerousGoods);
 
   // Modal States for adding additional documents
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,6 +55,15 @@ export default function Shipment({ id }) {
   const [containerToDelete, setContainerToDelete] = useState(null);
 
   const [notes, setNotes] = useState("");
+
+  // State for date fields
+  const [year, setYear] = useState("");
+  const [month, setMonth] = useState("");
+  const [day, setDay] = useState("");
+
+  const [persianYear, setPersianYear] = useState("");
+const [persianMonth, setPersianMonth] = useState("");
+const [persianDay, setPersianDay] = useState("");
 
   // Function to handle the delete request
   const handleDeleteContainer = async () => {
@@ -86,29 +92,21 @@ export default function Shipment({ id }) {
   const [selectedContainer, setSelectedContainer] = useState(null);
   const [newContainerPart1, setNewContainerPart1] = useState("");
   const [newContainerPart2, setNewContainerPart2] = useState("");
+  const navigate = useNavigate();
 
-  const [selectedGeorgianDate, setSelectedGeorgianDate] = useState(new Date());
-  const [selectedPersianDate, setSelectedPersianDate] = useState(new Date());
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
-  const [isGeorgian, setIsGeorgian] = useState(true); // Default to Georgian
-  const [loadingDate, setLoadingDate] = useState({
-    day: "",
-    month: "",
-    year: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLoadingDate((prev) => ({ ...prev, [name]: value }));
+  // Function to format the date as yyyy-mm-dd
+  const formatDate = (year, month, day) => {
+    const formattedMonth = month.padStart(2, "0");
+    const formattedDay = day.padStart(2, "0");
+    return `${year}-${formattedMonth}-${formattedDay}`;
   };
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    // Handle conversion if you need to save the Persian date representation
-    // You might want to add a function to convert this date to Persian if needed
-  };
+    // Function to format the date as yyyy-mm-dd
+    const formatJalaliDate = (year, month, day) => {
+      const formattedMonth = month.padStart(2, "0");
+      const formattedDay = day.padStart(2, "0");
+      return `${year}-${formattedMonth}-${formattedDay}`;
+    };
 
   const fetchShipment = async (url) => {
     setLoadingPage(true);
@@ -127,13 +125,24 @@ export default function Shipment({ id }) {
         setIsMsdsChecked(response.body.data.contains_dangerous_goods);
 
         setNotes(response.body.notes || ""); // Set existing notes or default to
-        setSelectedGeorgianDate(
-          new Date(response.body.data.date_of_loading_georgian)
-        ); // Parse Gregorian date
-        // Here you might need to convert Persian date using a library if it's not directly usable
-        setSelectedPersianDate(
-          new Date(response.body.data.date_of_loading_persian)
-        );
+
+        // Initialize date fields from fetched data
+        if (response.body.data.date_of_loading_georgian) {
+          const [fetchedYear, fetchedMonth, fetchedDay] =
+            response.body.data.date_of_loading_georgian.split("-");
+          setYear(fetchedYear);
+          setMonth(fetchedMonth);
+          setDay(fetchedDay);
+        }
+
+        if (response.body.data.date_of_loading_persian) {
+          const [fetchedYear, fetchedMonth, fetchedDay] =
+            response.body.data.date_of_loading_persian.split("-");
+          setPersianYear(fetchedYear);
+          setPersianMonth(fetchedMonth);
+          setPersianDay(fetchedDay);
+        }
+
       } else {
         setError("Error fetching shipment data");
       }
@@ -164,8 +173,6 @@ export default function Shipment({ id }) {
 
   const handleAddContainerSubmit = async () => {
     const fullContainerNumber = `${newContainerPart1}${newContainerPart2}`;
-
-    debugger;
 
     const formData = {
       shipment: id,
@@ -214,10 +221,6 @@ export default function Shipment({ id }) {
     setSelectedContainer(null); // Reset selected container
   };
 
-  const formatDateToISOString = (date) => {
-    return date.toISOString().split("T")[0]; // Converts to "YYYY-MM-DD"
-  };
-
   const handleEditSubmit = async () => {
     setLoadingPage(true);
 
@@ -238,7 +241,17 @@ export default function Shipment({ id }) {
       return;
     }
 
-    debugger;
+    if (!year || !month || !day || !persianDay ||!persianMonth || !persianYear) {
+      debugger
+      toast.error("Please fill in all date fields (year, month, day)");
+      setLoadingPage(false);
+      return;
+    }
+
+    // Format the date as yyyy-mm-dd
+    const formattedDate = formatDate(year, month, day);
+    const formattedPersianDate = formatJalaliDate(persianYear, persianMonth, persianDay);
+
     const formData = new FormData();
     formData.append("bill_of_lading_number", shipmentName);
     formData.append("number_of_containers", numberOfContainers);
@@ -248,18 +261,9 @@ export default function Shipment({ id }) {
     formData.append("contains_dangerous_goods", String(containsDangerousGoods));
     formData.append("notes", notes);
 
-    formData.append(
-      "date_of_loading_georgian",
-      formatDateToISOString(selectedGeorgianDate)
-    );
-
-    console.log(formatDateToISOString(selectedGeorgianDate));
-
-    formData.append(
-      "date_of_loading_persian",
-      formatDateToISOString(selectedPersianDate)
-    ); // You may need to convert this to the correct format for Persian dates
-
+    // Append the formatted date
+    formData.append("date_of_loading_georgian", formattedDate);
+    formData.append("date_of_loading_persian", formattedPersianDate);
     // Append documents if they have been uploaded
     if (msdsDocument) {
       formData.append("msds_document", msdsDocument);
@@ -342,6 +346,17 @@ export default function Shipment({ id }) {
       <Toaster />
       {shipmentData ? (
         <div className="bg-dark-purple 2xl:w-5/6 p-6 mx-auto rounded-lg">
+
+          {/* Add the Return Button at the top */}
+          <div className="flex justify-start mb-4">
+            <button
+              onClick={() => navigate("/")} // Redirect to the home page
+              className="flex items-center  text-black p-2 rounded  transition-colors"
+            >
+              <IoArrowBack className="mr-2" /> Back
+            </button>
+          </div>
+
           <div className="flex flex-col">
             <div className="flex justify-center mt-1 mb-12">
               <div className="flex items-center gap-4">
@@ -421,8 +436,86 @@ export default function Shipment({ id }) {
                 />
               </div>
 
-              {/* Checkbox for Dangerous Goods */}
-              <div className="flex items-center">
+
+
+              {/* Date Fields */}
+
+              <span>Georgian date:</span>
+              <div className="flex gap-4 items-center justify-start">
+                <div className="mb-4">
+                  <label className="block text-black mb-1">Year:</label>
+                  <input
+                    type="number"
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    placeholder="YYYY"
+                    className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-black"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-black mb-1">Month:</label>
+                  <input
+                    type="number"
+                    value={month}
+                    onChange={(e) => setMonth(e.target.value)}
+                    placeholder="MM"
+                    className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-black"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-black mb-1">Day:</label>
+                  <input
+                    type="number"
+                    value={day}
+                    onChange={(e) => setDay(e.target.value)}
+                    placeholder="DD"
+                    className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-black"
+                  />
+                </div>
+              </div>
+
+                           {/* Date Fields */}
+
+                           <span>Persian date:</span>
+                           <div className="flex gap-4 items-center justify-start">
+                <div className="mb-4">
+                  <label className="block text-black mb-1">Year:</label>
+                  <input
+                    type="number"
+                    value={persianYear}
+                    onChange={(e) => setPersianYear(e.target.value)}
+                    placeholder="YYYY"
+                    className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-black"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-black mb-1">Month:</label>
+                  <input
+                    type="number"
+                    value={persianMonth}
+                    onChange={(e) => setPersianMonth(e.target.value)}
+                    placeholder="MM"
+                    className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-black"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-black mb-1">Day:</label>
+                  <input
+                    type="number"
+                    value={persianDay}
+                    onChange={(e) => setPersianDay(e.target.value)}
+                    placeholder="DD"
+                    className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-black"
+                  />
+                </div>
+              </div>
+
+                            {/* Checkbox for Dangerous Goods */}
+                            <div className="flex items-center">
                 <input
                   type="checkbox"
                   checked={containsDangerousGoods}
@@ -433,34 +526,6 @@ export default function Shipment({ id }) {
                   className="mr-2"
                 />
                 <label className="text-black">Contains Dangerous Goods</label>
-              </div>
-
-              <div className="flex gap-4 items-center justify-start">
-                <div className="mb-4">
-                  <label className="block text-black mb-1">
-                    Select Delivery Date (Georgian):
-                  </label>
-                  <DatePicker
-                    selected={selectedGeorgianDate}
-                    onChange={(date) => {
-                      setSelectedGeorgianDate(date);
-                    }} // Ensure this is correctly set
-                    dateFormat="yyyy/MM/dd" // Adjust as per requirement
-                    className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-black mb-1">
-                    Select Delivery Date (Persian):
-                  </label>
-                  <DatePicker
-                    selected={selectedPersianDate}
-                    onChange={(date) => setSelectedPersianDate(date)}
-                    dateFormat="yyyy/MM/dd" // adjust format as per requirement
-                    className="w-full p-2 bg-gray-400 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
               </div>
 
               {/* MSDS Document Section */}
@@ -711,7 +776,7 @@ export default function Shipment({ id }) {
                       placeholder="Enter Custom Size"
                       value={customSize}
                       onChange={(e) => setCustomSize(e.target.value)}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 mt-2 border rounded"
                     />
                   )}
                   <div className="flex justify-end mt-4">
@@ -779,7 +844,7 @@ export default function Shipment({ id }) {
                       }}
                       maxLength={4}
                       placeholder="4 chars"
-                      className="w-1/3 p-2 border rounded"
+                      className="w-1/3 p-2 border border-gray-600 rounded"
                     />
                     <span className="self-center">-</span>
                     <input
@@ -797,7 +862,7 @@ export default function Shipment({ id }) {
                       }}
                       maxLength={7}
                       placeholder="7 digits"
-                      className="w-2/3 p-2 border rounded"
+                      className="w-2/3 p-2 border border-gray-600 rounded"
                     />
                   </div>
                   <label>Container Size</label>
@@ -809,7 +874,7 @@ export default function Shipment({ id }) {
                         container_size: e.target.value,
                       })
                     }
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border border-gray-600 rounded"
                   >
                     <option value="20ft">20ft</option>
                     <option value="40ft">40ft</option>
@@ -825,7 +890,7 @@ export default function Shipment({ id }) {
                           custom_size: e.target.value,
                         })
                       }
-                      className="w-full p-2 border rounded mt-2"
+                      className="w-full p-2 border border-gray-600 rounded mt-2"
                     />
                   )}
                   <div className="flex justify-end mt-4">

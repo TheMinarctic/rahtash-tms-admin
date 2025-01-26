@@ -20,6 +20,7 @@ interface Shipment {
     port_of_discharge: string;
     place_of_delivery: string;
     bill_of_lading_document?: string;
+    bill_of_lading_number:string;
 }
 
 const Shipments = () => {
@@ -56,7 +57,8 @@ const Shipments = () => {
     const handleDeleteConfirm = async () => {
         if (!selectedShipment) return;
         try {
-            const response = await api.delete(`/api/v1/shipments/shipments/${selectedShipment.id}`);
+            
+            const response = await api.delete(`/api/v1/shipments/shipments/${selectedShipment.id}/`);
             if (response.ok) {
                 setShipments(prev => prev.filter(shipment => shipment.id !== selectedShipment.id));
               toast.success("Shipment successfully deleted");
@@ -73,7 +75,8 @@ const Shipments = () => {
     };
 
     const handleAddSubmit = async () => {
-        const body = { shipment_name: newShipmentName };
+        const body = { bill_of_lading_number: newShipmentName };
+        
         try {
             const response = await api.post("/api/v1/shipments/shipments/", body);
             if (response.ok) {
@@ -126,7 +129,7 @@ const Shipments = () => {
                     {/* Shipments List */}
                     <Table className="table">
                         <TableHeader>
-                            <TableColumn className="text-black text-start bg-green-500">Shipment Name</TableColumn>
+                            <TableColumn className="text-black text-start bg-green-500">BL Number</TableColumn>
                             <TableColumn className="text-black text-start bg-green-500">Port of Loading</TableColumn>
                             <TableColumn className="text-black text-start bg-green-500 hidden xl:table-cell">Port of Discharge</TableColumn>
                             <TableColumn className="text-black text-start bg-green-500 hidden xl:table-cell">Place of Delivery</TableColumn>
@@ -135,7 +138,7 @@ const Shipments = () => {
                         <TableBody>
                             {shipments.map((shipment) => (
                                 <TableRow key={shipment.id} className="border-b text-white leading-loose">
-                                    <TableCell className="text-sm text-[#3b5df6]">{shipment.shipment_name || " - "}</TableCell>
+                                    <TableCell className="text-sm text-[#3b5df6]">{shipment.bill_of_lading_number || " - "}</TableCell>
                                     <TableCell className="whitespace-nowrap text-sm text-black">{shipment.port_of_loading || " - "}</TableCell>
                                     <TableCell className="whitespace-nowrap hidden xl:table-cell text-black">{shipment.port_of_discharge || " - "}</TableCell>
                                     <TableCell className="whitespace-nowrap hidden xl:table-cell text-black">{shipment.place_of_delivery || " - "}</TableCell>
@@ -156,13 +159,13 @@ const Shipments = () => {
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                             <div className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full">
                                 <h2 className="text-xl font-bold mb-4">+ Add new shipment</h2>
-                                <Label htmlFor="shipment-name">Shipment Name</Label>
+                                <Label htmlFor="shipment-name">BL Number</Label>
                                 <input
                                     id="shipment-name"
                                     value={newShipmentName}
                                     onChange={(e) => setNewShipmentName(e.target.value)}
                                     className="w-full p-2 border rounded-md my-2"
-                                    placeholder="Enter Shipment Name"
+                                    placeholder="BL-456823"
                                 />
                                 <div className="flex justify-end mt-4">
                                     <Button onClick={() => setIsModalOpen(false)} className="mr-2 bg-red-500 hover:bg-red-400">
