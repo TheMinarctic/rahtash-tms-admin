@@ -10,6 +10,7 @@ import { TiTrash } from "react-icons/ti";
 import { GoContainer } from "react-icons/go";
 import { IoArrowBack } from "react-icons/io5"; 
 import { useNavigate } from "react-router-dom";
+import ShipmentTrace from "./ShipmentTrace";
 
 export default function Shipment({ id }) {
   const api = useApi();
@@ -743,6 +744,10 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                 + Add Container
               </button>
             </div>
+
+            <ShipmentTrace />
+
+
 
             {/* Add Container Modal */}
             {isAddContainerModalOpen && (
