@@ -76,6 +76,8 @@ const Shipments = () => {
 
     const handleAddSubmit = async () => {
         const body = { bill_of_lading_number: newShipmentName };
+
+        
         
         try {
             const response = await api.post("/api/v1/shipments/shipments/", body);
@@ -86,7 +88,11 @@ const Shipments = () => {
                 navigate(`/shipments/${response.body.data.id}`);
                 setNewShipmentName('');
             } else if (response.status === 400) {
-                toast.error("Error creating shipment");
+                if(response.body.errors.bill_of_lading_number){
+                    toast.error(response.body.errors.bill_of_lading_number);
+                }else{
+                    toast.error("Failed to fetch shipment");
+                }
             } else {
                 toast.error("Server error, please try again later");
             }
