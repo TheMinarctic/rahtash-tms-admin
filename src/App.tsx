@@ -10,8 +10,33 @@ import Signup from "./pages/Signup";
 import ApiProvider from "./contexts/ApiProvider";
 import { NextUIProvider } from "@nextui-org/react";
 
-import SingleShipment from "./pages/SingleShipment";
+import UserDetail  from "./pages/SingleUser";
 import ShipmentPage from "./pages/ShipmentsPage";
+import CompaniesPage from "./pages/CompaniesPage";
+import CompanyDetail from "./pages/CompanyDetail";
+import DriversListPage from "./pages/DriversListPage";
+import DriverDetailPage from "./pages/DriverDetailPage";
+import ShipmentCategoryList from "./pages/ShipmentCategoryList";
+import ShipmentCategoryCreate from "./pages/ShipmentCategoryCreate";
+import ShipmentCategoryDetail from "./pages/ShipmentCategoryDetail";
+import PortsPage from "./pages/ShipmentPortList";
+import PortForm from "./pages/ShipmentPortDetail";
+import ShipmentPortCreate from "./pages/ShipmentPortCreate";
+import ShipmentPortDetail from "./pages/ShipmentPortDetail";
+import ShipmentStepList from "./pages/ShipmentStepList";
+import ShipmentStepCreate from "./pages/ShipmentStepCreate";
+import ShipmentStepDetail from "./pages/ShipmentStepDetail";
+import ShipmentDocumentTypeList from "./pages/ShipmentDocumentTypeList";
+import ShipmentDocumentTypeCreate from "./pages/ShipmentDocumentTypeCreate";
+import ShipmentDocumentTypeDetail from "./pages/ShipmentDocumentTypeDetail";
+import ShipmentDocumentList from "./pages/ShipmentDocumentList";
+import ShipmentDocumentCreate from "./pages/ShipmentDocumentCreate";
+import ShipmentContainerList from "./pages/ShipmentContainerList";
+import ShipmentContainerCreate from "./pages/ShipmentContainerCreate";
+import ShipmentList from "./pages/ShipmentList";
+import ShipmentCreate from "./pages/ShipmentCreate";
+import ShipmentDetail from "./pages/ShipmentDetail";
+
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -40,7 +65,7 @@ const AppRoutes = () => {
       <Route path="/signup" element={<Signup />} />
 
       <Route
-        path="/shipments"
+        path="/users"
         element={
           <ProtectedRoute>
             <ShipmentPage />
@@ -48,13 +73,228 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/shipments/:id"
+        path="/users/:userId"
         element={
           <ProtectedRoute>
-            <SingleShipment />
+            <UserDetail />
           </ProtectedRoute>
         }
       />
+           <Route
+        path="/companies"
+        element={
+          <ProtectedRoute>
+            <CompaniesPage />
+          </ProtectedRoute>
+        }
+      />
+          <Route
+        path="/companies/:compid"
+        element={
+          <ProtectedRoute>
+           <CompanyDetail/>
+          </ProtectedRoute>
+        }
+      />
+             <Route
+        path="/drivers"
+        element={
+          <ProtectedRoute>
+            <DriversListPage />
+          </ProtectedRoute>
+        }
+      />
+                 <Route
+        path="/shipment/categories"
+        element={
+          <ProtectedRoute>
+            <ShipmentCategoryList />
+          </ProtectedRoute>
+        }
+      />
+                       <Route
+        path="/shipment/categories/create"
+        element={
+          <ProtectedRoute>
+            <ShipmentCategoryCreate />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/categories/:category_id"
+        element={
+          <ProtectedRoute>
+            <ShipmentCategoryDetail />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/ports"
+        element={
+          <ProtectedRoute>
+            <PortsPage />
+          </ProtectedRoute>
+        }
+      />
+
+
+
+<Route
+        path="/shipment/ports/create"
+        element={
+          <ProtectedRoute>
+            <ShipmentPortCreate />
+          </ProtectedRoute>
+        }
+      />
+
+
+<Route
+        path="/shipment/ports/:port_id"
+        element={
+          <ProtectedRoute>
+            <ShipmentPortDetail />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/steps"
+        element={
+          <ProtectedRoute>
+            <ShipmentStepList />
+          </ProtectedRoute>
+        }
+      />
+
+
+<Route
+        path="/shipment/steps/create"
+        element={
+          <ProtectedRoute>
+            <ShipmentStepCreate />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/steps/:step_id"
+        element={
+          <ProtectedRoute>
+            <ShipmentStepDetail />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/document-types"
+        element={
+          <ProtectedRoute>
+            <ShipmentDocumentTypeList />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/document-types/create"
+        element={
+          <ProtectedRoute>
+            <ShipmentDocumentTypeCreate />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/documents"
+        element={
+          <ProtectedRoute>
+            <ShipmentDocumentList />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/documents/create"
+        element={
+          <ProtectedRoute>
+            <ShipmentDocumentCreate />
+          </ProtectedRoute>
+        }
+      />
+
+
+<Route
+        path="/shipment/containers"
+        element={
+          <ProtectedRoute>
+            <ShipmentContainerList />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/containers/create"
+        element={
+          <ProtectedRoute>
+            <ShipmentContainerCreate />
+          </ProtectedRoute>
+        }
+      />
+
+
+<Route
+        path="/shipments"
+        element={
+          <ProtectedRoute>
+            <ShipmentList />
+          </ProtectedRoute>
+        }
+      />
+
+
+<Route
+        path="/shipments/:shipment_id"
+        element={
+          <ProtectedRoute>
+            <ShipmentDetail />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipments/create"
+        element={
+          <ProtectedRoute>
+            <ShipmentCreate />
+          </ProtectedRoute>
+        }
+      />
+
+
+
+
+<Route
+        path="/shipment/document-types/:document_type_id"
+        element={
+          <ProtectedRoute>
+            <ShipmentDocumentTypeDetail />
+          </ProtectedRoute>
+        }
+      />
+
+
+
+<Route
+        path="/drivers/:driver_id"
+        element={
+          <ProtectedRoute>
+            <DriverDetailPage />
+          </ProtectedRoute>
+        }
+      />
+
     </Routes>
   );
 };

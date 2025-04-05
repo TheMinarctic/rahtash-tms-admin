@@ -50,44 +50,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  useEffect(() => {
-    if (refreshToken) {
-      const interval = setInterval(() => {
-        refreshAccessToken();
-      }, 4 * 60 * 1000); // Refresh every 4 minutes
-      return () => clearInterval(interval);
-    }
-  }, [refreshToken]);
+  // useEffect(() => {
+  //   if (refreshToken) {
+  //     const interval = setInterval(() => {
+  //       refreshAccessToken();
+  //     }, 4 * 60 * 1000); // Refresh every 4 minutes
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [refreshToken]);
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch("https://api.rahtash-tms.ir/api/v1/users/token/", {
+      
+      const response = await fetch("https://api.rahtash-tms.ir/en/api/v1/user/token/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
+  
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || "Login failed");
+      }
+  
       const data = await response.json();
-
-      if (data.success) {
-        setAccessToken(data.data.access);
-        setRefreshToken(data.data.refresh);
-        localStorage.setItem("accessToken", data.data.access);
-        localStorage.setItem("refreshToken", data.data.refresh);
+  
+      if (data) {
+        setAccessToken(data.access);
+        setRefreshToken(data.refresh);
+        localStorage.setItem("accessToken", data.access);
+        localStorage.setItem("refreshToken", data.refresh);
         toast.success("Successfully logged in!");
         navigate("/shipments");
       } else {
-        toast.error("Invalid credentials");
+        toast.error(data.message || "Invalid credentials");
       }
     } catch (error) {
-      toast.error("An error occurred during login");
+      console.error("Login error:", error);
+      toast.error(error.message || "Network error. Please try again.");
     }
   };
 
   const signup = async (email: string, password: string, firstName: string, lastName: string) => {
     try {
-      const response = await fetch("https://api.rahtash-tms.ir/api/v1/users/signup/", {
+      const response = await fetch("https://api.rahtash-tms.ir/en/api/v1/user/signup/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
