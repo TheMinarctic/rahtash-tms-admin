@@ -36,6 +36,12 @@ import ShipmentContainerCreate from "./pages/ShipmentContainerCreate";
 import ShipmentList from "./pages/ShipmentList";
 import ShipmentCreate from "./pages/ShipmentCreate";
 import ShipmentDetail from "./pages/ShipmentDetail";
+import DriverCategoryList from "./pages/DriverCategoryList";
+import DriverCategoryCreate from "./pages/DriverCategoryCreate";
+import DriverCategoryDetail from "./pages/DriverCategoryDetail";
+import DocumentTypeList from "./pages/DocumentTypeList";
+import DocumentDetail from "./pages/DocumentDetail";
+import DocumentCreate from "./pages/DocumentCreate";
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -249,6 +255,61 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ShipmentList />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/driver/categories"
+        element={
+          <ProtectedRoute>
+            <DriverCategoryList />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/driver/categories/:category_id"
+        element={
+          <ProtectedRoute>
+            <DriverCategoryDetail />
+          </ProtectedRoute>
+        }
+      />
+    
+<Route
+        path="/driver/categories/create"
+        element={
+          <ProtectedRoute>
+            <DriverCategoryCreate />
+          </ProtectedRoute>
+        }
+      />
+
+
+<Route
+        path="/driver/documents"
+        element={
+          <ProtectedRoute>
+            <DocumentTypeList />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/driver/documents/:document_id"
+        element={
+          <ProtectedRoute>
+            <DocumentDetail />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/driver/documents/create"
+        element={
+          <ProtectedRoute>
+            <DocumentCreate />
           </ProtectedRoute>
         }
       />

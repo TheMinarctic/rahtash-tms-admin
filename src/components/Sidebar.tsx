@@ -6,11 +6,11 @@ import {
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUsersLine } from "react-icons/fa6";
+import {  FaNetworkWired, FaAddressCard, FaFolder, FaFileAlt } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
 import { useAuth } from "@/contexts/AuthContext";
 import { TbTruckDelivery } from "react-icons/tb";
-import { FaNetworkWired } from "react-icons/fa6";
 import { FiChevronDown, FiChevronRight, FiPackage, FiMapPin, FiList, FiFileText, FiBox, FiClock } from "react-icons/fi";
 
 interface Menu {
@@ -23,6 +23,7 @@ interface Menu {
 interface SubMenu {
     title: string;
     href: string;
+    icon?: JSX.Element;
 }
 
 interface SidebarProps {
@@ -32,46 +33,122 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
     const { logout } = useAuth()
-    const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
+    const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({
+        users: false,
+        companies: false,
+        drivers: false,
+        shipments: false
+    });
     const [selectItem, setSelectItem] = useState<string | undefined>();
     const navigate = useNavigate();
 
     const Menus: Menu[] = [
         {
             title: "Users",
-            icon: <FaUsersLine className="w-7 text-sky-600 h-7" />,
-            href: "/users",
+            icon: <FaUsers className="w-7 text-sky-600 h-7" />,
+            subMenus: [
+                { 
+                    title: "Users List", 
+                    href: "/users",
+                    icon: <FaUsers className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Address", 
+                    href: "/users/address",
+                    icon: <FaAddressCard className="w-5 text-sky-400 h-5" />
+                },
+            ],
         },
         {
             title: "Companies",
             icon: <FaNetworkWired className="w-7 text-sky-600 h-7" />,
-            href: "/companies",
+            subMenus: [
+                { 
+                    title: "Companies List", 
+                    href: "/companies",
+                    icon: <FaNetworkWired className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Categories", 
+                    href: "/companies/categories",
+                    icon: <FaFolder className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Documents", 
+                    href: "/companies/documents",
+                    icon: <FaFileAlt className="w-5 text-sky-400 h-5" />
+                },
+            ],
         },
         {
             title: "Drivers",
             icon: <TbTruckDelivery className="w-7 text-sky-600 h-7" />,
-            href: "/drivers",
+            subMenus: [
+                { 
+                    title: "Drivers List", 
+                    href: "/drivers",
+                    icon: <TbTruckDelivery className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Categories", 
+                    href: "/driver/categories",
+                    icon: <FaFolder className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Documents", 
+                    href: "/driver/documents",
+                    icon: <FaFileAlt className="w-5 text-sky-400 h-5" />
+                },
+            ],
         },
         {
             title: "Shipments",
             icon: <FiPackage className="w-7 text-sky-600 h-7" />,
             subMenus: [
-                { title: "All Shipments", href: "/shipments" },
-                { title: "Ports", href: "/shipment/ports" },
-                { title: "Steps", href: "/shipment/steps" },
-                { title: "Document Types", href: "/shipment/document-types" },
-                { title: "Containers", href: "/shipment/containers" },
-                { title: "Step History", href: "/shipment/steps" },
+                { 
+                    title: "All Shipments", 
+                    href: "/shipments",
+                    icon: <FiPackage className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Create Shipment", 
+                    href: "/shipments/create",
+                    icon: <FiPackage className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Ports", 
+                    href: "/ports",
+                    icon: <FiMapPin className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Steps", 
+                    href: "/steps",
+                    icon: <FiList className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Document Types", 
+                    href: "/document-types",
+                    icon: <FiFileText className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Containers", 
+                    href: "/containers",
+                    icon: <FiBox className="w-5 text-sky-400 h-5" />
+                },
+                { 
+                    title: "Step History", 
+                    href: "/step-history",
+                    icon: <FiClock className="w-5 text-sky-400 h-5" />
+                },
             ],
         },
     ];
 
     const toggleMenu = (title: string) => {
-        if (expandedMenu === title) {
-            setExpandedMenu(null);
-        } else {
-            setExpandedMenu(title);
-        }
+        setExpandedMenus(prev => ({
+            ...prev,
+            [title.toLowerCase()]: !prev[title.toLowerCase()]
+        }));
     };
 
     const handleNavigation = (href: string, title: string) => {
@@ -119,7 +196,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                                 {Menu.title}
                             </span>
                             {Menu.subMenus && open && (
-                                expandedMenu === Menu.title ? (
+                                expandedMenus[Menu.title.toLowerCase()] ? (
                                     <FiChevronDown className="text-gray-400" />
                                 ) : (
                                     <FiChevronRight className="text-gray-400" />
@@ -127,7 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                             )}
                         </li>
 
-                        {Menu.subMenus && expandedMenu === Menu.title && open && (
+                        {Menu.subMenus && expandedMenus[Menu.title.toLowerCase()] && open && (
                             <ul className="ml-8 mb-2">
                                 {Menu.subMenus.map((subMenu, subIndex) => (
                                     <li
@@ -136,14 +213,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                                                     ${subMenu.title === selectItem ? "bg-gray-700" : ""}`}
                                         onClick={() => handleNavigation(subMenu.href, subMenu.title)}
                                     >
-                                        {/* Icons for submenus */}
-                                        {subMenu.title.includes("Shipments") && <FiPackage className="w-5 text-sky-400 h-5" />}
-                                        {subMenu.title === "Ports" && <FiMapPin className="w-5 text-sky-400 h-5" />}
-                                        {subMenu.title === "Steps" && <FiList className="w-5 text-sky-400 h-5" />}
-                                        {subMenu.title === "Document Types" && <FiFileText className="w-5 text-sky-400 h-5" />}
-                                        {subMenu.title === "Containers" && <FiBox className="w-5 text-sky-400 h-5" />}
-                                        {subMenu.title === "Step History" && <FiClock className="w-5 text-sky-400 h-5" />}
-                                        
+                                        {subMenu.icon || <FiPackage className="w-5 text-sky-400 h-5" />}
                                         <span>{subMenu.title}</span>
                                     </li>
                                 ))}
