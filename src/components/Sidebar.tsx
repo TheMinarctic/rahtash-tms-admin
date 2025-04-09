@@ -70,12 +70,12 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                 },
                 { 
                     title: "Categories", 
-                    href: "/companies/categories",
+                    href: "/company/categories",
                     icon: <FaFolder className="w-5 text-sky-400 h-5" />
                 },
                 { 
                     title: "Documents", 
-                    href: "/companies/documents",
+                    href: "/company/documents",
                     icon: <FaFileAlt className="w-5 text-sky-400 h-5" />
                 },
             ],

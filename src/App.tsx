@@ -42,6 +42,11 @@ import DriverCategoryDetail from "./pages/DriverCategoryDetail";
 import DocumentTypeList from "./pages/DocumentTypeList";
 import DocumentDetail from "./pages/DocumentDetail";
 import DocumentCreate from "./pages/DocumentCreate";
+import CompanyDocumentList from "./pages/CompanyDocumentList";
+import CompanyDocumentDetail from "./pages/CompanyDocumentDetail";
+import CompanyCategoryList from "./pages/CompanyCategoryList";
+import CompanyCategoryCreate from "./pages/CompanyCategoryCreate";
+import CompanyCategoryDetail from "./pages/CompanyCategoryDetail";
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -355,6 +360,55 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+
+<Route
+        path="/company/documents"
+        element={
+          <ProtectedRoute>
+            <CompanyDocumentList />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/company/documents/:document_id"
+        element={
+          <ProtectedRoute>
+            <CompanyDocumentDetail />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/company/categories"
+        element={
+          <ProtectedRoute>
+            <CompanyCategoryList />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/company/categories/create"
+        element={
+          <ProtectedRoute>
+            <CompanyCategoryCreate />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/company/categories/:category_id"
+        element={
+          <ProtectedRoute>
+            <CompanyCategoryDetail />
+          </ProtectedRoute>
+        }
+      />
+
+
+
 
     </Routes>
   );
