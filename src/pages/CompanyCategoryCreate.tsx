@@ -40,7 +40,7 @@ export default function CompanyCategoryCreate() {
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
-        <div className="flex-1 p-5">
+        <div className="flex-1 p-5 mt-[6%]">
           <div className="max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Create New Company Category</h1>

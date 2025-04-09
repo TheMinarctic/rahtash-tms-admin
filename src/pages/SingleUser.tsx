@@ -102,7 +102,7 @@ export default function UserDetail() {
           {/* <Header /> */}
         </div>
 
-        <div className="flex-1 p-5">
+        <div className="flex-1 p-5 mt-[6%]">
           <div className="max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">User Details</h1>

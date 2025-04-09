@@ -3,30 +3,35 @@ import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
-export default function DocumentDetail() {
-  const { document_id } = useParams();
+export default function AddressDetail() {
+  const { address_id } = useParams();
   const navigate = useNavigate();
-  const [document, setDocument] = useState(null);
+  const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    file: null,
-    type_verifier_driver: '',
-    verifier_driver: ''
+    city: '',
+    province: '',
+    address: '',
+    status: 1,
+    type: 1
   });
   const [open, setOpen] = useState(true);
   const api = useApi();
 
   useEffect(() => {
-    const fetchDocument = async () => {
+    const fetchAddress = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/en/api/v1/driver/document/detail/${document_id}/`);
-        setDocument(response.body.data);
+        const response = await api.get(`/en/api/v1/user/address/detail/${address_id}/`);
+        setAddress(response.body.data);
         setFormData({
-          type_verifier_driver: response.body.data.type_verifier_driver,
-          verifier_driver: response.body.data.verifier_driver
+          city: response.body.data.city,
+          province: response.body.data.province,
+          address: response.body.data.address,
+          status: response.body.data.status,
+          type: response.body.data.type
         });
         setLoading(false);
       } catch (err) {
@@ -35,8 +40,8 @@ export default function DocumentDetail() {
       }
     };
 
-    fetchDocument();
-  }, [document_id]);
+    fetchAddress();
+  }, [address_id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,33 +51,13 @@ export default function DocumentDetail() {
     });
   };
 
-  const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      file: e.target.files[0]
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      
-      const formDataToSend = new FormData();
-      if (formData.file) {
-        formDataToSend.append('file', formData.file);
-      }
-      formDataToSend.append('type_verifier_driver', formData.type_verifier_driver);
-      formDataToSend.append('verifier_driver', formData.verifier_driver);
-
-      await api.patch(`/en/api/v1/driver/document/update/${document_id}/`, formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      
-      const response = await api.get(`/en/api/v1/driver/document/detail/${document_id}/`);
-      setDocument(response.body.data);
+      await api.patch(`/en/api/v1/user/address/update/${address_id}/`, formData);
+      const response = await api.get(`/en/api/v1/user/address/detail/${address_id}/`);
+      setAddress(response.body.data);
       setEditMode(false);
       setLoading(false);
     } catch (err) {
@@ -82,11 +67,11 @@ export default function DocumentDetail() {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this document?')) {
+    if (window.confirm('Are you sure you want to delete this address?')) {
       try {
         setLoading(true);
-        await api.delete(`/en/api/v1/driver/document/delete/${document_id}/`);
-        navigate('/driver/documents');
+        await api.delete(`/en/api/v1/user/address/delete/${address_id}/`);
+        navigate('/users/address');
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -118,20 +103,39 @@ export default function DocumentDetail() {
     );
   }
 
+  const getStatusBadge = (status) => {
+    switch(status) {
+      case 1: return { text: 'Active', color: 'bg-green-900 text-green-200' };
+      case 2: return { text: 'Inactive', color: 'bg-red-900 text-red-200' };
+      default: return { text: 'Unknown', color: 'bg-gray-700 text-gray-300' };
+    }
+  };
+
+  const getTypeBadge = (type) => {
+    switch(type) {
+      case 1: return { text: 'Home', color: 'bg-blue-900 text-blue-200' };
+      case 2: return { text: 'Work', color: 'bg-purple-900 text-purple-200' };
+      default: return { text: 'Other', color: 'bg-gray-700 text-gray-300' };
+    }
+  };
+
+  const statusBadge = getStatusBadge(address.status);
+  const typeBadge = getTypeBadge(address.type);
+
   return (
     <div dir="ltr" className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
-        <div className="flex-1 p-5 mt-[5%]">
+        <div className="flex-1 p-5">
           <div className="max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-3xl font-bold text-white">Document Details</h1>
+              <h1 className="text-3xl font-bold text-white">Address Details</h1>
               <button
-                onClick={() => navigate('/driver/documents')}
+                onClick={() => navigate('/users/address')}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
-                Back to Documents
+                Back to Addresses
               </button>
             </div>
 
@@ -140,35 +144,65 @@ export default function DocumentDetail() {
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 gap-6 mb-6">
                     <div>
-                      <label className="block text-gray-300 mb-2">Document File (Leave empty to keep current)</label>
-                      <input
-                        type="file"
-                        name="file"
-                        onChange={handleFileChange}
-                        className="w-full px-4 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 mb-2">Type Verifier Driver ID*</label>
-                      <input
-                        type="number"
-                        name="type_verifier_driver"
-                        value={formData.type_verifier_driver}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-300 mb-2">Verifier Driver*</label>
+                      <label className="block text-gray-300 mb-2">City*</label>
                       <input
                         type="text"
-                        name="verifier_driver"
-                        value={formData.verifier_driver}
+                        name="city"
+                        value={formData.city}
                         onChange={handleInputChange}
                         className="w-full px-4 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                       />
+                    </div>
+                    <div>
+                      <label className="block text-gray-300 mb-2">Province*</label>
+                      <input
+                        type="text"
+                        name="province"
+                        value={formData.province}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-300 mb-2">Address*</label>
+                      <textarea
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                        rows={3}
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-gray-300 mb-2">Type*</label>
+                        <select
+                          name="type"
+                          value={formData.type}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          required
+                        >
+                          <option value={1}>Home</option>
+                          <option value={2}>Work</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-gray-300 mb-2">Status*</label>
+                        <select
+                          name="status"
+                          value={formData.status}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          required
+                        >
+                          <option value={1}>Active</option>
+                          <option value={2}>Inactive</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
 
@@ -193,37 +227,40 @@ export default function DocumentDetail() {
                   <div className="space-y-4">
                     <div>
                       <p className="text-sm text-gray-400">ID</p>
-                      <p className="text-white">{document.id}</p>
+                      <p className="text-white">{address.id}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Type Verifier Driver ID</p>
-                      <p className="text-white">{document.type_verifier_driver}</p>
+                      <p className="text-sm text-gray-400">City</p>
+                      <p className="text-white">{address.city}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-400">Verifier Driver</p>
-                      <p className="text-white">{document.verifier_driver}</p>
+                      <p className="text-sm text-gray-400">Province</p>
+                      <p className="text-white">{address.province}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">Address</p>
+                      <p className="text-white">{address.address}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">Type</p>
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${typeBadge.color}`}>
+                        {typeBadge.text}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-400">Status</p>
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge.color}`}>
+                        {statusBadge.text}
+                      </span>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Created At</p>
-                      <p className="text-white">{new Date(document.created_at).toLocaleString()}</p>
+                      <p className="text-white">{new Date(address.created_at).toLocaleString()}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Updated At</p>
-                      <p className="text-white">{new Date(document.updated_at).toLocaleString()}</p>
+                      <p className="text-white">{new Date(address.updated_at).toLocaleString()}</p>
                     </div>
-                    {document.file && (
-                      <div>
-                        <p className="text-sm text-gray-400">Document</p>
-                        <a 
-                          href={document.file} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-400 hover:underline"
-                        >
-                          View Document
-                        </a>
-                      </div>
-                    )}
                   </div>
 
                   <div className="flex justify-end space-x-4 mt-6">

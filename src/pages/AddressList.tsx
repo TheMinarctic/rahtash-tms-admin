@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
-export default function DocumentTypeList() {
+export default function AddressList() {
   const [open, setOpen] = useState(true);
-  const [documents, setDocuments] = useState([]);
+  const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({
@@ -17,11 +17,11 @@ export default function DocumentTypeList() {
   const navigate = useNavigate();
   const api = useApi();
 
-  const fetchDocuments = async (page = 1) => {
+  const fetchAddresses = async (page = 1) => {
     try {
       setLoading(true);
-      const response = await api.get(`/en/api/v1/driver/document/type/list/?page=${page}`);
-      setDocuments(response.body.data);
+      const response = await api.get(`/en/api/v1/user/address/list/?page=${page}`);
+      setAddresses(response.body.data);
       setPagination({
         totalResults: response.body.total_results,
         perPage: response.body.per_page,
@@ -36,19 +36,19 @@ export default function DocumentTypeList() {
   };
 
   useEffect(() => {
-    fetchDocuments();
+    fetchAddresses();
   }, []);
 
   const handlePageChange = (newPage) => {
-    fetchDocuments(newPage);
+    fetchAddresses(newPage);
   };
 
-  const handleViewDetails = (documentId) => {
-    navigate(`/driver/documents/${documentId}`);
+  const handleViewDetails = (addressId) => {
+    navigate(`/user/addresses/${addressId}`);
   };
 
   const handleCreate = () => {
-    navigate('/driver/documents/create');
+    navigate('/user/addresses/create');
   };
 
   const getStatusBadge = (status) => {
@@ -56,6 +56,14 @@ export default function DocumentTypeList() {
       case 1: return { text: 'Active', color: 'bg-green-900 text-green-200' };
       case 2: return { text: 'Inactive', color: 'bg-red-900 text-red-200' };
       default: return { text: 'Unknown', color: 'bg-gray-700 text-gray-300' };
+    }
+  };
+
+  const getTypeBadge = (type) => {
+    switch(type) {
+      case 1: return { text: 'Home', color: 'bg-blue-900 text-blue-200' };
+      case 2: return { text: 'Work', color: 'bg-purple-900 text-purple-200' };
+      default: return { text: 'Other', color: 'bg-gray-700 text-gray-300' };
     }
   };
 
@@ -67,12 +75,12 @@ export default function DocumentTypeList() {
         <div className="flex-1 p-5">
           <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-3xl font-bold text-white">Driver Document Types</h1>
+              <h1 className="text-3xl font-bold text-white">User Addresses</h1>
               <button
                 onClick={handleCreate}
                 className="px-4 py-2 bg-zinc-700 text-white rounded-md hover:bg-zinc-600 transition-colors"
               >
-                Add New
+               Add New
               </button>
             </div>
             
@@ -92,24 +100,29 @@ export default function DocumentTypeList() {
                       <thead className="bg-gray-700">
                         <tr>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ID</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Title</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Order</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Mandatory</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">City</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Province</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Address</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Type</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Created At</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="bg-gray-800 divide-y divide-gray-700">
-                        {documents.map((doc) => {
-                          const statusBadge = getStatusBadge(doc.status);
+                        {addresses.map((address) => {
+                          const statusBadge = getStatusBadge(address.status);
+                          const typeBadge = getTypeBadge(address.type);
                           return (
-                            <tr key={doc.id} className="hover:bg-gray-700 transition-colors">
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{doc.id}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{doc.title}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{doc.order}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                {doc.is_mandatory ? 'Yes' : 'No'}
+                            <tr key={address.id} className="hover:bg-gray-700 transition-colors">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{address.id}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{address.city}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{address.province}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{address.address}</td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${typeBadge.color}`}>
+                                  {typeBadge.text}
+                                </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge.color}`}>
@@ -117,11 +130,11 @@ export default function DocumentTypeList() {
                                 </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                {new Date(doc.created_at).toLocaleDateString()}
+                                {new Date(address.created_at).toLocaleDateString()}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                 <button
-                                  onClick={() => handleViewDetails(doc.id)}
+                                  onClick={() => handleViewDetails(address.id)}
                                   className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                                 >
                                   View

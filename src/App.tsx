@@ -11,7 +11,7 @@ import ApiProvider from "./contexts/ApiProvider";
 import { NextUIProvider } from "@nextui-org/react";
 
 import UserDetail  from "./pages/SingleUser";
-import ShipmentPage from "./pages/ShipmentsPage";
+import ShipmentPage from "./pages/Users";
 import CompaniesPage from "./pages/CompaniesPage";
 import CompanyDetail from "./pages/CompanyDetail";
 import DriversListPage from "./pages/DriversListPage";
@@ -47,6 +47,10 @@ import CompanyDocumentDetail from "./pages/CompanyDocumentDetail";
 import CompanyCategoryList from "./pages/CompanyCategoryList";
 import CompanyCategoryCreate from "./pages/CompanyCategoryCreate";
 import CompanyCategoryDetail from "./pages/CompanyCategoryDetail";
+import AddressList from "./pages/AddressList";
+import AddressDetail from "./pages/AddressDetail";
+import AddressCreate from "./pages/AddressCreate";
+import CompanyDocumentCreate from "./pages/CompanyDocumentCreate";
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -380,6 +384,19 @@ const AppRoutes = () => {
         }
       />
 
+
+<Route
+        path="/company/documents/create"
+        element={
+          <ProtectedRoute>
+            <CompanyDocumentCreate />
+          </ProtectedRoute>
+        }
+      />
+
+
+
+
 <Route
         path="/company/categories"
         element={
@@ -407,9 +424,32 @@ const AppRoutes = () => {
         }
       />
 
+      <Route
+        path="/users/address"
+        element={
+          <ProtectedRoute>
+            <AddressList />
+          </ProtectedRoute>
+        }
+      />
 
+<Route
+        path="/user/addresses/:address_id"
+        element={
+          <ProtectedRoute>
+            <AddressDetail />
+          </ProtectedRoute>
+        }
+      />
 
-
+<Route
+        path="/user/addresses/create"
+        element={
+          <ProtectedRoute>
+            <AddressCreate />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 };

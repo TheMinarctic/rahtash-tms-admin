@@ -110,36 +110,32 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                     href: "/shipments",
                     icon: <FiPackage className="w-5 text-sky-400 h-5" />
                 },
-                { 
-                    title: "Create Shipment", 
-                    href: "/shipments/create",
-                    icon: <FiPackage className="w-5 text-sky-400 h-5" />
-                },
+  
                 { 
                     title: "Ports", 
-                    href: "/ports",
+                    href: "/shipment/ports",
                     icon: <FiMapPin className="w-5 text-sky-400 h-5" />
                 },
                 { 
                     title: "Steps", 
-                    href: "/steps",
+                    href: "/shipment/steps",
                     icon: <FiList className="w-5 text-sky-400 h-5" />
                 },
                 { 
                     title: "Document Types", 
-                    href: "/document-types",
+                    href: "/shipment/document-types",
                     icon: <FiFileText className="w-5 text-sky-400 h-5" />
                 },
                 { 
                     title: "Containers", 
-                    href: "/containers",
+                    href: "/shipment/containers",
                     icon: <FiBox className="w-5 text-sky-400 h-5" />
                 },
-                { 
-                    title: "Step History", 
-                    href: "/step-history",
-                    icon: <FiClock className="w-5 text-sky-400 h-5" />
-                },
+                // { 
+                //     title: "Step History", 
+                //     href: "/shipment/step-history",
+                //     icon: <FiClock className="w-5 text-sky-400 h-5" />
+                // },
             ],
         },
     ];
