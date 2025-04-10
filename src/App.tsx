@@ -52,6 +52,7 @@ import AddressDetail from "./pages/AddressDetail";
 import AddressCreate from "./pages/AddressCreate";
 import CompanyDocumentCreate from "./pages/CompanyDocumentCreate";
 import ShipmentDocumentDetail from "./pages/ShipmentDocumentDetail";
+import ShipmentContainerDetail from "./pages/ShipmentContainerDetail";
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -255,6 +256,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ShipmentContainerCreate />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/containers/:container_id"
+        element={
+          <ProtectedRoute>
+            <ShipmentContainerDetail />
           </ProtectedRoute>
         }
       />
