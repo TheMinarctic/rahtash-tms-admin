@@ -28,20 +28,29 @@ export default function ShipmentCreate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setLoading(true);
+
+     
       // Convert status to number if it comes as string from form
       const payload = {
         ...formData,
         status: Number(formData.status)
       };
-      debugger
+      
       const response = await api.post('/en/api/v1/shipment/create/', payload);
-      navigate(`/shipments/${response.body.data.id}`);
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
-    }
+      
+      if(response.body.error){
+        if(response.body.error.bill_of_lading_number_id){
+          setError(response.body.error.bill_of_lading_number_id[0]);
+        }
+      }
+     
+
+      if(response.ok){
+        navigate(`/shipments/${response.body.data.id}`);
+        setLoading(false);
+      }
+      
+
   };
 
   return (

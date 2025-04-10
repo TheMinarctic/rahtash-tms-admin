@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
-export default function ShipmentDocumentList() {
+export default function DocumentList() {
   const [open, setOpen] = useState(true);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +20,6 @@ export default function ShipmentDocumentList() {
   const fetchDocuments = async (page = 1) => {
     try {
       setLoading(true);
-      
       const response = await api.get(`/en/api/v1/shipment/document/list/?page=${page}`);
       setDocuments(response.body.data);
       setPagination({
@@ -52,19 +51,18 @@ export default function ShipmentDocumentList() {
     navigate('/shipment/documents/create');
   };
 
-  const getFileType = (fileName) => {
-    if (!fileName) return 'Unknown';
-    const extension = fileName.split('.').pop().toLowerCase();
-    if (['pdf'].includes(extension)) return 'PDF';
-    if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) return 'Image';
-    if (['doc', 'docx'].includes(extension)) return 'Word';
-    if (['xls', 'xlsx'].includes(extension)) return 'Excel';
-    return extension.toUpperCase();
+  const getStatusBadge = (status) => {
+    switch(status) {
+      case 1: return { text: 'Active', color: 'bg-green-900 text-green-200' };
+      case 2: return { text: 'Inactive', color: 'bg-red-900 text-red-200' };
+      default: return { text: 'Unknown', color: 'bg-gray-700 text-gray-300' };
+    }
   };
 
   return (
     <div dir="ltr" className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
+
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
         <div className="flex-1 p-5">
           <div className="max-w-7xl mx-auto">
@@ -72,9 +70,9 @@ export default function ShipmentDocumentList() {
               <h1 className="text-3xl font-bold text-white">Shipment Documents</h1>
               <button
                 onClick={handleCreate}
-                className="px-4 py-2 bg-zinc-700 text-white rounded-md hover:bg-zinc-600 transition-colors"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
-                Add New
+                Create Document
               </button>
             </div>
             
@@ -96,7 +94,7 @@ export default function ShipmentDocumentList() {
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ID</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Shipment</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Document Type</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">File Type</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">File</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Created At</th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
                         </tr>
@@ -106,13 +104,15 @@ export default function ShipmentDocumentList() {
                           <tr key={document.id} className="hover:bg-gray-700 transition-colors">
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{document.id}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                              {document.shipment?.bill_of_lading_number_id || 'N/A'}
+                              {document.shipment.bill_of_lading_number_id}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                              {document.type?.title || 'N/A'}
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                              {document.type.title}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                              {getFileType(document.file)}
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-400 hover:text-blue-300">
+                              <a href={document.file} target="_blank" rel="noopener noreferrer">
+                                View File
+                              </a>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                               {new Date(document.created_at).toLocaleDateString()}
@@ -131,7 +131,8 @@ export default function ShipmentDocumentList() {
                     </table>
                   </div>
                 </div>
-                
+
+                {/* Pagination */}
                 <div className="flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg">
                   <div>
                     <p className="text-sm text-gray-400">

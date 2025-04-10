@@ -122,15 +122,22 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                     icon: <FiList className="w-5 text-sky-400 h-5" />
                 },
                 { 
+                    title: "Documents", 
+                    href: "/shipment/documents",
+                    icon: <FaFileAlt className="w-5 text-sky-400 h-5" />
+                },
+                { 
                     title: "Document Types", 
                     href: "/shipment/document-types",
                     icon: <FiFileText className="w-5 text-sky-400 h-5" />
                 },
+      
                 { 
                     title: "Containers", 
                     href: "/shipment/containers",
                     icon: <FiBox className="w-5 text-sky-400 h-5" />
                 },
+            
                 // { 
                 //     title: "Step History", 
                 //     href: "/shipment/step-history",

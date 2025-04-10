@@ -51,6 +51,7 @@ import AddressList from "./pages/AddressList";
 import AddressDetail from "./pages/AddressDetail";
 import AddressCreate from "./pages/AddressCreate";
 import CompanyDocumentCreate from "./pages/CompanyDocumentCreate";
+import ShipmentDocumentDetail from "./pages/ShipmentDocumentDetail";
 
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -450,6 +451,27 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+<Route
+        path="/shipment/documents"
+        element={
+          <ProtectedRoute>
+            <ShipmentDocumentList />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/shipment/documents/:document_id"
+        element={
+          <ProtectedRoute>
+            <ShipmentDocumentDetail />
+          </ProtectedRoute>
+        }
+      />
+
+
+
     </Routes>
   );
 };
