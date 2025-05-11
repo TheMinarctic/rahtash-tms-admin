@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function ShipmentDocumentTypeDetail() {
@@ -11,10 +11,10 @@ export default function ShipmentDocumentTypeDetail() {
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    title: '',
-    order: '',
+    title: "",
+    order: "",
     status: 1,
-    is_mandatory: true
+    is_mandatory: true,
   });
   const [open, setOpen] = useState(true);
   const api = useApi();
@@ -23,13 +23,15 @@ export default function ShipmentDocumentTypeDetail() {
     const fetchDocumentType = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/en/api/v1/shipment/document/type/detail/${document_type_id}/`);
+        const response = await api.get(
+          `/en/api/v1/shipment/document/type/detail/${document_type_id}/`
+        );
         setDocumentType(response.body.data);
         setFormData({
           title: response.body.data.title,
           order: response.body.data.order,
           status: response.body.data.status,
-          is_mandatory: response.body.data.is_mandatory
+          is_mandatory: response.body.data.is_mandatory,
         });
         setLoading(false);
       } catch (err) {
@@ -45,7 +47,7 @@ export default function ShipmentDocumentTypeDetail() {
     const { name, value, type } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? e.target.checked : value
+      [name]: type === "checkbox" ? e.target.checked : value,
     });
   };
 
@@ -54,7 +56,9 @@ export default function ShipmentDocumentTypeDetail() {
     try {
       setLoading(true);
       await api.patch(`/en/api/v1/shipment/document/type/update/${document_type_id}/`, formData);
-      const response = await api.get(`/en/api/v1/shipment/document/type/detail/${document_type_id}/`);
+      const response = await api.get(
+        `/en/api/v1/shipment/document/type/detail/${document_type_id}/`
+      );
       setDocumentType(response.body.data);
       setEditMode(false);
       setLoading(false);
@@ -65,11 +69,11 @@ export default function ShipmentDocumentTypeDetail() {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this document type?')) {
+    if (window.confirm("Are you sure you want to delete this document type?")) {
       try {
         setLoading(true);
         await api.delete(`/en/api/v1/shipment/document/type/delete/${document_type_id}/`);
-        navigate('/shipment/document-types');
+        navigate("/shipment/document-types");
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -93,26 +97,27 @@ export default function ShipmentDocumentTypeDetail() {
       <div className="flex h-full bg-gray-900">
         <Sidebar open={open} setOpen={setOpen} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-500 text-white p-4 rounded-lg">
-            Error: {error}
-          </div>
+          <div className="bg-red-500 text-white p-4 rounded-lg">Error: {error}</div>
         </div>
       </div>
     );
   }
 
   const getStatusBadge = (status) => {
-    switch(status) {
-      case 1: return { text: 'Active', color: 'bg-green-900 text-green-200' };
-      case 2: return { text: 'Inactive', color: 'bg-red-900 text-red-200' };
-      default: return { text: 'Unknown', color: 'bg-gray-700 text-gray-300' };
+    switch (status) {
+      case 1:
+        return { text: "Active", color: "bg-green-900 text-green-200" };
+      case 2:
+        return { text: "Inactive", color: "bg-red-900 text-red-200" };
+      default:
+        return { text: "Unknown", color: "bg-gray-700 text-gray-300" };
     }
   };
 
   const statusBadge = getStatusBadge(documentType.status);
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -121,7 +126,7 @@ export default function ShipmentDocumentTypeDetail() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Document Type Details</h1>
               <button
-                onClick={() => navigate('/shipment/document-types')}
+                onClick={() => navigate("/shipment/document-types")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Document Types
@@ -212,21 +217,27 @@ export default function ShipmentDocumentTypeDetail() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Mandatory</p>
-                      <p className="text-white">{documentType.is_mandatory ? 'Yes' : 'No'}</p>
+                      <p className="text-white">{documentType.is_mandatory ? "Yes" : "No"}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Status</p>
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge.color}`}>
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge.color}`}
+                      >
                         {statusBadge.text}
                       </span>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Created At</p>
-                      <p className="text-white">{new Date(documentType.created_at).toLocaleString()}</p>
+                      <p className="text-white">
+                        {new Date(documentType.created_at).toLocaleString()}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Updated At</p>
-                      <p className="text-white">{new Date(documentType.updated_at).toLocaleString()}</p>
+                      <p className="text-white">
+                        {new Date(documentType.updated_at).toLocaleString()}
+                      </p>
                     </div>
                   </div>
 

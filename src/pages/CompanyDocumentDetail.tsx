@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function CompanyDocumentDetail() {
@@ -12,9 +12,9 @@ export default function CompanyDocumentDetail() {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     file: null,
-    type: '',
-    verifier: '',
-    company: ''
+    type: "",
+    verifier: "",
+    company: "",
   });
   const [open, setOpen] = useState(true);
   const api = useApi();
@@ -22,14 +22,14 @@ export default function CompanyDocumentDetail() {
   useEffect(() => {
     const fetchDocument = async () => {
       try {
-        debugger
+        debugger;
         setLoading(true);
         const response = await api.get(`/en/api/v1/company/document/detail/${document_id}/`);
         setDocument(response.body.data);
         setFormData({
           type: response.body.data.type.id,
           verifier: response.body.data.verifier.id,
-          company: response.body.data.company.id
+          company: response.body.data.company.id,
         });
         setLoading(false);
       } catch (err) {
@@ -45,14 +45,14 @@ export default function CompanyDocumentDetail() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleFileChange = (e) => {
     setFormData({
       ...formData,
-      file: e.target.files[0]
+      file: e.target.files[0],
     });
   };
 
@@ -60,22 +60,21 @@ export default function CompanyDocumentDetail() {
     e.preventDefault();
     try {
       setLoading(true);
-      
+
       const formDataToSend = new FormData();
       if (formData.file) {
-        formDataToSend.append('file', formData.file);
+        formDataToSend.append("file", formData.file);
       }
-      formDataToSend.append('type', formData.type);
-      formDataToSend.append('verifier', formData.verifier);
-      formDataToSend.append('company', formData.company);
+      formDataToSend.append("type", formData.type);
+      formDataToSend.append("verifier", formData.verifier);
+      formDataToSend.append("company", formData.company);
 
-      
       await api.patch(`/en/api/v1/company/document/update/${document_id}/`, formDataToSend, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
-      
+
       const response = await api.get(`/en/api/v1/company/document/detail/${document_id}/`);
       setDocument(response.body.data);
       setEditMode(false);
@@ -87,11 +86,11 @@ export default function CompanyDocumentDetail() {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this document?')) {
+    if (window.confirm("Are you sure you want to delete this document?")) {
       try {
         setLoading(true);
         await api.delete(`/en/api/v1/company/document/delete/${document_id}/`);
-        navigate('/company/documents');
+        navigate("/company/documents");
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -115,23 +114,21 @@ export default function CompanyDocumentDetail() {
       <div className="flex h-full bg-gray-900">
         <Sidebar open={open} setOpen={setOpen} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-500 text-white p-4 rounded-lg">
-            Error: {error}
-          </div>
+          <div className="bg-red-500 text-white p-4 rounded-lg">Error: {error}</div>
         </div>
       </div>
     );
   }
 
   const getFileType = (file) => {
-    const extension = file.split('.').pop().toLowerCase();
-    if (['pdf'].includes(extension)) return 'PDF';
-    if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) return 'Image';
-    return 'File';
+    const extension = file.split(".").pop().toLowerCase();
+    if (["pdf"].includes(extension)) return "PDF";
+    if (["jpg", "jpeg", "png", "gif"].includes(extension)) return "Image";
+    return "File";
   };
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -140,7 +137,7 @@ export default function CompanyDocumentDetail() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Document Details</h1>
               <button
-                onClick={() => navigate('/company/documents')}
+                onClick={() => navigate("/company/documents")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Documents
@@ -152,7 +149,9 @@ export default function CompanyDocumentDetail() {
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 gap-6 mb-6">
                     <div>
-                      <label className="block text-gray-300 mb-2">File (Leave empty to keep current)</label>
+                      <label className="block text-gray-300 mb-2">
+                        File (Leave empty to keep current)
+                      </label>
                       <input
                         type="file"
                         name="file"
@@ -236,9 +235,9 @@ export default function CompanyDocumentDetail() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">File</p>
-                      <a 
-                        href={document.file} 
-                        target="_blank" 
+                      <a
+                        href={document.file}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-400 hover:underline"
                       >

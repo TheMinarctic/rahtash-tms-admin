@@ -8,7 +8,7 @@ import { VscCloudDownload } from "react-icons/vsc";
 import { FaRegEdit } from "react-icons/fa";
 import { TiTrash } from "react-icons/ti";
 import { GoContainer } from "react-icons/go";
-import { IoArrowBack } from "react-icons/io5"; 
+import { IoArrowBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import ShipmentTrace from "./ShipmentTrace";
 
@@ -42,7 +42,6 @@ export default function Shipment({ id }) {
   const [initialInvoice, setInitialInvoice] = useState(null);
   const [initialInvoiceName, setInitialInvoiceName] = useState("");
 
-
   const [finalInvoice, setFinalInvoice] = useState(null);
   const [finalInvoiceName, setFinalInvoiceName] = useState("");
 
@@ -64,17 +63,15 @@ export default function Shipment({ id }) {
   const [day, setDay] = useState("");
 
   const [persianYear, setPersianYear] = useState("");
-const [persianMonth, setPersianMonth] = useState("");
-const [persianDay, setPersianDay] = useState("");
+  const [persianMonth, setPersianMonth] = useState("");
+  const [persianDay, setPersianDay] = useState("");
 
-const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
+  const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
 
   // Function to handle the delete request
   const handleDeleteContainer = async () => {
     if (containerToDelete) {
-      const response = await api.delete(
-        `/api/v1/shipments/containers/${containerToDelete.id}/`
-      );
+      const response = await api.delete(`/api/v1/shipments/containers/${containerToDelete.id}/`);
       if (response.ok) {
         toast.success("Container deleted successfully");
         fetchContainers(); // Re-fetch containers to update the state
@@ -91,8 +88,7 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
   const [newContainerNumber, setNewContainerNumber] = useState("");
   const [containerSize, setContainerSize] = useState("20ft"); // Default value
   const [customSize, setCustomSize] = useState("");
-  const [isEditContainerModalOpen, setIsEditContainerModalOpen] =
-    useState(false);
+  const [isEditContainerModalOpen, setIsEditContainerModalOpen] = useState(false);
   const [selectedContainer, setSelectedContainer] = useState(null);
   const [newContainerPart1, setNewContainerPart1] = useState("");
   const [newContainerPart2, setNewContainerPart2] = useState("");
@@ -105,12 +101,12 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
     return `${year}-${formattedMonth}-${formattedDay}`;
   };
 
-    // Function to format the date as yyyy-mm-dd
-    const formatJalaliDate = (year, month, day) => {
-      const formattedMonth = month.padStart(2, "0");
-      const formattedDay = day.padStart(2, "0");
-      return `${year}-${formattedMonth}-${formattedDay}`;
-    };
+  // Function to format the date as yyyy-mm-dd
+  const formatJalaliDate = (year, month, day) => {
+    const formattedMonth = month.padStart(2, "0");
+    const formattedDay = day.padStart(2, "0");
+    return `${year}-${formattedMonth}-${formattedDay}`;
+  };
 
   const fetchShipment = async (url) => {
     setLoadingPage(true);
@@ -146,7 +142,6 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
           setPersianMonth(fetchedMonth);
           setPersianDay(fetchedDay);
         }
-
       } else {
         setError("Error fetching shipment data");
       }
@@ -235,10 +230,8 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
       return;
     }
 
-
-
-    if (!year || !month || !day || !persianDay ||!persianMonth || !persianYear) {
-      debugger
+    if (!year || !month || !day || !persianDay || !persianMonth || !persianYear) {
+      debugger;
       toast.error("Please fill in all date fields (year, month, day)");
       setLoadingPage(false);
       return;
@@ -248,7 +241,7 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
     const formattedDate = formatDate(year, month, day);
     const formattedPersianDate = formatJalaliDate(persianYear, persianMonth, persianDay);
 
-    debugger
+    debugger;
     const formData = new FormData();
     formData.append("bill_of_lading_number", shipmentName);
     formData.append("container_quantity", numberOfContainers);
@@ -280,10 +273,7 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
       formData.append("final_invoice", finalInvoice);
     }
 
-    const response = await api.patch(
-      `/api/v1/shipments/shipments/${id}/`,
-      formData
-    );
+    const response = await api.patch(`/api/v1/shipments/shipments/${id}/`, formData);
     if (response.ok) {
       toast.success("Shipment edited successfully");
       fetchShipment(`/api/v1/shipments/shipments/${id}`); // Re-fetch data to update state
@@ -294,9 +284,7 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
 
   const handleAddSubmit = async () => {
     if (!newDocumentName || !newDocumentFile) {
-      toast.error(
-        "Please provide a name and a file for the additional document"
-      );
+      toast.error("Please provide a name and a file for the additional document");
       return;
     }
 
@@ -305,10 +293,7 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
     formData.append("document_name", newDocumentName);
     formData.append("document_file", newDocumentFile);
 
-    const response = await api.post(
-      `/api/v1/shipments/additional-documents/`,
-      formData
-    );
+    const response = await api.post(`/api/v1/shipments/additional-documents/`, formData);
     if (response.ok) {
       toast.success("Document added successfully");
       fetchShipment(`/api/v1/shipments/shipments/${id}`); // Re-fetch to update the additional documents
@@ -345,7 +330,6 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
       <Toaster />
       {shipmentData ? (
         <div className="bg-dark-purple 2xl:w-5/6 p-6 mx-auto rounded-lg">
-
           {/* Add the Return Button at the top */}
           <div className="flex justify-start mb-4">
             <button
@@ -359,11 +343,9 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
           <div className="flex flex-col">
             <div className="flex justify-center mt-1 mb-12">
               <div className="flex items-center gap-4">
-                <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
-                <h1 className="text-xl text-center text-black font-bold">
-                  Shipment Detail
-                </h1>
-                <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
+                <div className="w-20 md:w-64 h-[0.5px] bg-gray-800"></div>
+                <h1 className="text-xl text-center text-black font-bold">Shipment Detail</h1>
+                <div className="w-20 md:w-64 h-[0.5px] bg-gray-800"></div>
               </div>
             </div>
 
@@ -376,52 +358,44 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                   type="text"
                   value={shipmentName}
                   onChange={(e) => setShipmentName(e.target.value)}
-                  className="w-full p-2 bg-zinc-400 rounded"
+                  className="w-full p-2 bg-gray-400 rounded"
                 />
               </div>
 
               <div>
-                <label className="block text-black pb-2">
-                  Containers quantity:
-                </label>
+                <label className="block text-black pb-2">Containers quantity:</label>
                 <input
                   type="text"
                   value={numberOfContainers}
                   onChange={(e) => setNumberOfContainers(e.target.value)}
-                  className="w-full p-2 bg-zinc-400 rounded"
+                  className="w-full p-2 bg-gray-400 rounded"
                 />
               </div>
               <div>
-                <label className="block text-black pb-2">
-                  Port of Loading:
-                </label>
+                <label className="block text-black pb-2">Port of Loading:</label>
                 <input
                   type="text"
                   value={portOfLoading}
                   onChange={(e) => setPortOfLoading(e.target.value)}
-                  className="w-full p-2 bg-zinc-400 rounded"
+                  className="w-full p-2 bg-gray-400 rounded"
                 />
               </div>
               <div>
-                <label className="block text-black pb-2">
-                  Port of Discharge:
-                </label>
+                <label className="block text-black pb-2">Port of Discharge:</label>
                 <input
                   type="text"
                   value={portOfDischarge}
                   onChange={(e) => setPortOfDischarge(e.target.value)}
-                  className="w-full p-2 bg-zinc-400 rounded"
+                  className="w-full p-2 bg-gray-400 rounded"
                 />
               </div>
               <div>
-                <label className="block text-black pb-2">
-                  Place of Delivery:
-                </label>
+                <label className="block text-black pb-2">Place of Delivery:</label>
                 <input
                   type="text"
                   value={deliveryPlace}
                   onChange={(e) => setDeliveryPlace(e.target.value)}
-                  className="w-full p-2 bg-zinc-400 rounded"
+                  className="w-full p-2 bg-gray-400 rounded"
                 />
               </div>
               <div>
@@ -430,24 +404,22 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows="4"
-                  className="w-full p-2 bg-zinc-400 rounded"
+                  className="w-full p-2 bg-gray-400 rounded"
                   placeholder="Add any notes here..."
                 />
               </div>
 
               <div>
-    <label className="block text-black pb-2">Container Type:</label>
-    <select
-        value={containerType}
-        onChange={(e) => setContainerType(e.target.value)}
-        className="w-full p-2 bg-zinc-400 rounded"
-    >
-        <option value="SOC">SOC</option>
-        <option value="COC">COC</option>
-    </select>
-</div>
-
-
+                <label className="block text-black pb-2">Container Type:</label>
+                <select
+                  value={containerType}
+                  onChange={(e) => setContainerType(e.target.value)}
+                  className="w-full p-2 bg-gray-400 rounded"
+                >
+                  <option value="SOC">SOC</option>
+                  <option value="COC">COC</option>
+                </select>
+              </div>
 
               {/* Date Fields */}
 
@@ -487,10 +459,10 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                 </div>
               </div>
 
-                           {/* Date Fields */}
+              {/* Date Fields */}
 
-                           <span>Persian date:</span>
-                           <div className="flex gap-4 items-center justify-start">
+              <span>Persian date:</span>
+              <div className="flex gap-4 items-center justify-start">
                 <div className="mb-4">
                   <label className="block text-black mb-1">Year:</label>
                   <input
@@ -525,10 +497,8 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                 </div>
               </div>
 
-              
-
-                            {/* Checkbox for Dangerous Goods */}
-                            <div className="flex items-center">
+              {/* Checkbox for Dangerous Goods */}
+              <div className="flex items-center">
                 <input
                   type="checkbox"
                   checked={containsDangerousGoods}
@@ -547,11 +517,9 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
             {/* Documents Section */}
             <div className="flex justify-center mt-10 mb-12">
               <div className="flex items-center gap-4">
-                <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
-                <h1 className="text-xl text-center text-black font-bold">
-                  Documents
-                </h1>
-                <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
+                <div className="w-20 md:w-64 h-[0.5px] bg-gray-800"></div>
+                <h1 className="text-xl text-center text-black font-bold">Documents</h1>
+                <div className="w-20 md:w-64 h-[0.5px] bg-gray-800"></div>
               </div>
             </div>
 
@@ -579,13 +547,8 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                   setFile: setFinalInvoice,
                 },
               ].map((doc, index) => (
-                <div
-                  key={index}
-                  className="p-4 border rounded shadow-md bg-gray-50"
-                >
-                  <label className="block text-black font-semibold mb-2">
-                    {doc.label}:
-                  </label>
+                <div key={index} className="p-4 border rounded shadow-md bg-gray-50">
+                  <label className="block text-black font-semibold mb-2">{doc.label}:</label>
 
                   <div className="flex items-center">
                     <input
@@ -616,9 +579,7 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                         <VscCloudDownload className="inline w-6 h-6 text-green-500" />
                       </a>
                     ) : (
-                      <span className="text-gray-500 ml-2">
-                        No file uploaded
-                      </span>
+                      <span className="text-gray-500 ml-2">No file uploaded</span>
                     )}
                   </div>
                 </div>
@@ -626,9 +587,7 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
 
               {containsDangerousGoods && (
                 <div className="p-4 border rounded shadow-md bg-gray-50">
-                  <label className="block text-black font-semibold mb-2">
-                    MSDS Document:
-                  </label>
+                  <label className="block text-black font-semibold mb-2">MSDS Document:</label>
 
                   <div className="flex items-center">
                     <input
@@ -659,9 +618,7 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                         <VscCloudDownload className="inline w-6 h-6 text-green-500" />
                       </a>
                     ) : (
-                      <span className="text-gray-500 ml-2">
-                        No file uploaded
-                      </span>
+                      <span className="text-gray-500 ml-2">No file uploaded</span>
                     )}
                   </div>
                 </div>
@@ -672,11 +629,9 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
             {/* Container Management Section */}
             <div className="flex justify-center mt-10 mb-12">
               <div className="flex items-center gap-4">
-                <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
-                <h1 className="text-xl text-center text-black font-bold">
-                  Containers
-                </h1>
-                <div className="w-20 md:w-64 h-[0.5px] bg-zinc-800"></div>
+                <div className="w-20 md:w-64 h-[0.5px] bg-gray-800"></div>
+                <h1 className="text-xl text-center text-black font-bold">Containers</h1>
+                <div className="w-20 md:w-64 h-[0.5px] bg-gray-800"></div>
               </div>
             </div>
 
@@ -692,7 +647,7 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                     className="bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105"
                   >
                     <div className="flex justify-between items-center mb-2">
-                      <GoContainer className="text-zinc-900 w-8 h-8" />
+                      <GoContainer className="text-gray-900 w-8 h-8" />
                       <div className="flex space-x-2">
                         <button
                           onClick={() => {
@@ -716,12 +671,9 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                         </button>
                       </div>
                     </div>
-                    <div className="border-t border-zinc-200 pt-2">
+                    <div className="border-t border-gray-200 pt-2">
                       <p className="font-semibold">
-                        Number:{" "}
-                        <span className="text-black">
-                          {container.container_number}
-                        </span>
+                        Number: <span className="text-black">{container.container_number}</span>
                       </p>
                       <p className="text-gray-600">
                         Size:{" "}
@@ -739,15 +691,13 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
             <div className="flex justify-between mb-4 mt-8">
               <button
                 onClick={() => setIsAddContainerModalOpen(true)}
-                className="bg-zinc-900 text-white p-2 rounded"
+                className="bg-gray-900 text-white p-2 rounded"
               >
                 + Add Container
               </button>
             </div>
 
             <ShipmentTrace />
-
-
 
             {/* Add Container Modal */}
             {isAddContainerModalOpen && (
@@ -819,8 +769,7 @@ const [containerType, setContainerType] = useState("SOC"); // Default to "SOC"
                 <div className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full">
                   <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
                   <p>
-                    Are you sure you want to delete container{" "}
-                    {containerToDelete.container_number}?
+                    Are you sure you want to delete container {containerToDelete.container_number}?
                   </p>
                   <div className="flex justify-end mt-4">
                     <button

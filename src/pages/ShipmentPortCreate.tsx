@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function ShipmentPortCreate() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    title: '',
-    country: '',
-    status: 1
+    title: "",
+    country: "",
+    status: 1,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,7 +19,7 @@ export default function ShipmentPortCreate() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -27,7 +27,7 @@ export default function ShipmentPortCreate() {
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await api.post('/en/api/v1/shipment/port/create/', formData);
+      const response = await api.post("/en/api/v1/shipment/port/create/", formData);
       navigate(`/shipment/ports/${response.body.data.id}`);
     } catch (err) {
       setError(err.message);
@@ -36,7 +36,7 @@ export default function ShipmentPortCreate() {
   };
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -45,7 +45,7 @@ export default function ShipmentPortCreate() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Create New Port</h1>
               <button
-                onClick={() => navigate('/shipment/ports')}
+                onClick={() => navigate("/shipment/ports")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Ports
@@ -54,9 +54,7 @@ export default function ShipmentPortCreate() {
 
             <div className="bg-gray-800 rounded-xl shadow-lg p-6">
               {error && (
-                <div className="bg-red-500 text-white p-4 rounded-lg mb-6">
-                  Error: {error}
-                </div>
+                <div className="bg-red-500 text-white p-4 rounded-lg mb-6">Error: {error}</div>
               )}
 
               <form onSubmit={handleSubmit}>
@@ -104,7 +102,7 @@ export default function ShipmentPortCreate() {
                     disabled={loading}
                     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
                   >
-                    {loading ? 'Creating...' : 'Create Port'}
+                    {loading ? "Creating..." : "Create Port"}
                   </button>
                 </div>
               </form>

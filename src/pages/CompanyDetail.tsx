@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function CompanyDetail() {
@@ -11,20 +11,23 @@ export default function CompanyDetail() {
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    website: '',
+    name: "",
+    email: "",
+    phone: "",
+    website: "",
     status: 2,
   });
   const [open, setOpen] = useState(true);
   const api = useApi();
 
   const getStatusBadge = (status) => {
-    switch(status) {
-      case 1: return { text: 'Active', color: 'bg-green-900 text-green-200' };
-      case 2: return { text: 'Inactive', color: 'bg-red-900 text-red-200' };
-      default: return { text: 'Unknown', color: 'bg-gray-700 text-gray-300' };
+    switch (status) {
+      case 1:
+        return { text: "Active", color: "bg-green-900 text-green-200" };
+      case 2:
+        return { text: "Inactive", color: "bg-red-900 text-red-200" };
+      default:
+        return { text: "Unknown", color: "bg-gray-700 text-gray-300" };
     }
   };
 
@@ -35,10 +38,10 @@ export default function CompanyDetail() {
         const response = await api.get(`/en/api/v1/company/detail/${compid}/`);
         setCompany(response.body.data);
         setFormData({
-          name: response.body.data.name || '',
-          email: response.body.data.email || '',
-          phone: response.body.data.phone || '',
-          website: response.body.data.website || '',
+          name: response.body.data.name || "",
+          email: response.body.data.email || "",
+          phone: response.body.data.phone || "",
+          website: response.body.data.website || "",
           status: response.body.data.status || 2,
         });
         setLoading(false);
@@ -97,9 +100,7 @@ export default function CompanyDetail() {
       <div className="flex h-screen bg-gray-800">
         <Sidebar open={open} setOpen={setOpen} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-500 text-white p-4 rounded-lg">
-            Error: {error}
-          </div>
+          <div className="bg-red-500 text-white p-4 rounded-lg">Error: {error}</div>
         </div>
       </div>
     );
@@ -110,9 +111,7 @@ export default function CompanyDetail() {
       <div className="flex h-full bg-gray-900">
         <Sidebar open={open} setOpen={setOpen} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-yellow-500 text-white p-4 rounded-lg">
-            Company not found
-          </div>
+          <div className="bg-yellow-500 text-white p-4 rounded-lg">Company not found</div>
         </div>
       </div>
     );
@@ -121,20 +120,18 @@ export default function CompanyDetail() {
   const statusBadge = getStatusBadge(company.status);
 
   return (
-    <div dir="ltr" className="flex h-screen bg-gray-800">
+    <div className="flex h-screen bg-gray-800">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
-        <div className="md:hidden">
-          {/* Mobile header would go here */}
-        </div>
+        <div className="md:hidden">{/* Mobile header would go here */}</div>
 
         <div className="flex-1 p-5">
           <div className="max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Company Details</h1>
               <button
-                onClick={() => navigate('/companies')}
+                onClick={() => navigate("/companies")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Companies
@@ -222,62 +219,60 @@ export default function CompanyDetail() {
               ) : (
                 <>
                   <div className="flex items-start space-x-6 mb-8">
-                    <div className="flex-shrink-0">
-          
-                    </div>
+                    <div className="flex-shrink-0"></div>
                     <div>
-                      <h2 className="text-2xl font-bold text-white">
-                        {company.name}
-                      </h2>
+                      <h2 className="text-2xl font-bold text-white">{company.name}</h2>
                       <div className="flex items-center space-x-4 mt-2">
-                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusBadge.color}`}>
+                        <span
+                          className={`px-2 py-1 text-xs font-semibold rounded-full ${statusBadge.color}`}
+                        >
                           {statusBadge.text}
                         </span>
-                        <span className="text-sm text-gray-400">
-                          ID: {company.id}
-                        </span>
+                        <span className="text-sm text-gray-400">ID: {company.id}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-300 mb-4">Company Information</h3>
+                      <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                        Company Information
+                      </h3>
                       <div className="space-y-4">
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Category</p>
                           <p className="text-white">
-                            {company.category?.title || 'N/A'}
+                            {company.category?.title || "N/A"}
                             {company.category && (
-                              <span className="ml-2 text-xs text-gray-400">(ID: {company.category.id})</span>
+                              <span className="ml-2 text-xs text-gray-400">
+                                (ID: {company.category.id})
+                              </span>
                             )}
                           </p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Email</p>
-                          <p className="text-white">
-                            {company.email || 'N/A'}
-                          </p>
+                          <p className="text-white">{company.email || "N/A"}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Phone</p>
-                          <p className="text-white">
-                            {company.phone || 'N/A'}
-                          </p>
+                          <p className="text-white">{company.phone || "N/A"}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Website</p>
                           <p className="text-white">
                             {company.website ? (
-                              <a 
-                                href={company.website} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
+                              <a
+                                href={company.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="text-blue-400 hover:underline break-all"
                               >
                                 {company.website}
                               </a>
-                            ) : 'N/A'}
+                            ) : (
+                              "N/A"
+                            )}
                           </p>
                         </div>
                       </div>
@@ -289,9 +284,11 @@ export default function CompanyDetail() {
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Owner</p>
                           <p className="text-white">
-                            {company.owner?.email || 'N/A'}
+                            {company.owner?.email || "N/A"}
                             {company.owner && (
-                              <span className="ml-2 text-xs text-gray-400">(ID: {company.owner.id})</span>
+                              <span className="ml-2 text-xs text-gray-400">
+                                (ID: {company.owner.id})
+                              </span>
                             )}
                           </p>
                         </div>

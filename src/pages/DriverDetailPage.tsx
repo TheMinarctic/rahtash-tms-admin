@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function DriverDetailPage() {
@@ -12,13 +12,13 @@ export default function DriverDetailPage() {
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    title: '',
-    track_info: '',
-    license_number: '',
-    smart_card_number: '',
+    title: "",
+    track_info: "",
+    license_number: "",
+    smart_card_number: "",
     status: 1,
-    iran_plaque: '',
-    transit_plaque: '',
+    iran_plaque: "",
+    transit_plaque: "",
     max_cargo_weight: 0,
     type: 1,
   });
@@ -26,18 +26,24 @@ export default function DriverDetailPage() {
   const api = useApi();
 
   const getStatusBadge = (status) => {
-    switch(status) {
-      case 1: return { text: 'Active', color: 'bg-green-900 text-green-200' };
-      case 2: return { text: 'Inactive', color: 'bg-red-900 text-red-200' };
-      default: return { text: 'Unknown', color: 'bg-gray-700 text-gray-300' };
+    switch (status) {
+      case 1:
+        return { text: "Active", color: "bg-green-900 text-green-200" };
+      case 2:
+        return { text: "Inactive", color: "bg-red-900 text-red-200" };
+      default:
+        return { text: "Unknown", color: "bg-gray-700 text-gray-300" };
     }
   };
 
   const getTypeText = (type) => {
-    switch(type) {
-      case 1: return 'Truck';
-      case 2: return 'Van';
-      default: return 'Other';
+    switch (type) {
+      case 1:
+        return "Truck";
+      case 2:
+        return "Van";
+      default:
+        return "Other";
     }
   };
 
@@ -48,13 +54,13 @@ export default function DriverDetailPage() {
         const response = await api.get(`/en/api/v1/driver/detail/${driver_id}/`);
         setDriver(response.body.data);
         setFormData({
-          title: response.body.data.title || '',
-          track_info: response.body.data.track_info || '',
-          license_number: response.body.data.license_number || '',
-          smart_card_number: response.body.data.smart_card_number || '',
+          title: response.body.data.title || "",
+          track_info: response.body.data.track_info || "",
+          license_number: response.body.data.license_number || "",
+          smart_card_number: response.body.data.smart_card_number || "",
           status: response.body.data.status || 1,
-          iran_plaque: response.body.data.iran_plaque || '',
-          transit_plaque: response.body.data.transit_plaque || '',
+          iran_plaque: response.body.data.iran_plaque || "",
+          transit_plaque: response.body.data.transit_plaque || "",
           max_cargo_weight: response.body.data.max_cargo_weight || 0,
           type: response.body.data.type || 1,
         });
@@ -130,9 +136,7 @@ export default function DriverDetailPage() {
       <div className="flex h-full bg-gray-900">
         <Sidebar open={open} setOpen={setOpen} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-500 text-white p-4 rounded-lg">
-            Error: {error}
-          </div>
+          <div className="bg-red-500 text-white p-4 rounded-lg">Error: {error}</div>
         </div>
       </div>
     );
@@ -141,7 +145,7 @@ export default function DriverDetailPage() {
   const statusBadge = getStatusBadge(driver.status);
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -150,7 +154,7 @@ export default function DriverDetailPage() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Driver Details</h1>
               <button
-                onClick={() => navigate('/drivers')}
+                onClick={() => navigate("/drivers")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Drivers
@@ -283,13 +287,14 @@ export default function DriverDetailPage() {
                   <div className="flex items-start space-x-6 mb-8">
                     <div className="flex-shrink-0">
                       {driver.image ? (
-                        <img 
-                          className="h-20 w-20 rounded-full object-cover border-2 border-gray-600" 
-                          src={driver.image} 
-                          alt={driver.title} 
+                        <img
+                          className="h-20 w-20 rounded-full object-cover border-2 border-gray-600"
+                          src={driver.image}
+                          alt={driver.title}
                           onError={(e) => {
-                            e.target.onerror = null; 
-                            e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%234B5563"><rect width="100" height="100" rx="50"/><text x="50%" y="50%" font-size="50" dominant-baseline="middle" text-anchor="middle" fill="%23D1D5DB">D</text></svg>'
+                            e.target.onerror = null;
+                            e.target.src =
+                              'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%234B5563"><rect width="100" height="100" rx="50"/><text x="50%" y="50%" font-size="50" dominant-baseline="middle" text-anchor="middle" fill="%23D1D5DB">D</text></svg>';
                           }}
                         />
                       ) : (
@@ -299,18 +304,20 @@ export default function DriverDetailPage() {
                       )}
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-white">
-                        {driver.title}
-                      </h2>
+                      <h2 className="text-2xl font-bold text-white">{driver.title}</h2>
                       <div className="flex items-center space-x-4 mt-2">
-                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusBadge.color}`}>
+                        <span
+                          className={`px-2 py-1 text-xs font-semibold rounded-full ${statusBadge.color}`}
+                        >
                           {statusBadge.text}
                         </span>
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
                             <svg
                               key={i}
-                              className={`w-4 h-4 ${i < driver.rating ? 'text-yellow-400' : 'text-gray-500'}`}
+                              className={`w-4 h-4 ${
+                                i < driver.rating ? "text-yellow-400" : "text-gray-500"
+                              }`}
                               fill="currentColor"
                               viewBox="0 0 20 20"
                             >
@@ -318,58 +325,50 @@ export default function DriverDetailPage() {
                             </svg>
                           ))}
                         </div>
-                        <span className="text-sm text-gray-400">
-                          ID: {driver.id}
-                        </span>
+                        <span className="text-sm text-gray-400">ID: {driver.id}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-300 mb-4">Driver Information</h3>
+                      <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                        Driver Information
+                      </h3>
                       <div className="space-y-4">
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Track Info</p>
-                          <p className="text-white">
-                            {driver.track_info || 'N/A'}
-                          </p>
+                          <p className="text-white">{driver.track_info || "N/A"}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400 mb-1">License Number</p>
-                          <p className="text-white">
-                            {driver.license_number || 'N/A'}
-                          </p>
+                          <p className="text-white">{driver.license_number || "N/A"}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Smart Card Number</p>
-                          <p className="text-white">
-                            {driver.smart_card_number || 'N/A'}
-                          </p>
+                          <p className="text-white">{driver.smart_card_number || "N/A"}</p>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-300 mb-4">Vehicle Information</h3>
+                      <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                        Vehicle Information
+                      </h3>
                       <div className="space-y-4">
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Type</p>
-                          <p className="text-white">
-                            {getTypeText(driver.type)}
-                          </p>
+                          <p className="text-white">{getTypeText(driver.type)}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Plaques</p>
                           <p className="text-white">
-                            {driver.iran_plaque || 'N/A'} / {driver.transit_plaque || 'N/A'}
+                            {driver.iran_plaque || "N/A"} / {driver.transit_plaque || "N/A"}
                           </p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Max Cargo Weight</p>
-                          <p className="text-white">
-                            {driver.max_cargo_weight} kg
-                          </p>
+                          <p className="text-white">{driver.max_cargo_weight} kg</p>
                         </div>
                       </div>
                     </div>
@@ -382,18 +381,22 @@ export default function DriverDetailPage() {
                         <div>
                           <p className="text-sm text-gray-400 mb-1">User</p>
                           <p className="text-white">
-                            {driver.user?.email || 'N/A'}
+                            {driver.user?.email || "N/A"}
                             {driver.user && (
-                              <span className="ml-2 text-xs text-gray-400">(ID: {driver.user.id})</span>
+                              <span className="ml-2 text-xs text-gray-400">
+                                (ID: {driver.user.id})
+                              </span>
                             )}
                           </p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400 mb-1">Category</p>
                           <p className="text-white">
-                            {driver.category?.title || 'N/A'}
+                            {driver.category?.title || "N/A"}
                             {driver.category && (
-                              <span className="ml-2 text-xs text-gray-400">(ID: {driver.category.id})</span>
+                              <span className="ml-2 text-xs text-gray-400">
+                                (ID: {driver.category.id})
+                              </span>
                             )}
                           </p>
                         </div>

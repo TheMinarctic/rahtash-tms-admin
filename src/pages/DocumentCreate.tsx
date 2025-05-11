@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function DocumentCreate() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     file: null,
-    type_verifier_driver: '',
-    verifier_driver: ''
+    type_verifier_driver: "",
+    verifier_driver: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,14 +19,14 @@ export default function DocumentCreate() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleFileChange = (e) => {
     setFormData({
       ...formData,
-      file: e.target.files[0]
+      file: e.target.files[0],
     });
   };
 
@@ -34,18 +34,18 @@ export default function DocumentCreate() {
     e.preventDefault();
     try {
       setLoading(true);
-      
-      const formDataToSend = new FormData();
-      formDataToSend.append('file', formData.file);
-      formDataToSend.append('type_verifier_driver', formData.type_verifier_driver);
-      formDataToSend.append('verifier_driver', formData.verifier_driver);
 
-      const response = await api.post('/en/api/v1/driver/document/create/', formDataToSend, {
+      const formDataToSend = new FormData();
+      formDataToSend.append("file", formData.file);
+      formDataToSend.append("type_verifier_driver", formData.type_verifier_driver);
+      formDataToSend.append("verifier_driver", formData.verifier_driver);
+
+      const response = await api.post("/en/api/v1/driver/document/create/", formDataToSend, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
-      
+
       navigate(`/driver/documents/${response.body.data.id}`);
     } catch (err) {
       setError(err.message);
@@ -54,7 +54,7 @@ export default function DocumentCreate() {
   };
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -63,7 +63,7 @@ export default function DocumentCreate() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Upload New Document</h1>
               <button
-                onClick={() => navigate('/driver/documents')}
+                onClick={() => navigate("/driver/documents")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Documents
@@ -72,9 +72,7 @@ export default function DocumentCreate() {
 
             <div className="bg-gray-800 rounded-xl shadow-lg p-6">
               {error && (
-                <div className="bg-red-500 text-white p-4 rounded-lg mb-6">
-                  Error: {error}
-                </div>
+                <div className="bg-red-500 text-white p-4 rounded-lg mb-6">Error: {error}</div>
               )}
 
               <form onSubmit={handleSubmit}>
@@ -119,7 +117,7 @@ export default function DocumentCreate() {
                     disabled={loading}
                     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
                   >
-                    {loading ? 'Uploading...' : 'Upload Document'}
+                    {loading ? "Uploading..." : "Upload Document"}
                   </button>
                 </div>
               </form>

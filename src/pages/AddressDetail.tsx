@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function AddressDetail() {
@@ -11,11 +11,11 @@ export default function AddressDetail() {
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    city: '',
-    province: '',
-    address: '',
+    city: "",
+    province: "",
+    address: "",
     status: 1,
-    type: 1
+    type: 1,
   });
   const [open, setOpen] = useState(true);
   const api = useApi();
@@ -31,7 +31,7 @@ export default function AddressDetail() {
           province: response.body.data.province,
           address: response.body.data.address,
           status: response.body.data.status,
-          type: response.body.data.type
+          type: response.body.data.type,
         });
         setLoading(false);
       } catch (err) {
@@ -47,7 +47,7 @@ export default function AddressDetail() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -67,11 +67,11 @@ export default function AddressDetail() {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this address?')) {
+    if (window.confirm("Are you sure you want to delete this address?")) {
       try {
         setLoading(true);
         await api.delete(`/en/api/v1/user/address/delete/${address_id}/`);
-        navigate('/users/address');
+        navigate("/users/address");
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -95,27 +95,31 @@ export default function AddressDetail() {
       <div className="flex h-full bg-gray-900">
         <Sidebar open={open} setOpen={setOpen} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-500 text-white p-4 rounded-lg">
-            Error: {error}
-          </div>
+          <div className="bg-red-500 text-white p-4 rounded-lg">Error: {error}</div>
         </div>
       </div>
     );
   }
 
   const getStatusBadge = (status) => {
-    switch(status) {
-      case 1: return { text: 'Active', color: 'bg-green-900 text-green-200' };
-      case 2: return { text: 'Inactive', color: 'bg-red-900 text-red-200' };
-      default: return { text: 'Unknown', color: 'bg-gray-700 text-gray-300' };
+    switch (status) {
+      case 1:
+        return { text: "Active", color: "bg-green-900 text-green-200" };
+      case 2:
+        return { text: "Inactive", color: "bg-red-900 text-red-200" };
+      default:
+        return { text: "Unknown", color: "bg-gray-700 text-gray-300" };
     }
   };
 
   const getTypeBadge = (type) => {
-    switch(type) {
-      case 1: return { text: 'Home', color: 'bg-blue-900 text-blue-200' };
-      case 2: return { text: 'Work', color: 'bg-purple-900 text-purple-200' };
-      default: return { text: 'Other', color: 'bg-gray-700 text-gray-300' };
+    switch (type) {
+      case 1:
+        return { text: "Home", color: "bg-blue-900 text-blue-200" };
+      case 2:
+        return { text: "Work", color: "bg-purple-900 text-purple-200" };
+      default:
+        return { text: "Other", color: "bg-gray-700 text-gray-300" };
     }
   };
 
@@ -123,7 +127,7 @@ export default function AddressDetail() {
   const typeBadge = getTypeBadge(address.type);
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -132,7 +136,7 @@ export default function AddressDetail() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Address Details</h1>
               <button
-                onClick={() => navigate('/users/address')}
+                onClick={() => navigate("/users/address")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Addresses
@@ -243,13 +247,17 @@ export default function AddressDetail() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Type</p>
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${typeBadge.color}`}>
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${typeBadge.color}`}
+                      >
                         {typeBadge.text}
                       </span>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Status</p>
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge.color}`}>
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge.color}`}
+                      >
                         {statusBadge.text}
                       </span>
                     </div>

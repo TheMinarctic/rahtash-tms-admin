@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { useParams, useNavigate } from "react-router-dom"; // or next/navigation if using Next.js
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function UserDetail() {
@@ -12,9 +12,9 @@ export default function UserDetail() {
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
+    first_name: "",
+    last_name: "",
+    email: "",
     is_active: false,
     is_staff: false,
   });
@@ -25,12 +25,12 @@ export default function UserDetail() {
     const fetchUser = async () => {
       try {
         setLoading(true);
-        debugger
+        debugger;
         const response = await api.get(`/en/api/v1/user/detail/${userId}/`);
         setUser(response.body.data);
         setFormData({
-          first_name: response.body.data.first_name || '',
-          last_name: response.body.data.last_name || '',
+          first_name: response.body.data.first_name || "",
+          last_name: response.body.data.last_name || "",
           email: response.body.data.email,
           is_active: response.body.data.is_active,
           is_staff: response.body.data.is_staff,
@@ -49,7 +49,7 @@ export default function UserDetail() {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -85,22 +85,18 @@ export default function UserDetail() {
       <div className="flex h-full bg-gray-900">
         <Sidebar open={open} setOpen={setOpen} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-500 text-white p-4 rounded-lg">
-            Error: {error}
-          </div>
+          <div className="bg-red-500 text-white p-4 rounded-lg">Error: {error}</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
-        <div className="md:hidden">
-          {/* <Header /> */}
-        </div>
+        <div className="md:hidden">{/* <Header /> */}</div>
 
         <div className="flex-1 p-5 mt-[6%]">
           <div className="max-w-4xl mx-auto">
@@ -196,19 +192,25 @@ export default function UserDetail() {
                 <>
                   <div className="flex items-start space-x-6 mb-8">
                     <div className="flex-shrink-0 h-20 w-20 bg-gray-600 rounded-full flex items-center justify-center text-gray-300 text-2xl">
-                      {user.first_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                      {user.first_name?.charAt(0) || user.email?.charAt(0) || "U"}
                     </div>
                     <div>
                       <h2 className="text-2xl font-bold text-white">
-                        {user.first_name || 'No name'} {user.last_name}
+                        {user.first_name || "No name"} {user.last_name}
                       </h2>
                       <p className="text-gray-400">{user.email}</p>
                       <div className="flex space-x-2 mt-2">
-                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${user.is_active ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'}`}>
-                          {user.is_active ? 'Active' : 'Inactive'}
+                        <span
+                          className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                            user.is_active
+                              ? "bg-green-900 text-green-200"
+                              : "bg-red-900 text-red-200"
+                          }`}
+                        >
+                          {user.is_active ? "Active" : "Inactive"}
                         </span>
                         <span className="px-2 py-1 text-xs font-semibold rounded-full bg-purple-900 text-purple-200">
-                          {user.is_superuser ? 'Admin' : user.is_staff ? 'Staff' : 'User'}
+                          {user.is_superuser ? "Admin" : user.is_staff ? "Staff" : "User"}
                         </span>
                       </div>
                     </div>
@@ -216,35 +218,41 @@ export default function UserDetail() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-300 mb-4">Basic Information</h3>
+                      <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                        Basic Information
+                      </h3>
                       <div className="space-y-3">
                         <div>
                           <p className="text-sm text-gray-400">Joined Date</p>
-                          <p className="text-white">{new Date(user.date_joined).toLocaleString()}</p>
+                          <p className="text-white">
+                            {new Date(user.date_joined).toLocaleString()}
+                          </p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Last Login</p>
                           <p className="text-white">
-                            {user.last_login ? new Date(user.last_login).toLocaleString() : 'Never'}
+                            {user.last_login ? new Date(user.last_login).toLocaleString() : "Never"}
                           </p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Phone Number</p>
-                          <p className="text-white">{user.phone_number || 'Not provided'}</p>
+                          <p className="text-white">{user.phone_number || "Not provided"}</p>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-300 mb-4">Additional Information</h3>
+                      <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                        Additional Information
+                      </h3>
                       <div className="space-y-3">
                         <div>
                           <p className="text-sm text-gray-400">Date of Birth</p>
-                          <p className="text-white">{user.date_birth || 'Not provided'}</p>
+                          <p className="text-white">{user.date_birth || "Not provided"}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Gender</p>
-                          <p className="text-white">{user.gender || 'Not specified'}</p>
+                          <p className="text-white">{user.gender || "Not specified"}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Status</p>

@@ -1,16 +1,8 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-
-import ApiProvider from "./contexts/ApiProvider";
-import { NextUIProvider } from "@nextui-org/react";
-
-import UserDetail  from "./pages/SingleUser";
+import UserDetail from "./pages/SingleUser";
 import ShipmentPage from "./pages/Users";
 import CompaniesPage from "./pages/CompaniesPage";
 import CompanyDetail from "./pages/CompanyDetail";
@@ -53,7 +45,7 @@ import AddressCreate from "./pages/AddressCreate";
 import CompanyDocumentCreate from "./pages/CompanyDocumentCreate";
 import ShipmentDocumentDetail from "./pages/ShipmentDocumentDetail";
 import ShipmentContainerDetail from "./pages/ShipmentContainerDetail";
-
+import AppProviders from "./providers/AppProviders";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -71,11 +63,7 @@ const AppRoutes = () => {
       <Route
         path="/"
         element={
-          isAuthenticated ? (
-            <Navigate to="/shipments" replace />
-          ) : (
-            <Navigate to="/login" replace />
-          )
+          isAuthenticated ? <Navigate to="/shipments" replace /> : <Navigate to="/login" replace />
         }
       />
       <Route path="/login" element={<Login />} />
@@ -97,7 +85,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-           <Route
+      <Route
         path="/companies"
         element={
           <ProtectedRoute>
@@ -105,15 +93,15 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-          <Route
+      <Route
         path="/companies/:compid"
         element={
           <ProtectedRoute>
-           <CompanyDetail/>
+            <CompanyDetail />
           </ProtectedRoute>
         }
       />
-             <Route
+      <Route
         path="/drivers"
         element={
           <ProtectedRoute>
@@ -121,7 +109,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-                 <Route
+      <Route
         path="/shipment/categories"
         element={
           <ProtectedRoute>
@@ -129,7 +117,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-                       <Route
+      <Route
         path="/shipment/categories/create"
         element={
           <ProtectedRoute>
@@ -138,7 +126,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/categories/:category_id"
         element={
           <ProtectedRoute>
@@ -147,7 +135,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/ports"
         element={
           <ProtectedRoute>
@@ -156,9 +144,7 @@ const AppRoutes = () => {
         }
       />
 
-
-
-<Route
+      <Route
         path="/shipment/ports/create"
         element={
           <ProtectedRoute>
@@ -167,8 +153,7 @@ const AppRoutes = () => {
         }
       />
 
-
-<Route
+      <Route
         path="/shipment/ports/:port_id"
         element={
           <ProtectedRoute>
@@ -177,7 +162,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/steps"
         element={
           <ProtectedRoute>
@@ -186,8 +171,7 @@ const AppRoutes = () => {
         }
       />
 
-
-<Route
+      <Route
         path="/shipment/steps/create"
         element={
           <ProtectedRoute>
@@ -196,7 +180,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/steps/:step_id"
         element={
           <ProtectedRoute>
@@ -205,7 +189,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/document-types"
         element={
           <ProtectedRoute>
@@ -214,7 +198,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/document-types/create"
         element={
           <ProtectedRoute>
@@ -223,7 +207,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/documents"
         element={
           <ProtectedRoute>
@@ -232,7 +216,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/documents/create"
         element={
           <ProtectedRoute>
@@ -241,8 +225,7 @@ const AppRoutes = () => {
         }
       />
 
-
-<Route
+      <Route
         path="/shipment/containers"
         element={
           <ProtectedRoute>
@@ -251,7 +234,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/containers/create"
         element={
           <ProtectedRoute>
@@ -260,7 +243,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/containers/:container_id"
         element={
           <ProtectedRoute>
@@ -269,8 +252,7 @@ const AppRoutes = () => {
         }
       />
 
-
-<Route
+      <Route
         path="/shipments"
         element={
           <ProtectedRoute>
@@ -279,7 +261,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/driver/categories"
         element={
           <ProtectedRoute>
@@ -288,7 +270,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/driver/categories/:category_id"
         element={
           <ProtectedRoute>
@@ -296,8 +278,8 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-    
-<Route
+
+      <Route
         path="/driver/categories/create"
         element={
           <ProtectedRoute>
@@ -306,8 +288,7 @@ const AppRoutes = () => {
         }
       />
 
-
-<Route
+      <Route
         path="/driver/documents"
         element={
           <ProtectedRoute>
@@ -316,7 +297,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/driver/documents/:document_id"
         element={
           <ProtectedRoute>
@@ -325,7 +306,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/driver/documents/create"
         element={
           <ProtectedRoute>
@@ -334,8 +315,7 @@ const AppRoutes = () => {
         }
       />
 
-
-<Route
+      <Route
         path="/shipments/:shipment_id"
         element={
           <ProtectedRoute>
@@ -344,7 +324,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipments/create"
         element={
           <ProtectedRoute>
@@ -353,10 +333,7 @@ const AppRoutes = () => {
         }
       />
 
-
-
-
-<Route
+      <Route
         path="/shipment/document-types/:document_type_id"
         element={
           <ProtectedRoute>
@@ -365,9 +342,7 @@ const AppRoutes = () => {
         }
       />
 
-
-
-<Route
+      <Route
         path="/drivers/:driver_id"
         element={
           <ProtectedRoute>
@@ -376,8 +351,7 @@ const AppRoutes = () => {
         }
       />
 
-
-<Route
+      <Route
         path="/company/documents"
         element={
           <ProtectedRoute>
@@ -386,7 +360,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/company/documents/:document_id"
         element={
           <ProtectedRoute>
@@ -395,8 +369,7 @@ const AppRoutes = () => {
         }
       />
 
-
-<Route
+      <Route
         path="/company/documents/create"
         element={
           <ProtectedRoute>
@@ -405,10 +378,7 @@ const AppRoutes = () => {
         }
       />
 
-
-
-
-<Route
+      <Route
         path="/company/categories"
         element={
           <ProtectedRoute>
@@ -417,7 +387,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/company/categories/create"
         element={
           <ProtectedRoute>
@@ -426,7 +396,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/company/categories/:category_id"
         element={
           <ProtectedRoute>
@@ -444,7 +414,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/user/addresses/:address_id"
         element={
           <ProtectedRoute>
@@ -453,7 +423,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/user/addresses/create"
         element={
           <ProtectedRoute>
@@ -462,7 +432,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/documents"
         element={
           <ProtectedRoute>
@@ -471,7 +441,7 @@ const AppRoutes = () => {
         }
       />
 
-<Route
+      <Route
         path="/shipment/documents/:document_id"
         element={
           <ProtectedRoute>
@@ -479,31 +449,16 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-
-
-
     </Routes>
   );
 };
 
-const queryClient = new QueryClient();
-
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <NextUIProvider>
-      <ApiProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <TooltipProvider>
-              <AppRoutes />
-              <Toaster />
-              <Sonner />
-            </TooltipProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </ApiProvider>
-    </NextUIProvider>
-  </QueryClientProvider>
+  <BrowserRouter>
+    <AppProviders>
+      <AppRoutes />
+    </AppProviders>
+  </BrowserRouter>
 );
 
 export default App;

@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function ShipmentContainerCreate() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    track_number: '',
-    size: '',
+    track_number: "",
+    size: "",
     status: 1,
-    order: '',
+    order: "",
     type: 1,
-    shipment: ''
+    shipment: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -22,7 +22,7 @@ export default function ShipmentContainerCreate() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -30,8 +30,8 @@ export default function ShipmentContainerCreate() {
     e.preventDefault();
     try {
       setLoading(true);
-      debugger
-      const response = await api.post('/en/api/v1/shipment/container/create/', formData);
+      debugger;
+      const response = await api.post("/en/api/v1/shipment/container/create/", formData);
       navigate(`/shipment/containers/${response.body.data.id}`);
     } catch (err) {
       setError(err.message);
@@ -40,7 +40,7 @@ export default function ShipmentContainerCreate() {
   };
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -49,7 +49,7 @@ export default function ShipmentContainerCreate() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Create New Container</h1>
               <button
-                onClick={() => navigate('/shipment/containers')}
+                onClick={() => navigate("/shipment/containers")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Containers
@@ -58,9 +58,7 @@ export default function ShipmentContainerCreate() {
 
             <div className="bg-gray-800 rounded-xl shadow-lg p-6">
               {error && (
-                <div className="bg-red-500 text-white p-4 rounded-lg mb-6">
-                  Error: {error}
-                </div>
+                <div className="bg-red-500 text-white p-4 rounded-lg mb-6">Error: {error}</div>
               )}
 
               <form onSubmit={handleSubmit}>
@@ -144,7 +142,7 @@ export default function ShipmentContainerCreate() {
                     disabled={loading}
                     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
                   >
-                    {loading ? 'Creating...' : 'Create Container'}
+                    {loading ? "Creating..." : "Create Container"}
                   </button>
                 </div>
               </form>

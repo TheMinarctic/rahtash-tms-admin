@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 
 import { useNavigate } from "react-router-dom";
 import { useApi } from "@/contexts/ApiProvider";
@@ -14,7 +14,7 @@ export default function DriversListPage() {
     currentPage: 1,
     nextLink: null,
     status: false,
-    message: ""
+    message: "",
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,7 +31,7 @@ export default function DriversListPage() {
         currentPage: response.body.page_now,
         nextLink: response.body.next_link,
         status: response.body.status,
-        message: response.body.message
+        message: response.body.message,
       });
       setLoading(false);
     } catch (err) {
@@ -55,25 +55,31 @@ export default function DriversListPage() {
   };
 
   const getStatusBadge = (status) => {
-    switch(status) {
-      case 1: return { text: 'Active', color: 'bg-green-900 text-green-200' };
-      case 2: return { text: 'Inactive', color: 'bg-red-900 text-red-200' };
-      default: return { text: 'Unknown', color: 'bg-gray-700 text-gray-300' };
+    switch (status) {
+      case 1:
+        return { text: "Active", color: "bg-green-900 text-green-200" };
+      case 2:
+        return { text: "Inactive", color: "bg-red-900 text-red-200" };
+      default:
+        return { text: "Unknown", color: "bg-gray-700 text-gray-300" };
     }
   };
 
   const getTypeText = (type) => {
-    switch(type) {
-      case 1: return 'Truck';
-      case 2: return 'Van';
-      default: return 'Other';
+    switch (type) {
+      case 1:
+        return "Truck";
+      case 2:
+        return "Van";
+      default:
+        return "Other";
     }
   };
 
   const totalPages = Math.ceil(driversData.totalResults / driversData.perPage);
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -83,18 +89,17 @@ export default function DriversListPage() {
               <h1 className="text-3xl font-bold text-white">Drivers Management</h1>
               <div className="text-gray-300">
                 Showing {(driversData.currentPage - 1) * driversData.perPage + 1}-
-                {Math.min(driversData.currentPage * driversData.perPage, driversData.totalResults)} of {driversData.totalResults} drivers
+                {Math.min(driversData.currentPage * driversData.perPage, driversData.totalResults)}{" "}
+                of {driversData.totalResults} drivers
               </div>
             </div>
-            
+
             {loading ? (
               <div className="flex justify-center items-center h-64">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
               </div>
             ) : error ? (
-              <div className="bg-red-500 text-white p-4 rounded-lg">
-                Error: {error}
-              </div>
+              <div className="bg-red-500 text-white p-4 rounded-lg">Error: {error}</div>
             ) : (
               <>
                 <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden mb-4">
@@ -102,28 +107,52 @@ export default function DriversListPage() {
                     <table className="min-w-full divide-y divide-gray-700">
                       <thead className="bg-gray-700">
                         <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                          >
                             ID
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                          >
                             Driver
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                          >
                             User
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                          >
                             License
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                          >
                             Vehicle
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                          >
                             Status
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                          >
                             Rating
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                          >
                             Actions
                           </th>
                         </tr>
@@ -140,13 +169,14 @@ export default function DriversListPage() {
                                 <div className="flex items-center">
                                   <div className="flex-shrink-0 h-10 w-10">
                                     {driver.image ? (
-                                      <img 
-                                        className="h-10 w-10 rounded-full object-cover" 
-                                        src={driver.image} 
-                                        alt={driver.title} 
+                                      <img
+                                        className="h-10 w-10 rounded-full object-cover"
+                                        src={driver.image}
+                                        alt={driver.title}
                                         onError={(e) => {
-                                          e.target.onerror = null; 
-                                          e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%234B5563"><rect width="100" height="100" rx="50"/><text x="50%" y="50%" font-size="50" dominant-baseline="middle" text-anchor="middle" fill="%23D1D5DB">D</text></svg>'
+                                          e.target.onerror = null;
+                                          e.target.src =
+                                            'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%234B5563"><rect width="100" height="100" rx="50"/><text x="50%" y="50%" font-size="50" dominant-baseline="middle" text-anchor="middle" fill="%23D1D5DB">D</text></svg>';
                                         }}
                                       />
                                     ) : (
@@ -159,14 +189,12 @@ export default function DriversListPage() {
                                     <div className="text-sm font-medium text-white">
                                       {driver.title}
                                     </div>
-                                    <div className="text-sm text-gray-400">
-                                      {driver.track_info}
-                                    </div>
+                                    <div className="text-sm text-gray-400">{driver.track_info}</div>
                                   </div>
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                {driver.user?.email || 'N/A'}
+                                {driver.user?.email || "N/A"}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                 {driver.license_number}
@@ -174,11 +202,15 @@ export default function DriversListPage() {
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                 <div>
                                   <div>{getTypeText(driver.type)}</div>
-                                  <div className="text-xs text-gray-400">{driver.iran_plaque} / {driver.transit_plaque}</div>
+                                  <div className="text-xs text-gray-400">
+                                    {driver.iran_plaque} / {driver.transit_plaque}
+                                  </div>
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge.color}`}>
+                                <span
+                                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge.color}`}
+                                >
                                   {statusBadge.text}
                                 </span>
                               </td>
@@ -187,7 +219,9 @@ export default function DriversListPage() {
                                   {[...Array(5)].map((_, i) => (
                                     <svg
                                       key={i}
-                                      className={`w-4 h-4 ${i < driver.rating ? 'text-yellow-400' : 'text-gray-500'}`}
+                                      className={`w-4 h-4 ${
+                                        i < driver.rating ? "text-yellow-400" : "text-gray-500"
+                                      }`}
                                       fill="currentColor"
                                       viewBox="0 0 20 20"
                                     >
@@ -216,22 +250,31 @@ export default function DriversListPage() {
                 <div className="flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg">
                   <div>
                     <p className="text-sm text-gray-400">
-                      Page <span className="font-medium">{driversData.currentPage}</span> of <span className="font-medium">{totalPages}</span>
+                      Page <span className="font-medium">{driversData.currentPage}</span> of{" "}
+                      <span className="font-medium">{totalPages}</span>
                     </p>
                   </div>
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handlePageChange(driversData.currentPage - 1)}
                       disabled={driversData.currentPage === 1}
-                      className={`px-4 py-2 rounded-md ${driversData.currentPage === 1 ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-gray-700 text-white hover:bg-gray-600'}`}
+                      className={`px-4 py-2 rounded-md ${
+                        driversData.currentPage === 1
+                          ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                          : "bg-gray-700 text-white hover:bg-gray-600"
+                      }`}
                     >
                       Previous
                     </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                       <button
                         key={page}
                         onClick={() => handlePageChange(page)}
-                        className={`px-4 py-2 rounded-md ${driversData.currentPage === page ? 'bg-blue-600 text-white' : 'bg-gray-700 text-white hover:bg-gray-600'}`}
+                        className={`px-4 py-2 rounded-md ${
+                          driversData.currentPage === page
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-700 text-white hover:bg-gray-600"
+                        }`}
                       >
                         {page}
                       </button>
@@ -239,7 +282,11 @@ export default function DriversListPage() {
                     <button
                       onClick={() => handlePageChange(driversData.currentPage + 1)}
                       disabled={driversData.currentPage === totalPages || totalPages === 0}
-                      className={`px-4 py-2 rounded-md ${driversData.currentPage === totalPages || totalPages === 0 ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-gray-700 text-white hover:bg-gray-600'}`}
+                      className={`px-4 py-2 rounded-md ${
+                        driversData.currentPage === totalPages || totalPages === 0
+                          ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                          : "bg-gray-700 text-white hover:bg-gray-600"
+                      }`}
                     >
                       Next
                     </button>

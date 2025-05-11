@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function DocumentDetail() {
@@ -12,8 +12,8 @@ export default function DocumentDetail() {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     file: null,
-    type_verifier_driver: '',
-    verifier_driver: ''
+    type_verifier_driver: "",
+    verifier_driver: "",
   });
   const [open, setOpen] = useState(true);
   const api = useApi();
@@ -26,7 +26,7 @@ export default function DocumentDetail() {
         setDocument(response.body.data);
         setFormData({
           type_verifier_driver: response.body.data.type_verifier_driver,
-          verifier_driver: response.body.data.verifier_driver
+          verifier_driver: response.body.data.verifier_driver,
         });
         setLoading(false);
       } catch (err) {
@@ -42,14 +42,14 @@ export default function DocumentDetail() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleFileChange = (e) => {
     setFormData({
       ...formData,
-      file: e.target.files[0]
+      file: e.target.files[0],
     });
   };
 
@@ -57,20 +57,20 @@ export default function DocumentDetail() {
     e.preventDefault();
     try {
       setLoading(true);
-      
+
       const formDataToSend = new FormData();
       if (formData.file) {
-        formDataToSend.append('file', formData.file);
+        formDataToSend.append("file", formData.file);
       }
-      formDataToSend.append('type_verifier_driver', formData.type_verifier_driver);
-      formDataToSend.append('verifier_driver', formData.verifier_driver);
+      formDataToSend.append("type_verifier_driver", formData.type_verifier_driver);
+      formDataToSend.append("verifier_driver", formData.verifier_driver);
 
       await api.patch(`/en/api/v1/driver/document/update/${document_id}/`, formDataToSend, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
-      
+
       const response = await api.get(`/en/api/v1/driver/document/detail/${document_id}/`);
       setDocument(response.body.data);
       setEditMode(false);
@@ -82,11 +82,11 @@ export default function DocumentDetail() {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this document?')) {
+    if (window.confirm("Are you sure you want to delete this document?")) {
       try {
         setLoading(true);
         await api.delete(`/en/api/v1/driver/document/delete/${document_id}/`);
-        navigate('/driver/documents');
+        navigate("/driver/documents");
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -110,16 +110,14 @@ export default function DocumentDetail() {
       <div className="flex h-full bg-gray-900">
         <Sidebar open={open} setOpen={setOpen} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-500 text-white p-4 rounded-lg">
-            Error: {error}
-          </div>
+          <div className="bg-red-500 text-white p-4 rounded-lg">Error: {error}</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -128,7 +126,7 @@ export default function DocumentDetail() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Document Details</h1>
               <button
-                onClick={() => navigate('/driver/documents')}
+                onClick={() => navigate("/driver/documents")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Documents
@@ -140,7 +138,9 @@ export default function DocumentDetail() {
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 gap-6 mb-6">
                     <div>
-                      <label className="block text-gray-300 mb-2">Document File (Leave empty to keep current)</label>
+                      <label className="block text-gray-300 mb-2">
+                        Document File (Leave empty to keep current)
+                      </label>
                       <input
                         type="file"
                         name="file"
@@ -214,9 +214,9 @@ export default function DocumentDetail() {
                     {document.file && (
                       <div>
                         <p className="text-sm text-gray-400">Document</p>
-                        <a 
-                          href={document.file} 
-                          target="_blank" 
+                        <a
+                          href={document.file}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-400 hover:underline"
                         >

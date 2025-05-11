@@ -1,17 +1,17 @@
 // ShipmentCreate.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function ShipmentCreate() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    bill_of_lading_number_id: '',
+    bill_of_lading_number_id: "",
     contains_dangerous_good: false,
-    date_of_loading: '',
-    note: '',
-    status: 1 // Adding status field with default value 1 (Pending)
+    date_of_loading: "",
+    note: "",
+    status: 1, // Adding status field with default value 1 (Pending)
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -22,39 +22,35 @@ export default function ShipmentCreate() {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-     
-      // Convert status to number if it comes as string from form
-      const payload = {
-        ...formData,
-        status: Number(formData.status)
-      };
-      
-      const response = await api.post('/en/api/v1/shipment/create/', payload);
-      
-      if(response.body.error){
-        if(response.body.error.bill_of_lading_number_id){
-          setError(response.body.error.bill_of_lading_number_id[0]);
-        }
-      }
-     
+    // Convert status to number if it comes as string from form
+    const payload = {
+      ...formData,
+      status: Number(formData.status),
+    };
 
-      if(response.ok){
-        navigate(`/shipments/${response.body.data.id}`);
-        setLoading(false);
-      }
-      
+    const response = await api.post("/en/api/v1/shipment/create/", payload);
 
+    if (response.body.error) {
+      if (response.body.error.bill_of_lading_number_id) {
+        setError(response.body.error.bill_of_lading_number_id[0]);
+      }
+    }
+
+    if (response.ok) {
+      navigate(`/shipments/${response.body.data.id}`);
+      setLoading(false);
+    }
   };
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -63,7 +59,7 @@ export default function ShipmentCreate() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Create New Shipment</h1>
               <button
-                onClick={() => navigate('/shipments')}
+                onClick={() => navigate("/shipments")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Shipments
@@ -72,9 +68,7 @@ export default function ShipmentCreate() {
 
             <div className="bg-gray-800 rounded-xl shadow-lg p-6">
               {error && (
-                <div className="bg-red-500 text-white p-4 rounded-lg mb-6">
-                  Error: {error}
-                </div>
+                <div className="bg-red-500 text-white p-4 rounded-lg mb-6">Error: {error}</div>
               )}
 
               <form onSubmit={handleSubmit}>
@@ -143,7 +137,7 @@ export default function ShipmentCreate() {
                     disabled={loading}
                     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
                   >
-                    {loading ? 'Creating...' : 'Create Shipment'}
+                    {loading ? "Creating..." : "Create Shipment"}
                   </button>
                 </div>
               </form>

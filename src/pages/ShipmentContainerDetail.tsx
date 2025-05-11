@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function ShipmentContainerDetail() {
@@ -11,12 +11,12 @@ export default function ShipmentContainerDetail() {
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    track_number: '',
-    size: '',
+    track_number: "",
+    size: "",
     status: 1,
-    order: '',
+    order: "",
     type: 1,
-    shipment: ''
+    shipment: "",
   });
   const [open, setOpen] = useState(true);
   const api = useApi();
@@ -33,7 +33,7 @@ export default function ShipmentContainerDetail() {
           status: response.body.data.status,
           order: response.body.data.order,
           type: response.body.data.type,
-          shipment: response.body.data.shipment?.id || ''
+          shipment: response.body.data.shipment?.id || "",
         });
         setLoading(false);
       } catch (err) {
@@ -49,7 +49,7 @@ export default function ShipmentContainerDetail() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -69,11 +69,11 @@ export default function ShipmentContainerDetail() {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this container?')) {
+    if (window.confirm("Are you sure you want to delete this container?")) {
       try {
         setLoading(true);
         await api.delete(`/en/api/v1/shipment/container/delete/${container_id}/`);
-        navigate('/shipment/containers');
+        navigate("/shipment/containers");
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -97,36 +97,42 @@ export default function ShipmentContainerDetail() {
       <div className="flex h-full bg-gray-900">
         <Sidebar open={open} setOpen={setOpen} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-500 text-white p-4 rounded-lg">
-            Error: {error}
-          </div>
+          <div className="bg-red-500 text-white p-4 rounded-lg">Error: {error}</div>
         </div>
       </div>
     );
   }
 
   const getStatusBadge = (status) => {
-    switch(status) {
-      case 1: return { text: 'Active', color: 'bg-green-900 text-green-200' };
-      case 2: return { text: 'Inactive', color: 'bg-red-900 text-red-200' };
-      default: return { text: 'Unknown', color: 'bg-gray-700 text-gray-300' };
+    switch (status) {
+      case 1:
+        return { text: "Active", color: "bg-green-900 text-green-200" };
+      case 2:
+        return { text: "Inactive", color: "bg-red-900 text-red-200" };
+      default:
+        return { text: "Unknown", color: "bg-gray-700 text-gray-300" };
     }
   };
 
   const getContainerType = (type) => {
-    switch(type) {
-      case 1: return 'Dry';
-      case 2: return 'Reefer';
-      case 3: return 'Open Top';
-      case 4: return 'Flat Rack';
-      default: return 'Unknown';
+    switch (type) {
+      case 1:
+        return "Dry";
+      case 2:
+        return "Reefer";
+      case 3:
+        return "Open Top";
+      case 4:
+        return "Flat Rack";
+      default:
+        return "Unknown";
     }
   };
 
   const statusBadge = getStatusBadge(container.status);
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -135,7 +141,7 @@ export default function ShipmentContainerDetail() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Container Details</h1>
               <button
-                onClick={() => navigate('/shipment/containers')}
+                onClick={() => navigate("/shipment/containers")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Containers
@@ -256,7 +262,9 @@ export default function ShipmentContainerDetail() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Status</p>
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge.color}`}>
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadge.color}`}
+                      >
                         {statusBadge.text}
                       </span>
                     </div>
@@ -266,15 +274,21 @@ export default function ShipmentContainerDetail() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Shipment</p>
-                      <p className="text-white">{container.shipment?.bill_of_lading_number_id || 'N/A'}</p>
+                      <p className="text-white">
+                        {container.shipment?.bill_of_lading_number_id || "N/A"}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Created At</p>
-                      <p className="text-white">{new Date(container.created_at).toLocaleString()}</p>
+                      <p className="text-white">
+                        {new Date(container.created_at).toLocaleString()}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Updated At</p>
-                      <p className="text-white">{new Date(container.updated_at).toLocaleString()}</p>
+                      <p className="text-white">
+                        {new Date(container.updated_at).toLocaleString()}
+                      </p>
                     </div>
                   </div>
 

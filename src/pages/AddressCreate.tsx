@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function AddressCreate() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    city: '',
-    province: '',
-    address: '',
+    city: "",
+    province: "",
+    address: "",
     status: 1,
-    type: 1
+    type: 1,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,7 +21,7 @@ export default function AddressCreate() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -29,7 +29,7 @@ export default function AddressCreate() {
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await api.post('/en/api/v1/user/address/create/', formData);
+      const response = await api.post("/en/api/v1/user/address/create/", formData);
       navigate(`/user/addresses/${response.body.data.id}`);
     } catch (err) {
       setError(err.message);
@@ -38,7 +38,7 @@ export default function AddressCreate() {
   };
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -47,7 +47,7 @@ export default function AddressCreate() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Create New Address</h1>
               <button
-                onClick={() => navigate('/users/address')}
+                onClick={() => navigate("/users/address")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Addresses
@@ -56,9 +56,7 @@ export default function AddressCreate() {
 
             <div className="bg-gray-800 rounded-xl shadow-lg p-6">
               {error && (
-                <div className="bg-red-500 text-white p-4 rounded-lg mb-6">
-                  Error: {error}
-                </div>
+                <div className="bg-red-500 text-white p-4 rounded-lg mb-6">Error: {error}</div>
               )}
 
               <form onSubmit={handleSubmit}>
@@ -132,7 +130,7 @@ export default function AddressCreate() {
                     disabled={loading}
                     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
                   >
-                    {loading ? 'Creating...' : 'Create Address'}
+                    {loading ? "Creating..." : "Create Address"}
                   </button>
                 </div>
               </form>

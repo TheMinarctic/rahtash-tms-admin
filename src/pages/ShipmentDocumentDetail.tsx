@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { useApi } from "@/contexts/ApiProvider";
 
 export default function ShipmentDocumentDetail() {
@@ -11,10 +11,10 @@ export default function ShipmentDocumentDetail() {
   const [error, setError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    type: '',
-    verifier: '',
-    shipment: '',
-    file: null
+    type: "",
+    verifier: "",
+    shipment: "",
+    file: null,
   });
   const [open, setOpen] = useState(true);
   const api = useApi();
@@ -26,10 +26,10 @@ export default function ShipmentDocumentDetail() {
         const response = await api.get(`/en/api/v1/shipment/document/detail/${document_id}/`);
         setDocument(response.body.data);
         setFormData({
-          type: response.body.data.type?.id || '',
-          verifier: response.body.data.verifier?.id || '',
-          shipment: response.body.data.shipment?.id || '',
-          file: null
+          type: response.body.data.type?.id || "",
+          verifier: response.body.data.verifier?.id || "",
+          shipment: response.body.data.shipment?.id || "",
+          file: null,
         });
         setLoading(false);
       } catch (err) {
@@ -45,14 +45,14 @@ export default function ShipmentDocumentDetail() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleFileChange = (e) => {
     setFormData({
       ...formData,
-      file: e.target.files[0]
+      file: e.target.files[0],
     });
   };
 
@@ -61,10 +61,10 @@ export default function ShipmentDocumentDetail() {
     try {
       setLoading(true);
       const form = new FormData();
-      if (formData.type) form.append('type', formData.type);
-      if (formData.verifier) form.append('verifier', formData.verifier);
-      if (formData.shipment) form.append('shipment', formData.shipment);
-      if (formData.file) form.append('file', formData.file);
+      if (formData.type) form.append("type", formData.type);
+      if (formData.verifier) form.append("verifier", formData.verifier);
+      if (formData.shipment) form.append("shipment", formData.shipment);
+      if (formData.file) form.append("file", formData.file);
 
       await api.patch(`/en/api/v1/shipment/document/update/${document_id}/`, form);
       const response = await api.get(`/en/api/v1/shipment/document/detail/${document_id}/`);
@@ -78,11 +78,11 @@ export default function ShipmentDocumentDetail() {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this document?')) {
+    if (window.confirm("Are you sure you want to delete this document?")) {
       try {
         setLoading(true);
         await api.delete(`/en/api/v1/shipment/document/delete/${document_id}/`);
-        navigate('/shipment/documents');
+        navigate("/shipment/documents");
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -92,7 +92,7 @@ export default function ShipmentDocumentDetail() {
 
   const downloadFile = () => {
     if (document?.file) {
-      window.open(document.file, '_blank');
+      window.open(document.file, "_blank");
     }
   };
 
@@ -112,16 +112,14 @@ export default function ShipmentDocumentDetail() {
       <div className="flex h-full bg-gray-900">
         <Sidebar open={open} setOpen={setOpen} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-red-500 text-white p-4 rounded-lg">
-            Error: {error}
-          </div>
+          <div className="bg-red-500 text-white p-4 rounded-lg">Error: {error}</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div dir="ltr" className="flex h-full bg-gray-900">
+    <div className="flex h-full bg-gray-900">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div className="flex-1 flex flex-col md:h-screen bg-gradient-to-r from-gray-800 to-gray-900 overflow-auto">
@@ -130,7 +128,7 @@ export default function ShipmentDocumentDetail() {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-bold text-white">Document Details</h1>
               <button
-                onClick={() => navigate('/shipment/documents')}
+                onClick={() => navigate("/shipment/documents")}
                 className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
               >
                 Back to Documents
@@ -207,23 +205,22 @@ export default function ShipmentDocumentDetail() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Shipment</p>
-                      <p className="text-white">{document.shipment?.bill_of_lading_number_id || 'N/A'}</p>
+                      <p className="text-white">
+                        {document.shipment?.bill_of_lading_number_id || "N/A"}
+                      </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Document Type</p>
-                      <p className="text-white">{document.type?.title || 'N/A'}</p>
+                      <p className="text-white">{document.type?.title || "N/A"}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Verifier</p>
-                      <p className="text-white">{document.verifier?.email || 'N/A'}</p>
+                      <p className="text-white">{document.verifier?.email || "N/A"}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">File</p>
-                      <button
-                        onClick={downloadFile}
-                        className="text-blue-400 hover:text-blue-300"
-                      >
-                        {document.file?.split('/').pop() || 'N/A'}
+                      <button onClick={downloadFile} className="text-blue-400 hover:text-blue-300">
+                        {document.file?.split("/").pop() || "N/A"}
                       </button>
                     </div>
                     <div>
