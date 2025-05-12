@@ -164,7 +164,7 @@ const SelectSearch = ({
         />
       </div>
 
-      <div className="pe-2 text-neutral-500">
+      <div className="pe-2 text-gray-500">
         <Search size={16} />
       </div>
     </div>

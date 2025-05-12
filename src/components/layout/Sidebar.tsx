@@ -15,8 +15,10 @@ import {
   FiList,
   FiFileText,
   FiBox,
-  FiClock,
 } from "react-icons/fi";
+import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { Moon, Sun } from "lucide-react";
 
 interface Menu {
   title: string;
@@ -36,127 +38,27 @@ interface SidebarProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const THEME_MODE = "theme_mode";
+const SIDEBAR_SELECTED_PARENT_MENU = "sidebar_selected_menu";
+
 const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   const { logout } = useAuth();
-  const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({
-    users: false,
-    companies: false,
-    drivers: false,
-    shipments: false,
-  });
-  const [selectItem, setSelectItem] = useState<string | undefined>();
   const navigate = useNavigate();
+  const [theme, setTheme] = useState(localStorage.getItem(THEME_MODE));
 
-  const Menus: Menu[] = [
-    {
-      title: "Users",
-      icon: <FaUsers className="w-7 text-sky-600 h-7" />,
-      subMenus: [
-        {
-          title: "Users List",
-          href: "/users",
-          icon: <FaUsers className="w-5 text-sky-400 h-5" />,
-        },
-        {
-          title: "Address",
-          href: "/users/address",
-          icon: <FaAddressCard className="w-5 text-sky-400 h-5" />,
-        },
-      ],
-    },
-    {
-      title: "Companies",
-      icon: <FaNetworkWired className="w-7 text-sky-600 h-7" />,
-      subMenus: [
-        {
-          title: "Companies List",
-          href: "/companies",
-          icon: <FaNetworkWired className="w-5 text-sky-400 h-5" />,
-        },
-        {
-          title: "Categories",
-          href: "/company/categories",
-          icon: <FaFolder className="w-5 text-sky-400 h-5" />,
-        },
-        {
-          title: "Documents",
-          href: "/company/documents",
-          icon: <FaFileAlt className="w-5 text-sky-400 h-5" />,
-        },
-      ],
-    },
-    {
-      title: "Drivers",
-      icon: <TbTruckDelivery className="w-7 text-sky-600 h-7" />,
-      subMenus: [
-        {
-          title: "Drivers List",
-          href: "/drivers",
-          icon: <TbTruckDelivery className="w-5 text-sky-400 h-5" />,
-        },
-        {
-          title: "Categories",
-          href: "/driver/categories",
-          icon: <FaFolder className="w-5 text-sky-400 h-5" />,
-        },
-        {
-          title: "Documents",
-          href: "/driver/documents",
-          icon: <FaFileAlt className="w-5 text-sky-400 h-5" />,
-        },
-      ],
-    },
-    {
-      title: "Shipments",
-      icon: <FiPackage className="w-7 text-sky-600 h-7" />,
-      subMenus: [
-        {
-          title: "All Shipments",
-          href: "/shipments",
-          icon: <FiPackage className="w-5 text-sky-400 h-5" />,
-        },
-
-        {
-          title: "Ports",
-          href: "/shipment/ports",
-          icon: <FiMapPin className="w-5 text-sky-400 h-5" />,
-        },
-        {
-          title: "Steps",
-          href: "/shipment/steps",
-          icon: <FiList className="w-5 text-sky-400 h-5" />,
-        },
-        {
-          title: "Documents",
-          href: "/shipment/documents",
-          icon: <FaFileAlt className="w-5 text-sky-400 h-5" />,
-        },
-        {
-          title: "Document Types",
-          href: "/shipment/document-types",
-          icon: <FiFileText className="w-5 text-sky-400 h-5" />,
-        },
-
-        {
-          title: "Containers",
-          href: "/shipment/containers",
-          icon: <FiBox className="w-5 text-sky-400 h-5" />,
-        },
-
-        // {
-        //     title: "Step History",
-        //     href: "/shipment/step-history",
-        //     icon: <FiClock className="w-5 text-sky-400 h-5" />
-        // },
-      ],
-    },
-  ];
+  const [selectItem, setSelectItem] = useState<string | undefined>();
+  const [selectedParentMenu, setSelectedParentMenu] = useState<undefined | string>(
+    localStorage.getItem(SIDEBAR_SELECTED_PARENT_MENU || undefined),
+  );
 
   const toggleMenu = (title: string) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [title.toLowerCase()]: !prev[title.toLowerCase()],
-    }));
+    if (selectedParentMenu === title) {
+      setSelectedParentMenu(undefined);
+      localStorage.setItem(SIDEBAR_SELECTED_PARENT_MENU, undefined);
+    } else {
+      setSelectedParentMenu(title);
+      localStorage.setItem(SIDEBAR_SELECTED_PARENT_MENU, title);
+    }
   };
 
   const handleNavigation = (href: string, title: string) => {
@@ -166,37 +68,46 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
 
   return (
     <div
-      className={`hidden md:block ${
-        open ? "w-72" : "w-20"
-      } bg-gray-900 p-5 relative pt-14 duration-300 border-r border-gray-700`}
+      className={cn(
+        `relative hidden select-none border-e border-border bg-background p-5 pt-14 duration-300 md:flex md:flex-col`,
+        open ? "w-72" : "w-20",
+      )}
     >
+      {/* TOGGLE BUTTON */}
       <img
         src="/assets/control.png"
-        className={`absolute cursor-pointer -right-3 top-9 w-7 border-blue-500 border-2 rounded-full ${
-          !open && "rotate-180"
-        }`}
+        className={cn(
+          `absolute -right-3 top-9 w-7 cursor-pointer rounded-full border-2 border-primary`,
+          !open && "rotate-180",
+        )}
         onClick={() => setOpen(!open)}
       />
-      <div className="flex gap-x-4 items-center">
-        <img
-          src="/R.png"
-          className={`cursor-pointer h-10 w-10 duration-500 ${open && "rotate-[360deg]"}`}
-        />
+
+      {/* LOGO */}
+      <div className="flex items-center gap-x-4">
+        <img src="/R.png" className={cn(`h-10 w-10 duration-500`, open && "rotate-[360deg]")} />
+
         <h1
-          className={`text-gray-200 origin-left font-medium text-base duration-200 ${
-            !open && "scale-0"
-          }`}
+          className={cn(
+            `origin-left text-base font-medium text-foreground duration-200`,
+            !open && "scale-0",
+          )}
         >
           Rahtash
         </h1>
       </div>
-      <Divider className="bg-gray-700 mt-8" />
-      <ul className="pt-6">
+
+      <Divider className="mt-8 border-border" />
+
+      {/* MENU LIST ITEMS */}
+      <ul className="flex-1 pt-6">
         {Menus.map((Menu, index) => (
           <React.Fragment key={index}>
             <li
-              className={`flex rounded-md p-2 mb-2 cursor-pointer hover:bg-gray-700 text-gray-200 text-lg items-center gap-x-4 
-                                        ${Menu.title === selectItem ? "bg-gray-700" : ""}`}
+              className={cn(
+                `mb-2 flex cursor-pointer items-center gap-x-4 rounded-md p-2 text-base hover:bg-muted`,
+                Menu.title === selectedParentMenu && "bg-muted text-primary",
+              )}
               onClick={() => {
                 if (Menu.href) {
                   handleNavigation(Menu.href, Menu.title);
@@ -205,33 +116,31 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                 }
               }}
             >
-              {Menu.icon}
-              <span className={`${!open && "hidden"} origin-left duration-200 flex-1`}>
+              <span>{Menu.icon}</span>
+
+              <span className={cn(`${!open && "hidden"} flex-1 origin-left duration-200`)}>
                 {Menu.title}
               </span>
-              {Menu.subMenus &&
-                open &&
-                (expandedMenus[Menu.title.toLowerCase()] ? (
-                  <FiChevronDown className="text-gray-400" />
-                ) : (
-                  <FiChevronRight className="text-gray-400" />
-                ))}
+
+              {Menu.subMenus && open && selectedParentMenu === Menu.title ? (
+                <FiChevronDown className="text-primary" />
+              ) : (
+                <FiChevronRight className="text-muted-foreground" />
+              )}
             </li>
 
-            {Menu.subMenus && expandedMenus[Menu.title.toLowerCase()] && open && (
-              <ul className="ml-8 mb-2">
+            {Menu.subMenus && selectedParentMenu === Menu.title && open && (
+              <ul className="mb-2 ps-8">
                 {Menu.subMenus.map((subMenu, subIndex) => (
                   <li
                     key={subIndex}
-                    className={`flex rounded-md p-2 mb-2 cursor-pointer hover:bg-gray-700 text-gray-200 text-sm items-center gap-x-4 
-                                                    ${
-                                                      subMenu.title === selectItem
-                                                        ? "bg-gray-700"
-                                                        : ""
-                                                    }`}
+                    className={cn(
+                      `mb-2 flex cursor-pointer items-center gap-x-4 rounded-md p-2 text-sm text-accent-foreground hover:bg-muted`,
+                      subMenu.title === selectItem && "bg-muted",
+                    )}
                     onClick={() => handleNavigation(subMenu.href, subMenu.title)}
                   >
-                    {subMenu.icon || <FiPackage className="w-5 text-sky-400 h-5" />}
+                    {subMenu.icon || <FiPackage className="size-5 text-sky-400" />}
                     <span>{subMenu.title}</span>
                   </li>
                 ))}
@@ -241,15 +150,141 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
         ))}
 
         <li
-          className={`flex rounded-md p-2 mb-8 cursor-pointer hover:bg-gray-700 text-gray-200 text-lg items-center gap-x-4`}
           onClick={logout}
+          className={`mb-8 flex cursor-pointer items-center gap-x-4 rounded-md p-2 hover:bg-red-100/50 hover:text-red-500`}
         >
-          <BiLogOutCircle className="w-7 text-blue-400 h-7" />
+          <BiLogOutCircle className="size-6 text-red-500" />
           <span className={`${!open && "hidden"} origin-left duration-200`}>Log out</span>
         </li>
       </ul>
+
+      {/* THEME MANAGE */}
+      <div className="flex w-full">
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={() => {
+            if (!theme || theme === "light") {
+              setTheme("dark");
+              document.body.classList.add("dark");
+              localStorage.setItem(THEME_MODE, "dark");
+            } else {
+              setTheme("light");
+              document.body.classList.remove("dark");
+              localStorage.setItem(THEME_MODE, "light");
+            }
+          }}
+        >
+          {theme !== "dark" ? <Moon /> : <Sun />}
+        </Button>
+      </div>
     </div>
   );
 };
 
 export default Sidebar;
+
+const Menus: Menu[] = [
+  {
+    title: "Users",
+    icon: <FaUsers className="size-6 text-sky-600" />,
+    subMenus: [
+      {
+        title: "Users List",
+        href: "/users",
+        icon: <FaUsers className="size-5 text-sky-400" />,
+      },
+      {
+        title: "Address",
+        href: "/users/address",
+        icon: <FaAddressCard className="size-5 text-sky-400" />,
+      },
+    ],
+  },
+  {
+    title: "Companies",
+    icon: <FaNetworkWired className="size-6 text-sky-600" />,
+    subMenus: [
+      {
+        title: "Companies List",
+        href: "/companies",
+        icon: <FaNetworkWired className="size-5 text-sky-400" />,
+      },
+      {
+        title: "Categories",
+        href: "/company/categories",
+        icon: <FaFolder className="size-5 text-sky-400" />,
+      },
+      {
+        title: "Documents",
+        href: "/company/documents",
+        icon: <FaFileAlt className="size-5 text-sky-400" />,
+      },
+    ],
+  },
+  {
+    title: "Drivers",
+    icon: <TbTruckDelivery className="size-6 text-sky-600" />,
+    subMenus: [
+      {
+        title: "Drivers List",
+        href: "/drivers",
+        icon: <TbTruckDelivery className="size-5 text-sky-400" />,
+      },
+      {
+        title: "Categories",
+        href: "/driver/categories",
+        icon: <FaFolder className="size-5 text-sky-400" />,
+      },
+      {
+        title: "Documents",
+        href: "/driver/documents",
+        icon: <FaFileAlt className="size-5 text-sky-400" />,
+      },
+    ],
+  },
+  {
+    title: "Shipments",
+    icon: <FiPackage className="size-6 text-sky-600" />,
+    subMenus: [
+      {
+        title: "All Shipments",
+        href: "/shipments",
+        icon: <FiPackage className="size-5 text-sky-400" />,
+      },
+
+      {
+        title: "Ports",
+        href: "/shipment/ports",
+        icon: <FiMapPin className="size-5 text-sky-400" />,
+      },
+      {
+        title: "Steps",
+        href: "/shipment/steps",
+        icon: <FiList className="size-5 text-sky-400" />,
+      },
+      {
+        title: "Documents",
+        href: "/shipment/documents",
+        icon: <FaFileAlt className="size-5 text-sky-400" />,
+      },
+      {
+        title: "Document Types",
+        href: "/shipment/document-types",
+        icon: <FiFileText className="size-5 text-sky-400" />,
+      },
+
+      {
+        title: "Containers",
+        href: "/shipment/containers",
+        icon: <FiBox className="size-5 text-sky-400" />,
+      },
+
+      // {
+      //     title: "Step History",
+      //     href: "/shipment/step-history",
+      //     icon: <FiClock className="w-5 text-sky-400 h-5" />
+      // },
+    ],
+  },
+];

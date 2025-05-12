@@ -137,7 +137,7 @@ const TablePaginatorButton = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="center size-8 rounded-md border border-border bg-white p-1 *:size-4 disabled:cursor-not-allowed disabled:opacity-70"
+      className="center size-8 rounded-md border border-border bg-background p-1 *:size-4 disabled:cursor-not-allowed disabled:opacity-70"
     >
       {icon}
     </button>

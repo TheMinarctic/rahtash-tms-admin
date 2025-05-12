@@ -78,7 +78,7 @@ const TableV2 = ({
           {table.getHeaderGroups().map((headerGroup) => (
             <tr
               key={headerGroup.id}
-              className="h-12 border-b border-border bg-gray-200 text-sm font-bold transition-colors duration-300 data-[state=selected]:bg-muted"
+              className="h-12 border-b border-border bg-gray-200 text-sm font-bold transition-colors duration-300 data-[state=selected]:bg-muted dark:bg-gray-800"
             >
               {headerGroup.headers.map((header) => (
                 <th
@@ -109,7 +109,7 @@ const TableV2 = ({
               key={row.id}
               onClick={() => (trOnclick ? trOnclick(row.original) : undefined)}
               className={cn(
-                `border-t bg-white text-gray-600 even:bg-muted hover:text-primary *:hover:text-primary print:border-b print:border-t-0 print:first:border-b`,
+                `border-t bg-background text-muted-foreground even:bg-muted hover:text-primary *:hover:text-primary print:border-b print:border-t-0 print:first:border-b`,
                 trOnclick && "cursor-pointer",
                 row.original?.className,
               )}

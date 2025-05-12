@@ -16,7 +16,7 @@ const TablePaginatorButton = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="center size-9 rounded-md border border-neutral-200 bg-white p-1 *:size-5 disabled:cursor-not-allowed disabled:opacity-70"
+      className="center size-9 rounded-md border border-gray-200 bg-white p-1 *:size-5 disabled:cursor-not-allowed disabled:opacity-70"
     >
       {icon}
     </button>
@@ -60,7 +60,7 @@ const TablePaginator = ({
           icon={<ChevronRight />}
         />
 
-        <span dir="rtl" className="text flex items-center gap-2 font-semibold text-neutral-700">
+        <span dir="rtl" className="text flex items-center gap-2 font-semibold text-gray-700">
           <span>{Number(table.getState().pagination.pageIndex) + 1}</span>
           <span>از</span>
           <span>{table.getPageCount().toLocaleString()}</span>
