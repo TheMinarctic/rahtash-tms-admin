@@ -13,6 +13,7 @@ import { Label } from "../label";
 import { FormMessage } from "../form";
 import { Input } from "../input";
 import { Search } from "lucide-react";
+import { cva, VariantProps } from "class-variance-authority";
 
 type Value = string | number;
 
@@ -32,7 +33,7 @@ interface Props {
     title?: string;
     onClick: () => void;
   };
-  selectItems: SelectItem[];
+  items: SelectItem[];
   trigger?: {
     size?: "default" | "sm" | "xs";
     variant?: "muted" | "background";
@@ -48,6 +49,18 @@ interface Props {
   disabled?: boolean;
 }
 
+const selectTriggerStyles = cva("", {
+  variants: {
+    variant: {
+      background: "bg-background",
+      muted: "bg-muted",
+    },
+  },
+  defaultVariants: {
+    variant: "muted",
+  },
+});
+
 const SelectV2 = ({
   dir = "ltr",
   label,
@@ -57,22 +70,23 @@ const SelectV2 = ({
   disabled,
   classNames,
   showSearch,
-  isRequired,
-  selectItems,
+  items,
+  variant,
   resetOption,
   placeholder,
   defaultValue,
   onValueChange,
+  isRequired = false,
   selectGroupLabel,
   triggerPlaceholder,
-}: Props) => {
+}: Props & VariantProps<typeof selectTriggerStyles>) => {
   const [search, setSearch] = useState("");
   const memoizedSearch = useMemo(() => search, [search]);
 
   return (
     <div className="flex w-full flex-col">
       {/* LABEL */}
-      {label && <Label>{label}</Label>}
+      {label && <Label isRequired={isRequired}>{label}</Label>}
 
       {/* SELECT */}
       <Select
@@ -91,11 +105,7 @@ const SelectV2 = ({
       >
         <SelectTrigger
           dir={dir}
-          className={cn(
-            "capitalize",
-            trigger?.variant === "background" ? "bg-background" : "bg-muted",
-            classNames?.trigger,
-          )}
+          className={cn("capitalize", selectTriggerStyles({ variant }), classNames?.trigger)}
         >
           <SelectValue placeholder={triggerPlaceholder} />
         </SelectTrigger>
@@ -109,8 +119,7 @@ const SelectV2 = ({
               />
             )}
 
-            {selectItems.length <= 0 ||
-            !selectItems?.filter((item) => item.name.includes(search)).length ? (
+            {items.length <= 0 || !items?.filter((item) => item.name.includes(search)).length ? (
               <SelectLabel className={cn(showSearch && "my-1")}>
                 No results found to show.
               </SelectLabel>
@@ -124,7 +133,7 @@ const SelectV2 = ({
               </SelectItem>
             )}
 
-            {selectItems
+            {items
               ?.filter((item) => item.name.includes(search))
               ?.map((item) => (
                 <SelectItem className="capitalize" key={item.value} value={String(item.value)}>
@@ -153,7 +162,7 @@ const SelectSearch = ({
   placeholder?: string;
 }) => {
   return (
-    <div className="sticky top-0 z-20 flex items-center border-b bg-white">
+    <div className="sticky top-0 z-20 flex items-center border-b bg-background">
       <div className="flex-1">
         <Input
           autoFocus
@@ -164,7 +173,7 @@ const SelectSearch = ({
         />
       </div>
 
-      <div className="pe-2 text-gray-500">
+      <div className="pe-2 text-muted-foreground">
         <Search size={16} />
       </div>
     </div>

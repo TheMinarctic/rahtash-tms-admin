@@ -69,7 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   return (
     <div
       className={cn(
-        `relative hidden select-none border-e border-border bg-background p-5 pt-14 duration-300 md:flex md:flex-col`,
+        `relative hidden select-none border-e border-border bg-background p-5 pt-10 duration-300 md:flex md:flex-col`,
         open ? "w-72" : "w-20",
       )}
     >
@@ -97,7 +97,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
         </h1>
       </div>
 
-      <Divider className="mt-8 border-border" />
+      <Divider className="mt-8" />
 
       {/* MENU LIST ITEMS */}
       <ul className="flex-1 pt-6">
@@ -151,7 +151,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
 
         <li
           onClick={logout}
-          className={`mb-8 flex cursor-pointer items-center gap-x-4 rounded-md p-2 hover:bg-red-100/50 hover:text-red-500`}
+          className={`mb-8 flex cursor-pointer items-center gap-x-4 rounded-md p-2 hover:bg-red-100/50 hover:text-red-500 dark:hover:bg-red-950 dark:hover:text-red-200`}
         >
           <BiLogOutCircle className="size-6 text-red-500" />
           <span className={`${!open && "hidden"} origin-left duration-200`}>Log out</span>
@@ -159,24 +159,26 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
       </ul>
 
       {/* THEME MANAGE */}
-      <div className="flex w-full">
-        <Button
-          size="icon"
-          variant="outline"
-          onClick={() => {
-            if (!theme || theme === "light") {
-              setTheme("dark");
-              document.body.classList.add("dark");
-              localStorage.setItem(THEME_MODE, "dark");
-            } else {
-              setTheme("light");
-              document.body.classList.remove("dark");
-              localStorage.setItem(THEME_MODE, "light");
-            }
-          }}
-        >
-          {theme !== "dark" ? <Moon /> : <Sun />}
-        </Button>
+      <div className="flex h-10 w-full items-center border-t pt-4">
+        <div className="flex h-full items-center">
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => {
+              if (!theme || theme === "light") {
+                setTheme("dark");
+                document.body.classList.add("dark");
+                localStorage.setItem(THEME_MODE, "dark");
+              } else {
+                setTheme("light");
+                document.body.classList.remove("dark");
+                localStorage.setItem(THEME_MODE, "light");
+              }
+            }}
+          >
+            {theme !== "dark" ? <Moon /> : <Sun />}
+          </Button>
+        </div>
       </div>
     </div>
   );

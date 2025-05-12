@@ -44,7 +44,7 @@ const TablePaginator = ({
           classNames={{ trigger: "min-w-28" }}
           onValueChange={(value) => table.setPageSize(Number(value))}
           defaultValue={table.getState().pagination.pageSize.toString()}
-          selectItems={paginateStepsList.map((page) => ({ name: `نمایش ${page}`, value: page }))}
+          items={paginateStepsList.map((page) => ({ name: `نمایش ${page}`, value: page }))}
         />
       </div>
 

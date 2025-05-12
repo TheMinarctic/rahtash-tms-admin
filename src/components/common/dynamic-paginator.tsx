@@ -47,7 +47,7 @@ const DynamicPaginator = ({
               }
             }}
             value={per_page || searchParams.get(QUERY_PARAMS.PER_PAGE) || "15"}
-            selectItems={[15, 50, 100, 200].map((page) => ({
+            items={[15, 50, 100, 200].map((page) => ({
               name: `per page: ${page}`,
               value: page,
             }))}
