@@ -1,7 +1,7 @@
-import { Divider, menu } from "@nextui-org/react";
+import { Divider } from "@nextui-org/react";
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaNetworkWired, FaAddressCard, FaFolder, FaFileAlt } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
 import { BiLogOutCircle } from "react-icons/bi";
@@ -44,6 +44,8 @@ const SIDEBAR_SELECTED_PARENT_MENU = "sidebar_selected_menu";
 const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [theme, setTheme] = useState(localStorage.getItem(THEME_MODE));
 
   const [selectItem, setSelectItem] = useState<string | undefined>();
@@ -129,6 +131,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
               )}
             </li>
 
+            {/* SUB MENU ITEMS */}
             {Menu.subMenus && selectedParentMenu === Menu.title && open && (
               <ul className="mb-2 ps-8">
                 {Menu.subMenus.map((subMenu, subIndex) => (
@@ -136,7 +139,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                     key={subIndex}
                     className={cn(
                       `mb-2 flex cursor-pointer items-center gap-x-4 rounded-md p-2 text-sm text-accent-foreground hover:bg-muted`,
-                      subMenu.title === selectItem && "bg-muted",
+                      subMenu.href === location.pathname && "bg-muted",
                     )}
                     onClick={() => handleNavigation(subMenu.href, subMenu.title)}
                   >

@@ -102,7 +102,7 @@ export default function ShipmentList() {
 
         <Button onClick={handleCreate}>
           Add New
-          <Plus />
+          <Plus className="ms-2" />
         </Button>
       </div>
 

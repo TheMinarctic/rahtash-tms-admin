@@ -81,7 +81,7 @@ const UpsertShipmentForm = ({
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogBody>
-          <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={control}
               name="bill_of_lading_number_id"

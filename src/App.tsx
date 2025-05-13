@@ -11,10 +11,7 @@ import DriverDetailPage from "./pages/DriverDetailPage";
 import ShipmentCategoryList from "./pages/ShipmentCategoryList";
 import ShipmentCategoryCreate from "./pages/ShipmentCategoryCreate";
 import ShipmentCategoryDetail from "./pages/ShipmentCategoryDetail";
-import PortsPage from "./pages/ShipmentPortList";
-import PortForm from "./pages/ShipmentPortDetail";
-import ShipmentPortCreate from "./pages/ShipmentPortCreate";
-import ShipmentPortDetail from "./pages/ShipmentPortDetail";
+import PortsPage from "./pages/shipment-ports/ShipmentPortList";
 import ShipmentStepList from "./pages/ShipmentStepList";
 import ShipmentStepCreate from "./pages/ShipmentStepCreate";
 import ShipmentStepDetail from "./pages/ShipmentStepDetail";
@@ -139,24 +136,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <PortsPage />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/shipment/ports/create"
-        element={
-          <ProtectedRoute>
-            <ShipmentPortCreate />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/shipment/ports/:port_id"
-        element={
-          <ProtectedRoute>
-            <ShipmentPortDetail />
           </ProtectedRoute>
         }
       />

@@ -21,11 +21,11 @@ type ConfirmDialogProps = {
 
 function ConfirmDialog({ title, onSubmit, bodyTitles, loading = false }: ConfirmDialogProps) {
   return (
-    <DialogContent>
+    <DialogContent size="xl">
       <DialogHeader>
         <DialogTitle>
           <div className="flex items-center gap-2">
-            <AlertTriangleIcon className="w-8 fill-yellow-400" />
+            <AlertTriangleIcon className="w-8 fill-yellow-400 dark:fill-amber-500 dark:stroke-gray-700" />
             {title}
           </div>
         </DialogTitle>

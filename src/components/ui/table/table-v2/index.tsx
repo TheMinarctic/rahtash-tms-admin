@@ -109,7 +109,7 @@ const TableV2 = ({
               key={row.id}
               onClick={() => (trOnclick ? trOnclick(row.original) : undefined)}
               className={cn(
-                `border-t bg-background text-gray-600 even:bg-muted hover:text-primary *:hover:text-primary dark:text-gray-400 print:border-b print:border-t-0 print:first:border-b`,
+                `border-t bg-background text-accent-foreground even:bg-muted hover:text-primary *:hover:text-primary print:border-b print:border-t-0 print:first:border-b`,
                 trOnclick && "cursor-pointer",
                 row.original?.className,
               )}
