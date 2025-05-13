@@ -25,7 +25,7 @@ const inputStyles = cva("", {
 });
 
 const Input = React.forwardRef<HTMLInputElement, InputProps & VariantProps<typeof inputStyles>>(
-  ({ className, variant, label, error, isRequired, type, ...props }, ref) => {
+  ({ className, variant, label, error, isRequired, type, inputMode, ...props }, ref) => {
     return (
       <FormItem>
         {label && <Label isRequired={isRequired}>{label}</Label>}
@@ -38,6 +38,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps & VariantProps<typeo
             className,
           )}
           ref={ref}
+          inputMode={type === "number" && !inputMode ? "numeric" : inputMode}
           {...props}
         />
 

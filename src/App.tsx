@@ -25,9 +25,8 @@ import ShipmentDocumentList from "./pages/ShipmentDocumentList";
 import ShipmentDocumentCreate from "./pages/ShipmentDocumentCreate";
 import ShipmentContainerList from "./pages/ShipmentContainerList";
 import ShipmentContainerCreate from "./pages/ShipmentContainerCreate";
-import ShipmentList from "./pages/ShipmentList";
-import ShipmentCreate from "./pages/ShipmentCreate";
-import ShipmentDetail from "./pages/ShipmentDetail";
+import ShipmentList from "./pages/shipments/ShipmentList";
+import ShipmentDetail from "./pages/shipments/ShipmentDetail";
 import DriverCategoryList from "./pages/DriverCategoryList";
 import DriverCategoryCreate from "./pages/DriverCategoryCreate";
 import DriverCategoryDetail from "./pages/DriverCategoryDetail";
@@ -320,15 +319,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ShipmentDetail />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/shipments/create"
-        element={
-          <ProtectedRoute>
-            <ShipmentCreate />
           </ProtectedRoute>
         }
       />

@@ -89,7 +89,7 @@ const DatePicker = ({
             !parsedDate && "text-muted-foreground",
           )}
         >
-          <CalendarIcon className="size-4" />
+          <CalendarIcon className="!size-4" />
 
           {parsedDate ? (
             <div className="flex items-center gap-2">
