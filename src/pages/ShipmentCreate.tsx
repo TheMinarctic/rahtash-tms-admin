@@ -1,8 +1,5 @@
 // ShipmentCreate.tsx
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "@/components/layout/Sidebar";
-import { useApi } from "@/contexts/ApiProvider";
 import AppLayout from "@/components/layout/AppLayout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,50 +9,39 @@ import { Checkbox } from "@/components/ui/checkbox";
 import SelectV2 from "@/components/ui/select/select-v2";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
+import { z } from "zod";
+import { serverErrorToast } from "@/utils/errors/server-error-toast";
+import { useForm } from "react-hook-form";
+import { axios } from "@/lib/axios";
+import { AxiosResponse } from "axios";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import DatePicker from "@/components/ui/date-picker";
+import { toast } from "sonner";
 
 export default function ShipmentCreate() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    bill_of_lading_number_id: "",
-    contains_dangerous_good: false,
-    date_of_loading: "",
-    note: "",
-    status: 1, // Adding status field with default value 1 (Pending)
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [open, setOpen] = useState(true);
-  const api = useApi();
+  const form = useForm<FormValues>({ resolver: zodResolver(formSchema) });
+  const { handleSubmit, register, control, formState } = form;
+  const { isSubmitting, errors } = formState;
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Convert status to number if it comes as string from form
-    const payload = {
-      ...formData,
-      status: Number(formData.status),
-    };
-
-    const response = await api.post("/en/api/v1/shipment/create/", payload);
-
-    if (response.body.error) {
-      if (response.body.error.bill_of_lading_number_id) {
-        setError(response.body.error.bill_of_lading_number_id[0]);
-      }
-    }
-
-    if (response.ok) {
-      navigate(`/shipments/${response.body.data.id}`);
-      setLoading(false);
-    }
+  const onSubmit = async (data: FormValues) => {
+    await axios
+      .post("/en/api/v1/shipment/create/", data)
+      .then((res: AxiosResponse<ApiRes>) => {
+        toast.success(res.data.message);
+        navigate(`/shipments/${res.data.data.id}`);
+      })
+      .catch((err) => {
+        return serverErrorToast(err);
+      });
   };
 
   return (
@@ -73,81 +59,119 @@ export default function ShipmentCreate() {
         </CardHeader>
 
         <CardContent>
-          {error && <div className="mb-6 rounded-lg bg-red-500 p-4 text-white">Error: {error}</div>}
-
-          <form onSubmit={handleSubmit}>
-            <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div>
-                <Label isRequired className="mb-2 block text-muted-foreground">
-                  Bill of Lading Number
-                </Label>
-                <Input
-                  type="text"
+          <Form {...form}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                <FormField
+                  control={control}
                   name="bill_of_lading_number_id"
-                  value={formData.bill_of_lading_number_id}
-                  onChange={handleInputChange}
-                />
-              </div>
+                  render={({ field }) => (
+                    <FormItem>
+                      <Label isRequired>Bill of Lading Number</Label>
 
-              <div>
-                <Label className="mb-2 block text-muted-foreground">Date of Loading</Label>
-                <Input
-                  type="datetime-local"
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={control}
                   name="date_of_loading"
-                  value={formData.date_of_loading}
-                  onChange={handleInputChange}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Loading</FormLabel>
+
+                      <DatePicker
+                        date={field.value}
+                        setDate={(v) => {
+                          field.onChange(v.toISOString());
+                        }}
+                      />
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+
+                <div className="flex items-center">
+                  <FormField
+                    control={control}
+                    name="contains_dangerous_good"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="center">
+                          <FormControl>
+                            <Checkbox
+                              id="contains_dangerous_good"
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <Label
+                            htmlFor="contains_dangerous_good"
+                            className="ml-2 block text-muted-foreground"
+                          >
+                            Contains Dangerous Goods
+                          </Label>
+                        </div>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <FormField
+                    control={control}
+                    name="status"
+                    render={({ field, fieldState }) => (
+                      <SelectV2
+                        isRequired
+                        label="Status"
+                        error={fieldState?.error?.message}
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        items={[
+                          { value: 1, name: "pending" },
+                          { value: 2, name: "In Progress" },
+                          { value: 3, name: "Completed" },
+                          { value: 4, name: "Cancelled" },
+                        ]}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <Label className="mb-2 block">Notes</Label>
+                  <Textarea {...register("note")} error={errors?.note?.message} />
+                </div>
               </div>
 
-              <div className="flex items-center">
-                <Checkbox
-                  id="contains_dangerous_good"
-                  name="contains_dangerous_good"
-                  checked={formData.contains_dangerous_good}
-                  onCheckedChange={(value) =>
-                    setFormData((prev) => ({ ...prev, contains_dangerous_good: Boolean(value) }))
-                  }
-                />
-                <Label
-                  htmlFor="contains_dangerous_good"
-                  className="ml-2 block text-muted-foreground"
-                >
-                  Contains Dangerous Goods
-                </Label>
+              <div className="flex justify-end">
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Creating..." : "Create Shipment"}
+                </Button>
               </div>
-
-              <div>
-                <Label isRequired className="mb-2 block text-muted-foreground">
-                  Status
-                </Label>
-                <SelectV2
-                  onValueChange={(v) => {
-                    setFormData((prev) => ({ ...prev, status: Number(v) }));
-                  }}
-                  value={formData.status}
-                  items={[
-                    { value: 1, name: "pending" },
-                    { value: 2, name: "In Progress" },
-                    { value: 3, name: "Completed" },
-                    { value: 4, name: "Cancelled" },
-                  ]}
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <Label className="mb-2 block text-muted-foreground">Notes</Label>
-                <Textarea name="note" value={formData.note} onChange={handleInputChange} rows={3} />
-              </div>
-            </div>
-
-            <div className="flex justify-end">
-              <Button type="submit" disabled={loading}>
-                {loading ? "Creating..." : "Create Shipment"}
-              </Button>
-            </div>
-          </form>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </AppLayout>
   );
 }
+
+const formSchema = z.object({
+  bill_of_lading_number_id: z.string(),
+  contains_dangerous_good: z.boolean().optional(),
+  date_of_loading: z.string().optional(),
+  note: z.string().optional(),
+  status: z.number(),
+});
+
+type FormValues = z.infer<typeof formSchema>;

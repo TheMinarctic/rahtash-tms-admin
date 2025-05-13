@@ -25,15 +25,13 @@ const AppProviders = ({ children }: { children: ReactNode }) => {
       <ApiProvider>
         <AuthProvider>
           <SwrProvider>
-            <TooltipProvider>
-              {children}
-
-              <Toaster />
-              <Sonner />
-            </TooltipProvider>
+            <TooltipProvider>{children}</TooltipProvider>
           </SwrProvider>
         </AuthProvider>
       </ApiProvider>
+
+      <Toaster />
+      <Sonner />
     </NextUIProvider>
   );
 };

@@ -1,12 +1,9 @@
 // ShipmentList.tsx
-import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useApi } from "@/contexts/ApiProvider";
 import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Eye, Plus } from "lucide-react";
 import useSWR from "swr";
-import { ApiResponse } from "@/ApiClient";
 import DynamicPaginator from "@/components/common/dynamic-paginator";
 import { objectToQueryString } from "@/utils/object-to-query-string";
 import { ModuleCardData } from "@/components/common/module-card-data";
@@ -17,7 +14,7 @@ export default function ShipmentList() {
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
-  const { data, error, isLoading } = useSWR<ApiResponse<any[]>>(
+  const { data, error, isLoading } = useSWR<ApiRes<any[]>>(
     `/en/api/v1/shipment/list?${searchParams.toString()}`,
   );
 
@@ -115,49 +112,15 @@ export default function ShipmentList() {
         </Button>
       </div>
 
-      <ModuleCardData isLoading={isLoading} error={error} isDataEmpty={!data?.body.data.length}>
-        <TableV2 columns={columns} data={data?.body?.data || []} />
+      <ModuleCardData isLoading={isLoading} error={error} isDataEmpty={!data?.data.length}>
+        <TableV2 columns={columns} data={data?.data || []} />
 
         {/* Pagination */}
         <DynamicPaginator
-          page_now={data?.body?.page_now}
-          per_page={data?.body?.per_page}
-          total_results={data?.body?.total_results}
+          page_now={data?.page_now}
+          per_page={data?.per_page}
+          total_results={data?.total_results}
         />
-        {/* <div className="flex items-center justify-between rounded-lg bg-gray-800 px-4 py-3">
-            <div>
-              <p className="text-sm text-gray-400">
-                Page <span className="font-medium">{pagination.currentPage}</span> of{" "}
-                <span className="font-medium">
-                  {Math.ceil(pagination.totalResults / pagination.perPage)}
-                </span>
-              </p>
-            </div>
-            <div className="flex space-x-2">
-              <button
-                // onClick={() => handlePageChange(pagination.currentPage - 1)}
-                disabled={pagination.currentPage === 1}
-                className={`rounded-md px-4 py-2 ${
-                  pagination.currentPage === 1
-                    ? "cursor-not-allowed bg-gray-700 text-gray-500"
-                    : "bg-gray-700 text-white hover:bg-gray-600"
-                }`}
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => handlePageChange(pagination.currentPage + 1)}
-                disabled={!pagination.nextLink}
-                className={`rounded-md px-4 py-2 ${
-                  !pagination.nextLink
-                    ? "cursor-not-allowed bg-gray-700 text-gray-500"
-                    : "bg-gray-700 text-white hover:bg-gray-600"
-                }`}
-              >
-                Next
-              </button>
-            </div>
-          </div> */}
       </ModuleCardData>
     </AppLayout>
   );

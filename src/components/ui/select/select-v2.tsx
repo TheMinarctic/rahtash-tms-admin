@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Label } from "../label";
-import { FormMessage } from "../form";
+import { FormItem, FormMessage } from "../form";
 import { Input } from "../input";
 import { Search } from "lucide-react";
 import { cva, VariantProps } from "class-variance-authority";
@@ -84,7 +84,7 @@ const SelectV2 = ({
   const memoizedSearch = useMemo(() => search, [search]);
 
   return (
-    <div className="flex w-full flex-col">
+    <FormItem>
       {/* LABEL */}
       {label && <Label isRequired={isRequired}>{label}</Label>}
 
@@ -146,7 +146,7 @@ const SelectV2 = ({
 
       {/* ERROR */}
       {error && <FormMessage>{error}</FormMessage>}
-    </div>
+    </FormItem>
   );
 };
 

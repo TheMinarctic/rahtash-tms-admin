@@ -1,14 +1,14 @@
 import { SWRConfig } from "swr";
 import { ReactNode } from "react";
-import { useApi } from "@/contexts/ApiProvider";
+import { axios } from "@/lib/axios";
+
+const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 const SwrProvider = ({ children }: { children: ReactNode }) => {
-  const api = useApi();
-
   return (
     <SWRConfig
       value={{
-        fetcher: (src, query?: Record<string, any>) => api.get(src, query).then((res) => res),
+        fetcher,
       }}
     >
       {children}

@@ -22,9 +22,10 @@ export interface ApiResponse<T = any> {
     per_page: number;
     page_now: number;
     next_link: string;
-    status: true;
+    status: boolean;
     message: string;
     data: T;
+    error?: any;
   };
 }
 
