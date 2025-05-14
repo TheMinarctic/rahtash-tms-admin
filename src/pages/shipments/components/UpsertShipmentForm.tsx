@@ -160,7 +160,7 @@ const UpsertShipmentForm = ({
                       { value: 1, name: "pending" },
                       { value: 2, name: "In Progress" },
                       { value: 3, name: "Completed" },
-                      { value: 4, name: "Cancelled" },
+                      // { value: 4, name: "Cancelled" },
                     ]}
                   />
                 )}
