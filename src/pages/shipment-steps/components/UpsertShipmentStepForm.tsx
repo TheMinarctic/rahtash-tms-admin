@@ -43,7 +43,11 @@ export default function UpsertShipmentStepFrom({
     // CREATE
     if (!initialData) {
       await axios
-        .post(`/en/api/v1/shipment/step/create/`, data)
+        .post(`/en/api/v1/shipment/step/create/`, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((res: AxiosResponse<ApiRes>) => {
           toast.success(res.data.message);
           mutate(`/en/api/v1/shipment/step/list?${searchParams.toString()}`);
@@ -55,7 +59,11 @@ export default function UpsertShipmentStepFrom({
     // UPDATE
     else {
       await axios
-        .patch(`/en/api/v1/shipment/step/update/${initialData?.id}`, data)
+        .patch(`/en/api/v1/shipment/step/update/${initialData?.id}/`, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((res: AxiosResponse<ApiRes>) => {
           toast.success(res.data.message);
           mutate(`/en/api/v1/shipment/step/list?${searchParams.toString()}`);

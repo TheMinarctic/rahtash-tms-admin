@@ -19,6 +19,8 @@ import { DialogBody, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { AxiosResponse } from "axios";
 import { mutate } from "swr";
+import { objectToFormData } from "@/utils/object-to-formdata";
+import CountriesCombobox from "@/components/common/countries-combobox";
 
 export default function UpsertShipmentPortFrom({
   setIsOpen,
@@ -40,10 +42,16 @@ export default function UpsertShipmentPortFrom({
   const { control, formState, handleSubmit } = form;
 
   const onSubmit = async (data: FormValues) => {
+    const formdata = objectToFormData(data);
+
     // CREATE
     if (!initialData) {
       await axios
-        .post(`/en/api/v1/shipment/port/create/`, data)
+        .post(`/en/api/v1/shipment/port/create/`, formdata, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((res: AxiosResponse<ApiRes>) => {
           toast.success(res.data.message);
           mutate(`/en/api/v1/shipment/port/list?${searchParams.toString()}`);
@@ -55,7 +63,11 @@ export default function UpsertShipmentPortFrom({
     // UPDATE
     else {
       await axios
-        .patch(`/en/api/v1/shipment/port/update/${initialData?.id}`, data)
+        .patch(`/en/api/v1/shipment/port/update/${initialData?.id}/`, formdata, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((res: AxiosResponse<ApiRes>) => {
           toast.success(res.data.message);
           mutate(`/en/api/v1/shipment/port/list?${searchParams.toString()}`);
@@ -92,14 +104,10 @@ export default function UpsertShipmentPortFrom({
                 name="country"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel isRequired>Country ID</FormLabel>
+                    <FormLabel isRequired>Country</FormLabel>
 
                     <FormControl>
-                      <Input
-                        type="number"
-                        {...field}
-                        onChange={(e) => field.onChange(+e.target.value)}
-                      />
+                      <CountriesCombobox onChange={field.onChange} value={field.value} />
                     </FormControl>
 
                     <FormMessage />

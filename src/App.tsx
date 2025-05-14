@@ -16,8 +16,7 @@ import ShipmentStepList from "./pages/shipment-steps/ShipmentStepList";
 import ShipmentDocumentTypeList from "./pages/ShipmentDocumentTypeList";
 import ShipmentDocumentTypeCreate from "./pages/ShipmentDocumentTypeCreate";
 import ShipmentDocumentTypeDetail from "./pages/ShipmentDocumentTypeDetail";
-import ShipmentDocumentList from "./pages/ShipmentDocumentList";
-import ShipmentDocumentCreate from "./pages/ShipmentDocumentCreate";
+import ShipmentDocumentList from "./pages/shipment-documents/ShipmentDocumentList";
 import ShipmentContainerList from "./pages/ShipmentContainerList";
 import ShipmentContainerCreate from "./pages/ShipmentContainerCreate";
 import ShipmentList from "./pages/shipments/ShipmentList";
@@ -37,7 +36,6 @@ import AddressList from "./pages/AddressList";
 import AddressDetail from "./pages/AddressDetail";
 import AddressCreate from "./pages/AddressCreate";
 import CompanyDocumentCreate from "./pages/CompanyDocumentCreate";
-import ShipmentDocumentDetail from "./pages/ShipmentDocumentDetail";
 import ShipmentContainerDetail from "./pages/ShipmentContainerDetail";
 import AppProviders from "./providers/AppProviders";
 
@@ -170,15 +168,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ShipmentDocumentList />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/shipment/documents/create"
-        element={
-          <ProtectedRoute>
-            <ShipmentDocumentCreate />
           </ProtectedRoute>
         }
       />
@@ -386,15 +375,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ShipmentDocumentList />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/shipment/documents/:document_id"
-        element={
-          <ProtectedRoute>
-            <ShipmentDocumentDetail />
           </ProtectedRoute>
         }
       />

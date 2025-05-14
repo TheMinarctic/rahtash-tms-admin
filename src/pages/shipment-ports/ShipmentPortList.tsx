@@ -18,6 +18,7 @@ import { ModuleCardData } from "@/components/common/module-card-data";
 import UpsertShipmentPortFrom from "./components/UpsertShipmentPortForm";
 import ShipmentPortStatusBadge from "@/components/common/shipment-port-status-badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CountriesEnum } from "@/enums/countries-enum";
 
 export default function ShipmentPortList() {
   const [searchParams] = useSearchParams();
@@ -49,7 +50,11 @@ export default function ShipmentPortList() {
   const columns: ColumnDef<any>[] = [
     { header: "ID", accessorKey: "id" },
     { header: "Title", accessorKey: "title" },
-    { header: "Country", accessorKey: "country" },
+    {
+      header: "Country",
+      accessorKey: "country",
+      cell: ({ row: { original } }) => CountriesEnum[original.country],
+    },
     {
       header: "Status",
       accessorKey: "status",
@@ -122,7 +127,7 @@ export default function ShipmentPortList() {
           onSubmit={async () => {
             setDeleteModalLoading(true);
             await axios
-              .delete(`/en/api/v1/shipment/port/delete/${initialData?.id}`)
+              .delete(`/en/api/v1/shipment/port/delete/${initialData?.id}/`)
               .then((res: AxiosResponse<ApiRes>) => {
                 toast.success(res.data.message);
                 mutate();

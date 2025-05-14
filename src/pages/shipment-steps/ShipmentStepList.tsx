@@ -121,7 +121,7 @@ export default function ShipmentStepList() {
           onSubmit={async () => {
             deleteModalLoading.setIsOpen(true);
             await axios
-              .delete(`/en/api/v1/shipment/step/delete/${initialData?.id}`)
+              .delete(`/en/api/v1/shipment/step/delete/${initialData?.id}/`)
               .then((res: AxiosResponse<ApiRes>) => {
                 mutate();
                 toast.success(res.data.message);
