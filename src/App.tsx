@@ -15,8 +15,7 @@ import PortsPage from "./pages/shipment-ports/ShipmentPortList";
 import ShipmentStepList from "./pages/shipment-steps/ShipmentStepList";
 import ShipmentDocumentTypeList from "./pages/shipment-document-types/ShipmentDocumentTypeList";
 import ShipmentDocumentList from "./pages/shipment-documents/ShipmentDocumentList";
-import ShipmentContainerList from "./pages/ShipmentContainerList";
-import ShipmentContainerCreate from "./pages/ShipmentContainerCreate";
+import ShipmentContainerList from "./pages/shipment-containers/ShipmentContainerList";
 import ShipmentList from "./pages/shipments/ShipmentList";
 import ShipmentDetail from "./pages/shipments/ShipmentDetail";
 import DriverCategoryList from "./pages/DriverCategoryList";
@@ -34,7 +33,6 @@ import AddressList from "./pages/AddressList";
 import AddressDetail from "./pages/AddressDetail";
 import AddressCreate from "./pages/AddressCreate";
 import CompanyDocumentCreate from "./pages/CompanyDocumentCreate";
-import ShipmentContainerDetail from "./pages/ShipmentContainerDetail";
 import AppProviders from "./providers/AppProviders";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -166,24 +164,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ShipmentContainerList />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/shipment/containers/create"
-        element={
-          <ProtectedRoute>
-            <ShipmentContainerCreate />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/shipment/containers/:container_id"
-        element={
-          <ProtectedRoute>
-            <ShipmentContainerDetail />
           </ProtectedRoute>
         }
       />

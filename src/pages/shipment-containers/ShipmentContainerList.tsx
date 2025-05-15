@@ -1,65 +1,83 @@
 import useSWR from "swr";
+import { toast } from "sonner";
+import { useState } from "react";
+import { axios } from "@/lib/axios";
+import { AxiosResponse } from "axios";
+import { useIsOpen } from "@/hooks/use-is-open";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import AppLayout from "@/components/layout/AppLayout";
+import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import TableV2 from "@/components/ui/table/table-v2";
+import { Edit, Plus, Trash } from "lucide-react";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
+import { serverErrorToast } from "@/utils/errors/server-error-toast";
 import { ModuleCardData } from "@/components/common/module-card-data";
 import DynamicPaginator from "@/components/common/dynamic-paginator";
 import ShipmentPortStatusBadge from "@/components/common/shipment-port-status-badge";
-import { useState } from "react";
-import { useIsOpen } from "@/hooks/use-is-open";
-import { Edit, Plus, Trash } from "lucide-react";
+import UpsertShipmentContainerForm from "./components/UpsertShipmentContainerForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import ConfirmDialog from "@/components/ui/confirm-dialog";
-import { serverErrorToast } from "@/utils/errors/server-error-toast";
-import { axios } from "@/lib/axios";
-import { toast } from "sonner";
-import { AxiosResponse } from "axios";
-import UpsertShipmentDocumentTypeForm from "./components/UpsertShipmentDocumentTypeForm";
 
-export default function ShipmentDocumentTypeList() {
+export default function ShipmentContainerList() {
   const [searchParams] = useSearchParams();
 
-  const upsertDocType = useIsOpen();
-  const deleteDocType = useIsOpen();
+  const upsetContainer = useIsOpen();
+  const deleteContainer = useIsOpen();
   const [initialData, setInitialData] = useState(null);
-  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+  const [deleteModalLoading, setDeleteModalLoading] = useState(false);
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<ApiRes<any[]>>(
-    `/en/api/v1/shipment/document/type/list/?${searchParams.toString()}`,
+    `/en/api/v1/shipment/container/list/?${searchParams.toString()}`,
   );
 
   const handleCreate = () => {
     setInitialData(null);
-    upsertDocType.handleOpen();
+    upsetContainer.handleOpen();
   };
 
   const handleEdit = (data: any) => {
     setInitialData(data);
-    upsertDocType.handleOpen();
+    upsetContainer.handleOpen();
   };
 
   const handleDelete = (data: any) => {
     setInitialData(data);
-    deleteDocType.handleOpen();
+    deleteContainer.handleOpen();
+  };
+
+  const getContainerType = (type: number) => {
+    switch (type) {
+      case 1:
+        return "Dry";
+      case 2:
+        return "Reefer";
+      case 3:
+        return "Open Top";
+      case 4:
+        return "Flat Rack";
+      default:
+        return "Unknown";
+    }
   };
 
   const columns: ColumnDef<any>[] = [
     { header: "ID", accessorKey: "id" },
-    { header: "Title", accessorKey: "title" },
-    { header: "Order", accessorKey: "order" },
+    { header: "Track Number", accessorKey: "track_number" },
+    { header: "Size", accessorKey: "size" },
     {
-      header: "Mandatory",
-      accessorKey: "is_mandatory",
-      cell: ({ row }) => (row.original.is_mandatory ? "Yes" : "No"),
+      header: "Type",
+      accessorKey: "type",
+      cell: ({ row }) => getContainerType(row.original.type),
     },
     {
       header: "Status",
       accessorKey: "status",
-      cell: ({ row }) => {
-        return <ShipmentPortStatusBadge status={row.original.status} />;
-      },
+      cell: ({ row }) => <ShipmentPortStatusBadge status={row.original.status} />,
+    },
+    {
+      header: "Shipment",
+      accessorKey: "shipment",
+      cell: ({ row }) => row.original.shipment?.bill_of_lading_number_id || "N/A",
     },
     {
       header: "Actions",
@@ -80,9 +98,9 @@ export default function ShipmentDocumentTypeList() {
   return (
     <AppLayout>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Document Types</h1>
+        <h1 className="text-3xl font-bold">Shipment Containers</h1>
         <Button onClick={handleCreate}>
-          Add New
+          Create Container
           <Plus className="ms-2" />
         </Button>
       </div>
@@ -103,39 +121,39 @@ export default function ShipmentDocumentTypeList() {
       </ModuleCardData>
 
       {/* MODALS */}
-      {/* ADD / EDIT SHIPMENT PORT */}
-      <Dialog open={upsertDocType.isOpen} onOpenChange={upsertDocType.setIsOpen}>
+      {/* ADD / EDIT CONTAINER */}
+      <Dialog open={upsetContainer.isOpen} onOpenChange={upsetContainer.setIsOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {initialData ? "Edit shipment document type" : "Create shipment document type"}
+              {initialData ? "Edit shipment container" : "Create shipment container"}
             </DialogTitle>
           </DialogHeader>
 
-          <UpsertShipmentDocumentTypeForm
+          <UpsertShipmentContainerForm
             mutate={mutate}
             initialData={initialData}
-            setIsOpen={upsertDocType.setIsOpen}
+            setIsOpen={upsetContainer.setIsOpen}
           />
         </DialogContent>
       </Dialog>
 
       {/* DELETE SHIPMENT PORT */}
-      <Dialog open={deleteDocType.isOpen} onOpenChange={deleteDocType.setIsOpen}>
+      <Dialog open={deleteContainer.isOpen} onOpenChange={deleteContainer.setIsOpen}>
         <ConfirmDialog
-          loading={isLoadingDelete}
-          title="Delete shipment document type"
+          loading={deleteModalLoading}
+          title="Delete shipment container"
           onSubmit={async () => {
-            setIsLoadingDelete(true);
+            setDeleteModalLoading(true);
             await axios
-              .delete(`/en/api/v1/shipment/document/type/delete/${initialData.id}/`)
+              .delete(`/en/api/v1/shipment/container/delete/${initialData.id}/`)
               .then((res: AxiosResponse<ApiRes>) => {
-                mutate();
                 toast.success(res.data.message);
-                deleteDocType.handleClose();
+                mutate();
+                deleteContainer.handleClose();
               })
               .catch((err) => serverErrorToast(err))
-              .finally(() => setIsLoadingDelete(false));
+              .finally(() => setDeleteModalLoading(false));
           }}
         />
       </Dialog>

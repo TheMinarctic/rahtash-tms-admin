@@ -106,7 +106,7 @@ export default function ShipmentStepList() {
       <Dialog open={upsertStep.isOpen} onOpenChange={upsertStep.setIsOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{initialData ? "Edit shipment port" : "Create shipment port"}</DialogTitle>
+            <DialogTitle>{initialData ? "Edit shipment step" : "Create shipment step"}</DialogTitle>
           </DialogHeader>
 
           <UpsertShipmentStepFrom initialData={initialData} setIsOpen={upsertStep.setIsOpen} />
