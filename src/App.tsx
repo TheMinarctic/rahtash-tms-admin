@@ -13,9 +13,7 @@ import ShipmentCategoryCreate from "./pages/ShipmentCategoryCreate";
 import ShipmentCategoryDetail from "./pages/ShipmentCategoryDetail";
 import PortsPage from "./pages/shipment-ports/ShipmentPortList";
 import ShipmentStepList from "./pages/shipment-steps/ShipmentStepList";
-import ShipmentDocumentTypeList from "./pages/ShipmentDocumentTypeList";
-import ShipmentDocumentTypeCreate from "./pages/ShipmentDocumentTypeCreate";
-import ShipmentDocumentTypeDetail from "./pages/ShipmentDocumentTypeDetail";
+import ShipmentDocumentTypeList from "./pages/shipment-document-types/ShipmentDocumentTypeList";
 import ShipmentDocumentList from "./pages/shipment-documents/ShipmentDocumentList";
 import ShipmentContainerList from "./pages/ShipmentContainerList";
 import ShipmentContainerCreate from "./pages/ShipmentContainerCreate";
@@ -155,15 +153,6 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/shipment/document-types/create"
-        element={
-          <ProtectedRoute>
-            <ShipmentDocumentTypeCreate />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
         path="/shipment/documents"
         element={
           <ProtectedRoute>
@@ -267,15 +256,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ShipmentDetail />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/shipment/document-types/:document_type_id"
-        element={
-          <ProtectedRoute>
-            <ShipmentDocumentTypeDetail />
           </ProtectedRoute>
         }
       />

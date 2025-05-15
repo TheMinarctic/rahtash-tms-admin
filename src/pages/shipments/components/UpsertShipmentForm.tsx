@@ -131,10 +131,7 @@ const UpsertShipmentForm = ({
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      <Label
-                        htmlFor="contains_dangerous_good"
-                        className="ml-2 block text-muted-foreground"
-                      >
+                      <Label htmlFor="contains_dangerous_good" className="ms-2 block">
                         Contains Dangerous Goods
                       </Label>
                     </div>
