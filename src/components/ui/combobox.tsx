@@ -14,6 +14,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { FaSpinner } from "react-icons/fa";
 
 type Value = string | number;
 
@@ -29,12 +30,14 @@ interface Props {
   placeholder?: string;
   disabled?: boolean;
   variant?: "muted" | "outline" | "default";
+  loading?: boolean;
 }
 
 export function Combobox({
   value,
   items,
   onValueChange,
+  loading = false,
   placeholder = "",
   variant = "muted",
   ...props
@@ -55,7 +58,11 @@ export function Combobox({
           )}
         >
           {value ? items.find((item) => item.value === value)?.name : placeholder}
-          <ChevronsUpDown className="!size-4 shrink-0 opacity-50" />
+          {loading ? (
+            <FaSpinner className="animate-spin opacity-50" />
+          ) : (
+            <ChevronsUpDown className="!size-4 shrink-0 opacity-50" />
+          )}
         </Button>
       </PopoverTrigger>
 

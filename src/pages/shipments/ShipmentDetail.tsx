@@ -1,18 +1,19 @@
 // ShipmentDetail.tsx
 import React from "react";
 import useSWR from "swr";
+import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { ApiResponse } from "@/types/api";
 import { DateFormat } from "@/utils/date";
 import { Button } from "@/components/ui/button";
 import AppLayout from "@/components/layout/AppLayout";
+import { Separator } from "@/components/ui/separator";
 import { useParams, useNavigate } from "react-router-dom";
 import { ModuleCardData } from "@/components/common/module-card-data";
 import ShipmentStatusBadge from "@/components/common/shipment-status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import ShipmentPortStatusBadge from "@/components/common/shipment-port-status-badge";
 
 export default function ShipmentDetail() {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ export default function ShipmentDetail() {
 
               {/* STEPS */}
               <ModuleCardData isLoading={steps.isLoading} error={steps.error} skeletonRowCount={2}>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 pb-3">
                   <h4 className="text-xl">Steps</h4>
 
                   <div className="flex items-center justify-between">
@@ -94,7 +95,7 @@ export default function ShipmentDetail() {
                         <div className="mt-7 flex flex-col items-center gap-2">
                           <div
                             className={cn(
-                              "center relative size-9 rounded-full border bg-muted ring-2 ring-offset-2 ring-offset-background",
+                              "center relative size-9 rounded-full border bg-muted ring-2 ring-gray-200 ring-offset-2 ring-offset-background dark:ring-gray-800",
 
                               // DONE STEPS
                               item.order < shipment?.step?.order &&
@@ -140,34 +141,40 @@ export default function ShipmentDetail() {
               <hr />
 
               {/* Related entities */}
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <Card className="grid grid-cols-1 gap-5 bg-muted p-5 lg:grid-cols-2">
                 <RelatedEntity
                   title="Carrier Company"
                   showEmptyText={!shipment?.carrier_company}
-                  values={[
-                    `Name: ${shipment?.carrier_company?.name}`,
-                    `Category: ${shipment?.carrier_company?.category?.title || "N/A"}`,
-                    `Owner: ${shipment?.carrier_company?.owner?.email || "N/A"}`,
+                  items={[
+                    { title: "name", value: shipment?.carrier_company?.name },
+                    {
+                      title: "category",
+                      value: shipment?.carrier_company?.category?.title || "N/A",
+                    },
+                    { title: "owner", value: shipment?.carrier_company?.owner?.email || "N/A" },
                   ]}
                 />
 
                 <RelatedEntity
                   title="Forward Company"
                   showEmptyText={!shipment?.forward_company}
-                  values={[
-                    `Name: ${shipment?.forward_company?.name}`,
-                    `Category: ${shipment?.forward_company?.category?.title || "N/A"}`,
-                    `Owner: ${shipment?.forward_company?.owner?.email || "N/A"}`,
+                  items={[
+                    { title: "name", value: shipment?.forward_company?.name },
+                    {
+                      title: "category",
+                      value: shipment?.forward_company?.category?.title || "N/A",
+                    },
+                    { title: "owner", value: shipment?.forward_company?.owner?.email || "N/A" },
                   ]}
                 />
 
                 <RelatedEntity
                   title="Driver"
                   showEmptyText={!shipment?.driver}
-                  values={[
-                    `Name: ${shipment?.driver?.title}`,
-                    `Category: ${shipment?.driver?.category?.title || "N/A"}`,
-                    `Owner: ${shipment?.driver?.user?.email || "N/A"}`,
+                  items={[
+                    { title: "name", value: shipment?.driver?.title },
+                    { title: "category", value: shipment?.driver?.category?.title || "N/A" },
+                    { title: "owner", value: shipment?.driver?.user?.email || "N/A" },
                   ]}
                 />
 
@@ -175,16 +182,23 @@ export default function ShipmentDetail() {
                   title="Current Step"
                   showEmptyText={!shipment?.step}
                   emptyText="No step assigned"
-                  values={[`Title: ${shipment?.step?.title}`, `Order: ${shipment?.step?.order}`]}
+                  items={[
+                    { title: "title", value: shipment?.step?.title },
+                    { title: "order", value: shipment?.step?.order },
+                    {
+                      title: "status",
+                      value: <ShipmentPortStatusBadge status={shipment?.step?.status} />,
+                    },
+                  ]}
                 />
 
                 <RelatedEntity
                   title="Loading Port"
                   showEmptyText={!shipment?.port_loading}
                   emptyText="No loading port assigned"
-                  values={[
-                    `Title: ${shipment?.port_loading?.title}`,
-                    `Country: ${shipment?.port_loading?.country}`,
+                  items={[
+                    { title: "title", value: shipment?.port_loading?.title },
+                    { title: "country", value: shipment?.port_loading?.country },
                   ]}
                 />
 
@@ -192,21 +206,21 @@ export default function ShipmentDetail() {
                   title="Discharge Port"
                   showEmptyText={!shipment?.port_discharge}
                   emptyText="No discharge port assigned"
-                  values={[
-                    `Title: ${shipment?.port_discharge?.title}`,
-                    `Country: ${shipment?.port_discharge?.country}`,
+                  items={[
+                    { title: "title", value: shipment?.port_discharge?.title },
+                    { title: "country", value: shipment?.port_discharge?.country },
                   ]}
                 />
 
                 <RelatedEntity
                   title="Place of Delivery"
                   showEmptyText={!shipment?.place_delivery}
-                  values={[
-                    `Title: ${shipment?.place_delivery?.title}`,
-                    `Country: ${shipment?.place_delivery?.country}`,
+                  items={[
+                    { title: "title", value: shipment?.place_delivery?.title },
+                    { title: "country", value: shipment?.place_delivery?.country },
                   ]}
                 />
-              </div>
+              </Card>
             </div>
           </CardContent>
         </ModuleCardData>
@@ -225,18 +239,18 @@ const RowDetail = ({ title, value }: { title: ReactNode; value: ReactNode }) => 
 };
 
 const RelatedEntity = ({
-  emptyText,
   title,
-  values,
+  items,
+  emptyText,
   showEmptyText = true,
 }: {
   title: string;
-  values: string[];
   emptyText?: string;
   showEmptyText?: boolean;
+  items: { title: string; value: ReactNode }[];
 }) => {
   return (
-    <Card className="bg-muted">
+    <Card>
       <CardHeader className="py-3">
         <CardTitle className="text-lg font-semibold">{title}</CardTitle>
       </CardHeader>
@@ -244,10 +258,15 @@ const RelatedEntity = ({
       <CardContent className="py-4">
         {!showEmptyText ? (
           <div>
-            {values.map((text, index) => (
-              <p className="text-muted-foreground" key={text + index}>
-                {text}
-              </p>
+            {items.map((item, index) => (
+              <div
+                key={item.title + index}
+                className="flex items-center justify-between gap-3 rounded-md px-2 py-1 text-accent-foreground first:pt-0 last:pb-0 even:bg-muted"
+              >
+                <h6 className="font-medium capitalize">{item.title}</h6>
+
+                <div className="line-clamp-1">{item.value}</div>
+              </div>
             ))}
           </div>
         ) : (

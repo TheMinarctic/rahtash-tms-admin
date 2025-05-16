@@ -27,6 +27,7 @@ const EditShipmentFormFields = ({ initialData }: { initialData?: any }) => {
               <Combobox
                 value={field.value}
                 onValueChange={field.onChange}
+                loading={companies.isLoading}
                 items={
                   companies.data?.data?.map((item) => ({
                     name: item.name,
@@ -50,6 +51,7 @@ const EditShipmentFormFields = ({ initialData }: { initialData?: any }) => {
             <FormControl>
               <Combobox
                 value={field.value}
+                loading={companies.isLoading}
                 onValueChange={field.onChange}
                 items={
                   companies.data?.data?.map((item) => ({
@@ -75,6 +77,7 @@ const EditShipmentFormFields = ({ initialData }: { initialData?: any }) => {
               <Combobox
                 value={field.value}
                 onValueChange={field.onChange}
+                loading={drivers.isLoading}
                 items={
                   drivers.data?.data?.map((item) => ({
                     name: item.title,
@@ -99,6 +102,7 @@ const EditShipmentFormFields = ({ initialData }: { initialData?: any }) => {
               <Combobox
                 value={field.value}
                 onValueChange={field.onChange}
+                loading={steps.isLoading}
                 items={
                   steps.data?.data?.map((item) => ({
                     name: item.title,
@@ -123,6 +127,7 @@ const EditShipmentFormFields = ({ initialData }: { initialData?: any }) => {
               <Combobox
                 value={field.value}
                 onValueChange={field.onChange}
+                loading={ports.isLoading}
                 items={
                   ports.data?.data?.map((item) => ({
                     name: item.title,
@@ -147,6 +152,7 @@ const EditShipmentFormFields = ({ initialData }: { initialData?: any }) => {
               <Combobox
                 value={field.value}
                 onValueChange={field.onChange}
+                loading={ports.isLoading}
                 items={
                   ports.data?.data?.map((item) => ({
                     name: item.title,
@@ -171,6 +177,7 @@ const EditShipmentFormFields = ({ initialData }: { initialData?: any }) => {
               <Combobox
                 value={field.value}
                 onValueChange={field.onChange}
+                loading={ports.isLoading}
                 items={
                   ports.data?.data?.map((item) => ({
                     name: item.title,
@@ -195,6 +202,7 @@ const EditShipmentFormFields = ({ initialData }: { initialData?: any }) => {
               <Combobox
                 value={field.value}
                 onValueChange={field.onChange}
+                loading={users.isLoading}
                 items={
                   users.data?.data?.map((item) => ({
                     value: item.id,
