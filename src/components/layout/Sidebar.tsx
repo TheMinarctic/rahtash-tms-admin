@@ -19,6 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Moon, Sun } from "lucide-react";
+import { objectToQueryString } from "@/utils/object-to-query-string";
 
 interface Menu {
   title: string;
@@ -48,7 +49,6 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
 
   const [theme, setTheme] = useState(localStorage.getItem(THEME_MODE));
 
-  const [selectItem, setSelectItem] = useState<string | undefined>();
   const [selectedParentMenu, setSelectedParentMenu] = useState<undefined | string>(
     localStorage.getItem(SIDEBAR_SELECTED_PARENT_MENU || undefined),
   );
@@ -63,9 +63,15 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
     }
   };
 
-  const handleNavigation = (href: string, title: string) => {
-    navigate(href);
-    setSelectItem(title);
+  const handleNavigation = (href: string) => {
+    const object = {
+      page: "1",
+      ordering: href === "/shipments" ? "updated_at" : null,
+    };
+
+    const searchParamsString = objectToQueryString(object);
+
+    navigate({ pathname: href, search: searchParamsString });
   };
 
   return (
@@ -112,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
               )}
               onClick={() => {
                 if (Menu.href) {
-                  handleNavigation(Menu.href, Menu.title);
+                  handleNavigation(Menu.href);
                 } else if (Menu.subMenus) {
                   toggleMenu(Menu.title);
                 }
@@ -141,7 +147,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                       `mb-2 flex cursor-pointer items-center gap-x-4 rounded-md p-2 text-sm text-accent-foreground hover:bg-muted`,
                       subMenu.href === location.pathname && "bg-muted",
                     )}
-                    onClick={() => handleNavigation(subMenu.href, subMenu.title)}
+                    onClick={() => handleNavigation(subMenu.href)}
                   >
                     {subMenu.icon || <FiPackage className="size-5 text-sky-400" />}
                     <span>{subMenu.title}</span>

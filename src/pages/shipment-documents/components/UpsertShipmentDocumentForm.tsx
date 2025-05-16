@@ -117,7 +117,7 @@ export default function UpsertShipmentDocumentForm({
               name="shipment"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel isRequired>Shipment ID</FormLabel>
+                  <FormLabel isRequired>Shipment</FormLabel>
                   <FormControl>
                     <Combobox
                       value={field.value}

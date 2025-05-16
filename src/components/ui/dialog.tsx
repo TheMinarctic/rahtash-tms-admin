@@ -58,7 +58,7 @@ const DialogContent = React.forwardRef<
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          "relative grid h-auto w-full rounded-lg border bg-background px-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
+          "relative grid h-auto max-h-screen w-full overflow-y-auto overflow-x-hidden rounded-lg border bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
           dialogContentStyles({ size }),
           className,
         )}
@@ -73,21 +73,24 @@ DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex flex-col gap-1.5 border-b py-5 text-center sm:text-start", className)}
+    className={cn(
+      "sticky inset-x-0 top-0 z-20 flex flex-col gap-1.5 border-b bg-background px-6 py-5 text-center sm:text-start",
+      className,
+    )}
     {...props}
   />
 );
 DialogHeader.displayName = "DialogHeader";
 
 const DialogBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("py-5", className)} {...props} />
+  <div className={cn("px-6 py-5", className)} {...props} />
 );
 DialogBody.displayName = "DialogBody";
 
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col-reverse gap-2 border-t py-4 sm:flex-row sm:justify-end",
+      "sticky inset-x-0 bottom-0 z-20 flex flex-col-reverse gap-2 border-t bg-background px-6 py-4 sm:flex-row sm:justify-end",
       className,
     )}
     {...props}

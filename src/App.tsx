@@ -51,7 +51,14 @@ const AppRoutes = () => {
       <Route
         path="/"
         element={
-          isAuthenticated ? <Navigate to="/shipments" replace /> : <Navigate to="/login" replace />
+          isAuthenticated ? (
+            <Navigate
+              replace
+              to={{ pathname: "/shipments", search: "?page=1&ordering=updated_at" }}
+            />
+          ) : (
+            <Navigate to="/login" replace />
+          )
         }
       />
       <Route path="/login" element={<Login />} />

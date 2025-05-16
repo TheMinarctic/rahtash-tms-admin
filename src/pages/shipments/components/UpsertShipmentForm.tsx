@@ -9,20 +9,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import SelectV2 from "@/components/ui/select/select-v2";
-import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { mutate } from "swr";
 import { axios } from "@/lib/axios";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosResponse } from "axios";
 import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { z } from "zod";
-import { serverErrorToast } from "@/utils/errors/server-error-toast";
-import { mutate } from "swr";
+import { zodResolver } from "@hookform/resolvers/zod";
+import SelectV2 from "@/components/ui/select/select-v2";
 import { DialogBody, DialogFooter } from "@/components/ui/dialog";
+import { serverErrorToast } from "@/utils/errors/server-error-toast";
+import { UpsetShipmentFormValues, upsetShipmentSchema } from "../schema/upset-shipment-schema";
+import EditShipmentFormFields from "./EditShipmentFormFields";
 
 const UpsertShipmentForm = ({
   initialData,
@@ -31,23 +32,30 @@ const UpsertShipmentForm = ({
   initialData?: any;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  console.log(initialData);
-
   const [searchParams] = useSearchParams();
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+
+  const form = useForm<UpsetShipmentFormValues>({
+    resolver: zodResolver(upsetShipmentSchema),
     defaultValues: {
       bill_of_lading_number_id: initialData?.bill_of_lading_number_id || "",
       contains_dangerous_good: initialData?.contains_dangerous_good || false,
       date_of_loading: initialData?.date_of_loading,
       note: initialData?.note || "",
       status: initialData?.status,
+      step: initialData?.step?.id,
+      driver: initialData?.driver?.id,
+      creator: initialData?.creator?.id,
+      place_delivery: initialData?.place_delivery?.id,
+      port_discharge: initialData?.port_discharge?.id,
+      port_loading: initialData?.port_loading?.id,
+      carrier_company: initialData?.carrier_company?.id,
+      forward_company: initialData?.forward_company?.id,
     },
   });
   const { handleSubmit, register, control, formState } = form;
   const { isSubmitting, errors } = formState;
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: UpsetShipmentFormValues) => {
     // CREATE
     if (!initialData) {
       await axios
@@ -142,6 +150,7 @@ const UpsertShipmentForm = ({
               />
             </div>
 
+            {/* STATUS */}
             <div>
               <FormField
                 control={control}
@@ -164,6 +173,9 @@ const UpsertShipmentForm = ({
               />
             </div>
 
+            {/* IF TRUE EDIT MODE, SHOWING SOME EXTRA FIELDS */}
+            {initialData && <EditShipmentFormFields initialData={initialData} />}
+
             <div className="md:col-span-2">
               <Label className="mb-2 block">Notes</Label>
               <Textarea {...register("note")} error={errors?.note?.message} />
@@ -182,13 +194,3 @@ const UpsertShipmentForm = ({
 };
 
 export default UpsertShipmentForm;
-
-const formSchema = z.object({
-  bill_of_lading_number_id: z.string(),
-  contains_dangerous_good: z.boolean().optional().nullable(),
-  date_of_loading: z.string().optional().nullable(),
-  note: z.string().optional().nullable(),
-  status: z.number(),
-});
-
-type FormValues = z.infer<typeof formSchema>;

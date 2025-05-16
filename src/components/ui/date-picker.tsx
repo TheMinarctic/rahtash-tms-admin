@@ -85,7 +85,7 @@ const DatePicker = ({
         <Button
           variant={variant}
           className={cn(
-            "inline-flex h-9 w-full items-center justify-center gap-2 text-start font-normal",
+            "inline-flex h-9 w-full items-center justify-center gap-2 truncate text-start font-normal text-accent-foreground",
             !parsedDate && "text-muted-foreground",
           )}
         >

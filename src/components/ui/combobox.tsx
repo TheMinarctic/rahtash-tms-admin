@@ -50,7 +50,7 @@ export function Combobox({
           variant={variant}
           disabled={props.disabled}
           className={cn(
-            "h-9 w-full justify-between",
+            "h-9 w-full justify-between truncate",
             variant === "muted" && "text-accent-foreground hover:border-primary hover:bg-muted",
           )}
         >
