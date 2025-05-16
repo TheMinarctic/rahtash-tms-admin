@@ -109,6 +109,7 @@ const SelectV2 = ({
         >
           <SelectValue placeholder={triggerPlaceholder} />
         </SelectTrigger>
+
         <SelectContent>
           <SelectGroup>
             {showSearch && (

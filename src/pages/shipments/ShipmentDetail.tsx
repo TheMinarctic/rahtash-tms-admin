@@ -1,28 +1,32 @@
 // ShipmentDetail.tsx
-import { useState, useEffect, ReactNode } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/layout/Sidebar";
-import { useApi } from "@/contexts/ApiProvider";
-import AppLayout from "@/components/layout/AppLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import moment from "jalali-moment";
-import { DateFormat } from "@/utils/date";
-import ShipmentStatusBadge from "@/components/common/shipment-status-badge";
+import React from "react";
 import useSWR from "swr";
-import { ModuleCardData } from "@/components/common/module-card-data";
-import { ArrowLeft } from "lucide-react";
+import { ReactNode } from "react";
+import { ArrowLeft, Check } from "lucide-react";
+import { ApiResponse } from "@/types/api";
+import { DateFormat } from "@/utils/date";
 import { Button } from "@/components/ui/button";
+import AppLayout from "@/components/layout/AppLayout";
+import { useParams, useNavigate } from "react-router-dom";
+import { ModuleCardData } from "@/components/common/module-card-data";
+import ShipmentStatusBadge from "@/components/common/shipment-status-badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 export default function ShipmentDetail() {
-  const { shipment_id } = useParams();
   const navigate = useNavigate();
-  const { data, isLoading, isValidating, error } = useSWR<ApiRes>(
+  const { shipment_id } = useParams();
+
+  const steps = useSWR<ApiRes<ApiResponse.Step[]>>(`/en/api/v1/shipment/step/list/`);
+  const { data, isLoading, isValidating, error } = useSWR<ApiRes<ApiResponse.Shipment>>(
     `/en/api/v1/shipment/detail/${shipment_id}/`,
   );
+
   const shipment = data?.data;
 
   return (
-    <AppLayout classNames={{ container: "max-w-6xl" }}>
+    <AppLayout>
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -76,6 +80,62 @@ export default function ShipmentDetail() {
                   />
                 </div>
               </div>
+
+              <hr />
+
+              {/* STEPS */}
+              <ModuleCardData isLoading={steps.isLoading} error={steps.error} skeletonRowCount={2}>
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-xl">Steps</h4>
+
+                  <div className="flex items-center justify-between">
+                    {steps.data?.data.map((item, index) => (
+                      <React.Fragment key={item.id}>
+                        <div className="mt-7 flex flex-col items-center gap-2">
+                          <div
+                            className={cn(
+                              "center relative size-9 rounded-full border bg-muted ring-2 ring-offset-2 ring-offset-background",
+
+                              // DONE STEPS
+                              item.order < shipment?.step?.order &&
+                                "bg-primary/80 text-primary-foreground ring-primary/80",
+
+                              // ACTIVE STEP
+                              item.order === shipment?.step?.order &&
+                                "bg-green-500 text-white ring-green-500",
+
+                              // NEXT STEPS
+                              item.order > shipment?.step?.order &&
+                                "bg-muted-foreground text-muted opacity-30 ring-muted-foreground",
+                            )}
+                          >
+                            {index + 1}
+
+                            {/* ACTIVE STEP ANIMATION */}
+                            {item.order === shipment?.step?.order && (
+                              <div className="absolute inset-0 animate-ping rounded-full bg-green-400/70">
+                                {/* <div></div> */}
+                              </div>
+                            )}
+                          </div>
+
+                          <p>{item.title}</p>
+                        </div>
+
+                        {index + 1 < steps.data?.data.length ? (
+                          <Separator
+                            className={cn(
+                              "flex-1",
+                              item.order < shipment?.step?.order && "bg-primary/80",
+                            )}
+                            orientation="horizontal"
+                          />
+                        ) : null}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+              </ModuleCardData>
 
               <hr />
 

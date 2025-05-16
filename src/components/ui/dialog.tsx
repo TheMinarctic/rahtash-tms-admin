@@ -53,7 +53,6 @@ const DialogContent = React.forwardRef<
 >(({ className, size, children, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay className="bg-black/70" />
-
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <DialogPrimitive.Content
         ref={ref}
