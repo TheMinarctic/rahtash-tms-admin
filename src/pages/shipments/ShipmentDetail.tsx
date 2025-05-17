@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import AppLayout from "@/components/layout/AppLayout";
 import { Separator } from "@/components/ui/separator";
 import { useParams, useNavigate } from "react-router-dom";
-import { AlertTriangle, ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { ModuleCardData } from "@/components/common/module-card-data";
 import ShipmentStatusBadge from "@/components/common/shipment-status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,7 +56,7 @@ export default function ShipmentDetail() {
                   <RowDetail
                     title="Contains Dangerous Goods"
                     value={
-                      !shipment?.contains_dangerous_good ? (
+                      shipment?.contains_dangerous_good ? (
                         <div className="center gap-2">
                           <AlertTriangle className="text-orange-600 dark:text-orange-400" />
                           <span>Yes</span>
