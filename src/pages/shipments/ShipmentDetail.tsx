@@ -156,7 +156,7 @@ export default function ShipmentDetail() {
               <hr />
 
               {/* Related entities */}
-              <Card className="grid grid-cols-1 gap-5 bg-muted p-5 lg:grid-cols-2">
+              <Card className="grid grid-cols-1 gap-5 bg-muted p-5 lg:grid-cols-2 2xl:grid-cols-3">
                 <RelatedEntity
                   title="Carrier Company"
                   showEmptyText={!shipment?.carrier_company}
