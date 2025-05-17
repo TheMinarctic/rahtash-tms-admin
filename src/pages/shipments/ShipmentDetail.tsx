@@ -3,13 +3,13 @@ import React from "react";
 import useSWR from "swr";
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
-import { ArrowLeft } from "lucide-react";
 import { ApiResponse } from "@/types/api";
 import { DateFormat } from "@/utils/date";
 import { Button } from "@/components/ui/button";
 import AppLayout from "@/components/layout/AppLayout";
 import { Separator } from "@/components/ui/separator";
 import { useParams, useNavigate } from "react-router-dom";
+import { AlertTriangle, ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
 import { ModuleCardData } from "@/components/common/module-card-data";
 import ShipmentStatusBadge from "@/components/common/shipment-status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,17 +44,29 @@ export default function ShipmentDetail() {
           <CardContent>
             <div className="flex flex-col gap-8">
               {/* SHIPMENT DETAILS */}
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                <div className="space-y-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 lg:divide-x">
+                <div className="space-y-4 pe-2.5 lg:pe-5 xl:pe-10">
                   <RowDetail title="ID" value={shipment?.id} />
+
                   <RowDetail
                     title="Bill of Lading Number"
                     value={shipment?.bill_of_lading_number_id || "N/A"}
                   />
+
                   <RowDetail
                     title="Contains Dangerous Goods"
-                    value={shipment?.contains_dangerous_good ? "Yes" : "No"}
+                    value={
+                      !shipment?.contains_dangerous_good ? (
+                        <div className="center gap-2">
+                          <AlertTriangle className="text-orange-600 dark:text-orange-400" />
+                          <span>Yes</span>
+                        </div>
+                      ) : (
+                        "No"
+                      )
+                    }
                   />
+
                   <RowDetail
                     title="Date of Loading"
                     value={
@@ -65,20 +77,23 @@ export default function ShipmentDetail() {
                   />
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-4 ps-2.5 lg:ps-5 xl:ps-10">
                   <RowDetail
                     title="Status"
                     value={<ShipmentStatusBadge status={shipment?.status} />}
                   />
-                  <RowDetail title="Notes" value={shipment?.note || "N/A"} />
+
                   <RowDetail
                     title="Created At"
                     value={DateFormat.YYYY_MM_DD(shipment?.created_at)}
                   />
+
                   <RowDetail
                     title="Updated At"
                     value={DateFormat.YYYY_MM_DD(shipment?.updated_at)}
                   />
+
+                  <RowDetail title="Notes" value={shipment?.note || "N/A"} />
                 </div>
               </div>
 
@@ -231,7 +246,7 @@ export default function ShipmentDetail() {
 
 const RowDetail = ({ title, value }: { title: ReactNode; value: ReactNode }) => {
   return (
-    <div>
+    <div className="flex items-center justify-between gap-5">
       <p className="text-sm font-medium text-muted-foreground">{title}</p>
       <p>{value}</p>
     </div>

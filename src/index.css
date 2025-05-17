@@ -86,6 +86,10 @@
   svg {
     user-select: none;
   }
+
+  .container {
+    @apply px-5 md:px-8;
+  }
 }
 
 @layer utilities {

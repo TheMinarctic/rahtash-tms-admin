@@ -14,16 +14,16 @@ const AppLayout = ({ classNames, children }: Props) => {
   const [open, setOpen] = useState(true);
 
   return (
-    <div className="flex h-full bg-white dark:bg-background">
+    <div className="flex h-full">
       <Sidebar open={open} setOpen={setOpen} />
 
       <div
         className={cn(
-          "flex-1 overflow-auto bg-white bg-gradient-to-r p-5 text-foreground dark:from-muted dark:to-background md:h-screen",
+          "flex-1 overflow-auto bg-white py-5 text-foreground dark:bg-muted md:h-screen",
           classNames?.containerParent,
         )}
       >
-        <div className={cn("mx-auto max-w-7xl", classNames?.container)}>{children}</div>
+        <div className={cn("container", classNames?.container)}>{children}</div>
       </div>
     </div>
   );
