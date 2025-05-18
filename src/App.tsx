@@ -17,7 +17,7 @@ import ShipmentDocumentTypeList from "./pages/shipment-document-types/ShipmentDo
 import ShipmentDocumentList from "./pages/shipment-documents/ShipmentDocumentList";
 import ShipmentContainerList from "./pages/shipment-containers/ShipmentContainerList";
 import ShipmentList from "./pages/shipments/ShipmentList";
-import ShipmentDetail from "./pages/shipments/ShipmentDetail";
+import ShipmentDetailPage from "./pages/shipments/shipment-detail";
 import DriverCategoryList from "./pages/DriverCategoryList";
 import DriverCategoryCreate from "./pages/DriverCategoryCreate";
 import DriverCategoryDetail from "./pages/DriverCategoryDetail";
@@ -242,7 +242,7 @@ const AppRoutes = () => {
         path="/shipments/:shipment_id"
         element={
           <ProtectedRoute>
-            <ShipmentDetail />
+            <ShipmentDetailPage />
           </ProtectedRoute>
         }
       />
