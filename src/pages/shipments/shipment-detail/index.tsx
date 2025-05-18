@@ -31,7 +31,12 @@ export default function ShipmentDetailPage() {
           <div className="flex items-center justify-between">
             <CardTitle>Shipment Details</CardTitle>
 
-            <Button variant="outline" onClick={() => navigate("/shipments")}>
+            <Button
+              variant="outline"
+              onClick={() =>
+                navigate({ pathname: "/shipments", search: "page=1&ordering=updated_at" })
+              }
+            >
               <ArrowLeft className="!me-1.5 !ms-0" />
               Back to Shipments
             </Button>
@@ -126,7 +131,7 @@ export default function ShipmentDetailPage() {
                 />
 
                 <RelatedEntity
-                  title="Forward Company"
+                  title="Forwarder Company"
                   showEmptyText={!shipment?.forward_company}
                   items={[
                     { title: "name", value: shipment?.forward_company?.name },

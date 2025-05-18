@@ -18,7 +18,7 @@ import {
 } from "react-icons/fi";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { Moon, Sun } from "lucide-react";
+import { ChevronLeft, Moon, Sun } from "lucide-react";
 import { objectToQueryString } from "@/utils/object-to-query-string";
 
 interface Menu {
@@ -82,14 +82,17 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
       )}
     >
       {/* TOGGLE BUTTON */}
-      <img
-        src="/assets/control.png"
+      <Button
+        size="icon"
         className={cn(
-          `absolute -right-3 top-9 w-7 cursor-pointer rounded-full border-2 border-primary`,
+          `absolute -right-4 top-9 w-7 cursor-pointer rounded-full hover:bg-muted`,
           !open && "rotate-180",
         )}
+        variant="muted"
         onClick={() => setOpen(!open)}
-      />
+      >
+        <ChevronLeft />
+      </Button>
 
       {/* LOGO */}
       <div className="flex items-center gap-x-4">
