@@ -21,8 +21,12 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem("accessToken"));
-  const [refreshToken, setRefreshToken] = useState<string | null>(localStorage.getItem("refreshToken"));
+  const [accessToken, setAccessToken] = useState<string | null>(
+    localStorage.getItem("accessToken"),
+  );
+  const [refreshToken, setRefreshToken] = useState<string | null>(
+    localStorage.getItem("refreshToken"),
+  );
   const navigate = useNavigate();
 
   const isAuthenticated = !!accessToken;
@@ -37,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         body: JSON.stringify({ refresh: refreshToken }),
       });
       const data = await response.json();
-      
+
       if (data.success) {
         setAccessToken(data.data.access);
         localStorage.setItem("accessToken", data.data.access);
@@ -61,7 +65,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      
       const response = await fetch("https://api.rahtash-tms.ir/en/api/v1/user/token/", {
         method: "POST",
         headers: {
@@ -69,21 +72,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
         throw new Error(errorData?.message || "Login failed");
       }
-  
+
       const data = await response.json();
-  
+
       if (data) {
         setAccessToken(data.access);
         setRefreshToken(data.refresh);
         localStorage.setItem("accessToken", data.access);
         localStorage.setItem("refreshToken", data.refresh);
         toast.success("Successfully logged in!");
-        navigate("/shipments");
+        // navigate("/shipments");
+        window.location.href = "/shipments";
       } else {
         toast.error(data.message || "Invalid credentials");
       }
@@ -125,7 +129,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setRefreshToken(null);
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    navigate("/login");
+    // navigate("/login");
+    window.location.href = "/login";
   };
 
   return (
