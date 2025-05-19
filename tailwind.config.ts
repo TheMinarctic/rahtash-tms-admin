@@ -14,7 +14,16 @@ export default {
       center: true,
       screens: {
         "2xl": "1536px",
+        "3xl": "1760px",
       },
+    },
+    screens: {
+      sm: "600px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+      "3xl": "1760px",
     },
     extend: {
       colors: {

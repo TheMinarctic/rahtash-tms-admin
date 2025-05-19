@@ -4,18 +4,19 @@ import { Button } from "@/components/ui/button";
 import AppLayout from "@/components/layout/AppLayout";
 import { ColumnDef } from "@tanstack/react-table";
 import TableV2 from "@/components/ui/table/table-v2";
-import { ModuleCardData } from "@/components/common/module-card-data";
-import DynamicPaginator from "@/components/common/dynamic-paginator";
-import ShipmentPortStatusBadge from "@/components/common/shipment-port-status-badge";
 import { useState } from "react";
 import { useIsOpen } from "@/hooks/use-is-open";
 import { Edit, Plus, Trash } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
-import { serverErrorToast } from "@/utils/errors/server-error-toast";
 import { axios } from "@/lib/axios";
 import { toast } from "sonner";
 import { AxiosResponse } from "axios";
+import { Badge } from "@/components/ui/badge";
+import { DocumentTypeEnum } from "@/enums/document-type";
+import DynamicPaginator from "@/components/common/dynamic-paginator";
+import { serverErrorToast } from "@/utils/errors/server-error-toast";
+import { ModuleCardData } from "@/components/common/module-card-data";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import UpsertShipmentDocumentTypeForm from "./components/UpsertShipmentDocumentTypeForm";
 
 export default function ShipmentDocumentTypeList() {
@@ -55,10 +56,10 @@ export default function ShipmentDocumentTypeList() {
       cell: ({ row }) => (row.original.is_mandatory ? "Yes" : "No"),
     },
     {
-      header: "Status",
-      accessorKey: "status",
+      header: "Type",
+      accessorKey: "type",
       cell: ({ row }) => {
-        return <ShipmentPortStatusBadge status={row.original.status} />;
+        return <Badge variant="outline">{DocumentTypeEnum[row.original.type]}</Badge>;
       },
     },
     {

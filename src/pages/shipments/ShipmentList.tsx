@@ -37,8 +37,9 @@ export default function ShipmentList() {
   };
 
   const handleCreate = () => {
-    setInitialData(null);
-    setIsOpenUpsertShipmentModal(true);
+    navigate("/shipments/create/initial");
+    // setInitialData(null);
+    // setIsOpenUpsertShipmentModal(true);
   };
 
   const handleEdit = (initialData: any) => {

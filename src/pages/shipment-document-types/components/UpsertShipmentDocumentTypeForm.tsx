@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import { axios } from "@/lib/axios";
 import { AxiosResponse } from "axios";
 import { useForm } from "react-hook-form";
-import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,11 +18,12 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { DocumentTypeEnum } from "@/enums/document-type";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   order: z.number({ invalid_type_error: "Order must be a number" }),
-  status: z.number(),
+  type: z.number(),
   is_mandatory: z.boolean(),
 });
 
@@ -43,7 +43,7 @@ export default function UpsertShipmentDocumentTypeForm({
     defaultValues: {
       title: initialData?.title || "",
       order: initialData?.order ?? 0,
-      status: initialData?.status ?? 1,
+      type: initialData?.type ?? 0,
       is_mandatory: initialData?.is_mandatory ?? true,
     },
   });
@@ -127,18 +127,18 @@ export default function UpsertShipmentDocumentTypeForm({
 
             <FormField
               control={control}
-              name="status"
+              name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel isRequired>Status</FormLabel>
+                  <FormLabel isRequired>Type</FormLabel>
                   <FormControl>
                     <SelectV2
                       value={field.value}
                       onValueChange={field.onChange}
-                      items={[
-                        { value: 1, name: "Active" },
-                        { value: 2, name: "Inactive" },
-                      ]}
+                      items={Object.entries(DocumentTypeEnum).map(([key, value]) => ({
+                        name: value,
+                        value: Number(key),
+                      }))}
                     />
                   </FormControl>
                   <FormMessage />

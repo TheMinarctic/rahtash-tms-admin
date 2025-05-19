@@ -34,6 +34,7 @@ import AddressDetail from "./pages/AddressDetail";
 import AddressCreate from "./pages/AddressCreate";
 import CompanyDocumentCreate from "./pages/CompanyDocumentCreate";
 import AppProviders from "./providers/AppProviders";
+import CreateShipmentPage from "./pages/shipments/create";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -180,6 +181,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ShipmentList />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/shipments/create/:id"
+        element={
+          <ProtectedRoute>
+            <CreateShipmentPage />
           </ProtectedRoute>
         }
       />
