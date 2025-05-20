@@ -6,20 +6,23 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Login = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(email, password);
+    setIsLoading(true);
+    await login(email, password).finally(() => setIsLoading(false));
   };
 
   return (
-<div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-600 to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-gray-600 to-gray-800 px-4 py-12 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md animate-fade-in">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Welcome back</CardTitle>
+          <CardTitle className="text-center text-2xl font-bold">Welcome back</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -45,10 +48,12 @@ const Login = () => {
                 className="w-full"
               />
             </div>
-            <Button type="submit" className="w-full">
+
+            <Button disabled={isLoading} loading={isLoading} type="submit" className="w-full">
               Sign in
             </Button>
           </form>
+
           <div className="mt-4 text-center text-sm">
             <span className="text-gray-600">Don't have an account? </span>
             <Link to="/signup" className="text-primary hover:underline">
