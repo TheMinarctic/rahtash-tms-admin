@@ -9,7 +9,7 @@ const CreateShipment = createContext({} as ICreateShipment);
 export const useCreateShipmentContext = () => useContext(CreateShipment);
 
 const CreateShipmentContext = ({ children }: { children: React.ReactNode }) => {
-  const [formStep, setFormStep] = useState(1);
+  const [formStep, setFormStep] = useState(2);
 
   return (
     <CreateShipment.Provider value={{ formStep, setFormStep }}>{children}</CreateShipment.Provider>

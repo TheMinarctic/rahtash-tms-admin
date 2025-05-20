@@ -17,10 +17,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCreateShipmentContext } from "../context/create-shipment-context";
 
 const CreateShipmentFirstStep = () => {
-  const form = useForm({ resolver: zodResolver(formSchema) });
+  const { setFormStep } = useCreateShipmentContext();
+
+  const form = useForm<FormValues>({ resolver: zodResolver(formSchema) });
   const { handleSubmit, control, formState } = form;
 
   const onSubmit = async (data: FormValues) => {
@@ -28,6 +31,7 @@ const CreateShipmentFirstStep = () => {
       .post("/en/api/v1/shipment/create/", data)
       .then((res: AxiosResponse<ApiRes>) => {
         toast.success(res.data.message);
+        setFormStep(2);
         // setIsOpen(false);
       })
       .catch((err) => {
@@ -37,8 +41,12 @@ const CreateShipmentFirstStep = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full max-w-5xl py-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full max-w-6xl py-6">
         <Card>
+          <CardHeader>
+            <CardTitle>Create Shipment</CardTitle>
+          </CardHeader>
+
           <CardContent>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
@@ -79,7 +87,9 @@ const CreateShipmentFirstStep = () => {
           </CardContent>
 
           <CardFooter>
-            <Button>Create Shipment</Button>
+            <Button disabled={formState.isSubmitting} loading={formState.isSubmitting}>
+              Create Shipment
+            </Button>
           </CardFooter>
         </Card>
       </form>
