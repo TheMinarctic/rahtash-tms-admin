@@ -16,6 +16,7 @@ import { DocumentTypeEnum } from "@/enums/document-type";
 import DynamicPaginator from "@/components/common/dynamic-paginator";
 import { serverErrorToast } from "@/utils/errors/server-error-toast";
 import { ModuleCardData } from "@/components/common/module-card-data";
+import { ShipmentDocumentTypeApi } from "@/services/shipments/document-type-api";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import UpsertShipmentDocumentTypeForm from "./components/UpsertShipmentDocumentTypeForm";
 
@@ -28,7 +29,7 @@ export default function ShipmentDocumentTypeList() {
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<ApiRes<any[]>>(
-    `/en/api/v1/shipment/document/type/list/?${searchParams.toString()}`,
+    `${ShipmentDocumentTypeApi.END_POINT}/list/?${searchParams.toString()}`,
   );
 
   const handleCreate = () => {
@@ -128,8 +129,7 @@ export default function ShipmentDocumentTypeList() {
           title="Delete shipment document type"
           onSubmit={async () => {
             setIsLoadingDelete(true);
-            await axios
-              .delete(`/en/api/v1/shipment/document/type/delete/${initialData.id}/`)
+            await ShipmentDocumentTypeApi.delete(initialData.id)
               .then((res: AxiosResponse<ApiRes>) => {
                 mutate();
                 toast.success(res.data.message);

@@ -33,7 +33,7 @@ const CreateShipmentConditions = () => {
       {formStep === 1 ? (
         <CreateShipmentFirstStep />
       ) : formStep === 2 ? (
-        <CreateShipmentSecondStep />
+        <CreateShipmentSecondStep shipmentId={Number(id)} />
       ) : null}
     </div>
   );

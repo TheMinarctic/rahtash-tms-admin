@@ -134,4 +134,14 @@ export declare namespace ApiResponse {
     created_at: string;
     updated_at: string;
   };
+
+  type DocumentType = {
+    id: number;
+    type: number;
+    order: number;
+    title: string;
+    is_mandatory: boolean;
+    created_at: string;
+    updated_at: string;
+  };
 }

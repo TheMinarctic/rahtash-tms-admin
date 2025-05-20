@@ -1,13 +1,10 @@
-import { z } from "zod";
 import { toast } from "sonner";
 import { axios } from "@/lib/axios";
 import { AxiosResponse } from "axios";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import DatePicker from "@/components/ui/date-picker";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { serverErrorToast } from "@/utils/errors/server-error-toast";
-import { validationErrorMessages } from "@/utils/errors/validation-error-messages";
 import {
   Form,
   FormControl,
@@ -19,13 +16,42 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  shipmentSecondStepSchema,
+  ShipmentSecondStepValues,
+} from "../schemas/shipment-second-step-schema";
+import SecondStepCustomFiles from "./second-step-custom-files";
+import { ShipmentDocumentTypeApi } from "@/services/shipments/document-type-api";
+import { ShipmentDocumentApi } from "@/services/shipments/document-api";
 
-const CreateShipmentSecondStep = () => {
-  const form = useForm<FormValues>({ resolver: zodResolver(formSchema) });
+const CreateShipmentSecondStep = ({ shipmentId }: { shipmentId: number }) => {
+  const form = useForm<ShipmentSecondStepValues>({
+    resolver: zodResolver(shipmentSecondStepSchema),
+    defaultValues: { customFiles: [] },
+  });
   const { handleSubmit, control, formState } = form;
-  console.log(form.watch("bl_file"));
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: ShipmentSecondStepValues) => {
+    const submitDocumentTypes = await Promise.all(
+      data.customFiles.map(
+        async (item) =>
+          await ShipmentDocumentTypeApi.create({ type: 0, title: item.title, order: 1 }),
+      ),
+    );
+
+    const submitDocuments = await Promise.all(
+      submitDocumentTypes.map(
+        async (item, index) =>
+          await ShipmentDocumentApi.create({
+            shipment: shipmentId,
+            type: item.data.data.id,
+            file: data.customFiles?.[index]?.file,
+          }),
+      ),
+    );
+
+    return;
+
     await axios
       .post("/en/api/v1/shipment/create/", data)
       .then((res: AxiosResponse<ApiRes>) => {
@@ -47,6 +73,7 @@ const CreateShipmentSecondStep = () => {
 
           <CardContent>
             <div className="grid grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+              {/* REQUIRED FILES */}
               <FormField
                 control={control}
                 name="bl_file"
@@ -70,7 +97,9 @@ const CreateShipmentSecondStep = () => {
                   <FormItem>
                     <FormLabel isRequired>Invoice</FormLabel>
 
-                    <Input type="file" onChange={(e) => field.onChange(e.target?.files?.[0])} />
+                    <FormControl>
+                      <Input type="file" onChange={(e) => field.onChange(e.target?.files?.[0])} />
+                    </FormControl>
 
                     <FormMessage />
                   </FormItem>
@@ -84,13 +113,16 @@ const CreateShipmentSecondStep = () => {
                   <FormItem>
                     <FormLabel isRequired>Packing List</FormLabel>
 
-                    <Input type="file" onChange={(e) => field.onChange(e.target?.files?.[0])} />
+                    <FormControl>
+                      <Input type="file" onChange={(e) => field.onChange(e.target?.files?.[0])} />
+                    </FormControl>
 
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
+              {/* DANGEROUS GOOD */}
               <div className="flex flex-col items-start justify-center">
                 <FormField
                   control={control}
@@ -127,7 +159,9 @@ const CreateShipmentSecondStep = () => {
                     <FormItem>
                       <FormLabel isRequired>MSDS</FormLabel>
 
-                      <Input type="file" onChange={(e) => field.onChange(e.target?.files?.[0])} />
+                      <FormControl>
+                        <Input type="file" onChange={(e) => field.onChange(e.target?.files?.[0])} />
+                      </FormControl>
 
                       <FormMessage />
                     </FormItem>
@@ -136,6 +170,9 @@ const CreateShipmentSecondStep = () => {
               )}
             </div>
           </CardContent>
+
+          {/* CUSTOM FILES */}
+          <SecondStepCustomFiles />
 
           <CardFooter>
             <Button disabled={formState.isSubmitting} loading={formState.isSubmitting}>
@@ -149,27 +186,3 @@ const CreateShipmentSecondStep = () => {
 };
 
 export default CreateShipmentSecondStep;
-
-const formSchema = z
-  .object({
-    bl_file: z.any().refine((file) => file instanceof File, "File is required"),
-    invoice_file: z.any().refine((file) => file instanceof File, "File is required"),
-    packing_list_file: z.any().refine((file) => file instanceof File, "File is required"),
-    msds_file: z
-      .any()
-      .refine((file) => file instanceof File, "File is required")
-      .optional()
-      .nullable(),
-    contains_dangerous_good: z.boolean().optional().nullable(),
-  })
-  .refine(
-    (data) => {
-      if (!data.contains_dangerous_good) return true;
-
-      if (data.contains_dangerous_good && !(data.msds_file instanceof File)) return false;
-      return true;
-    },
-    { path: ["msds_file"], message: "File is required" },
-  );
-
-type FormValues = z.infer<typeof formSchema>;

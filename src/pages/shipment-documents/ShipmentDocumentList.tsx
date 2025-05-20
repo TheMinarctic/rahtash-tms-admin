@@ -1,7 +1,6 @@
 import useSWR from "swr";
 import { useState } from "react";
 import { toast } from "sonner";
-import { axios } from "@/lib/axios";
 import { AxiosResponse } from "axios";
 import { DateFormat } from "@/utils/date";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import { serverErrorToast } from "@/utils/errors/server-error-toast";
 import { ModuleCardData } from "@/components/common/module-card-data";
 import UpsertShipmentDocumentForm from "./components/UpsertShipmentDocumentForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ShipmentDocumentApi } from "@/services/shipments/document-api";
 
 export default function ShipmentDocumentList() {
   const [searchParams] = useSearchParams();
@@ -28,7 +28,7 @@ export default function ShipmentDocumentList() {
   const [isLoadingDeleteModal, setIsLoadingDeleteModal] = useState(false);
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<ApiRes<any[]>>(
-    `/en/api/v1/shipment/document/list/?${searchParams.toString()}`,
+    `${ShipmentDocumentApi.END_POINT}/list/?${searchParams.toString()}`,
   );
 
   const handleCreate = () => {
@@ -134,8 +134,7 @@ export default function ShipmentDocumentList() {
           title="Delete shipment document"
           onSubmit={async () => {
             setIsLoadingDeleteModal(true);
-            await axios
-              .delete(`/en/api/v1/shipment/document/delete/${initialData?.id}/`)
+            await ShipmentDocumentApi.delete(initialData?.id)
               .then((res: AxiosResponse<ApiRes>) => {
                 toast.success(res.data.message);
                 mutate();

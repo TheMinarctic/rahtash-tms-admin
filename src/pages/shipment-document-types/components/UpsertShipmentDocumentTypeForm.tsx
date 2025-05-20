@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { DocumentTypeEnum } from "@/enums/document-type";
+import { ShipmentDocumentTypeApi } from "@/services/shipments/document-type-api";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -53,12 +54,7 @@ export default function UpsertShipmentDocumentTypeForm({
   const onSubmit = async (data: FormValues) => {
     // CREATE
     if (!initialData) {
-      await axios
-        .post(`/en/api/v1/shipment/document/type/create/`, data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+      await ShipmentDocumentTypeApi.create(data)
         .then((res: AxiosResponse<ApiRes>) => {
           toast.success(res.data.message);
           mutate();
@@ -71,13 +67,8 @@ export default function UpsertShipmentDocumentTypeForm({
 
     // UPDATE
     else {
-      await axios
-        .patch(`/en/api/v1/shipment/document/type/update/${initialData.id}/`, data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res: AxiosResponse<ApiRes>) => {
+      await ShipmentDocumentTypeApi.update(initialData.id, data)
+        .then((res) => {
           toast.success(res.data.message);
           mutate();
           setIsOpen(false);
